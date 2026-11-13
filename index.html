@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-    <title>Trakealo - Control Financiero & Suscripciones</title>
+    <title>Trakealo - Control Financiero Inteligente</title>
     
     <!-- PWA & iOS / Android Native App Meta Tags -->
     <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -11,51 +11,31 @@
     <meta name="apple-mobile-web-app-title" content="Trakealo" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="theme-color" content="#09090b" />
-    <meta name="description" content="Trakealo: Rastrea tus gastos, ingresos, suscripciones y metas en tiempo real con respaldo en la nube." />
     
     <!-- Dynamic PWA Manifest & App Icon -->
     <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='112' fill='%2309090b'/%3E%3Cpath d='M160 330l80-90 60 40 90-110' stroke='%2310b981' stroke-width='36' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E">
     <link rel="manifest" id="pwa-manifest" />
     
-    <!-- Fonts: Inter & JetBrains Mono -->
+    <!-- Fonts & Tailwind -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             darkMode: 'class',
             theme: {
                 extend: {
-                    colors: {
-                        obsidian: '#09090b',
-                        carddark: '#121216',
-                        cardborder: '#27272a',
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        mono: ['JetBrains Mono', 'monospace'],
-                    }
+                    colors: { obsidian: '#09090b', carddark: '#121216', cardborder: '#27272a' },
+                    fontFamily: { sans: ['Inter', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'] }
                 }
             }
         }
     </script>
-    
-    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
-    
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #09090b;
-            color: #f4f4f5;
-            -webkit-tap-highlight-color: transparent;
-        }
-        .mono-num {
-            font-family: 'JetBrains Mono', monospace;
-        }
+        body { font-family: 'Inter', sans-serif; background-color: #09090b; color: #f4f4f5; -webkit-tap-highlight-color: transparent; }
+        .mono-num { font-family: 'JetBrains Mono', monospace; }
         ::-webkit-scrollbar { width: 4px; height: 4px; }
         ::-webkit-scrollbar-track { background: #09090b; }
         ::-webkit-scrollbar-thumb { background: #27272a; border-radius: 4px; }
@@ -270,9 +250,10 @@
                 <button onclick="closeAddModal()" class="text-zinc-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
             </div>
 
+            <!-- SMART TOOLS -->
             <div class="grid grid-cols-2 gap-2">
-                <button onclick="startVoiceDictationGuide()" type="button" class="py-2.5 px-3 bg-zinc-900 hover:bg-zinc-800 border border-cardborder rounded-xl text-xs font-medium text-emerald-400 flex items-center justify-center gap-2 transition shadow-inner">
-                    <i data-lucide="mic" class="w-4 h-4"></i> Dictar con Teclado 🎤
+                <button onclick="focusForVoice()" type="button" class="py-2.5 px-3 bg-zinc-900 hover:bg-zinc-800 border border-cardborder rounded-xl text-xs font-medium text-emerald-400 flex items-center justify-center gap-2 transition shadow-inner">
+                    <i data-lucide="mic" class="w-4 h-4"></i> Dictar por Voz 🎤
                 </button>
                 <button onclick="document.getElementById('receipt-file-input').click()" type="button" class="py-2.5 px-3 bg-zinc-900 hover:bg-zinc-800 border border-cardborder rounded-xl text-xs font-medium text-sky-400 flex items-center justify-center gap-2 transition shadow-inner">
                     <i data-lucide="camera" class="w-4 h-4"></i> Escanear Factura
@@ -295,7 +276,7 @@
                 </div>
 
                 <div>
-                    <label class="block text-[11px] font-medium text-zinc-400 mb-1">Descripción (Toca el micrófono 🎤 en tu teclado para dictar)</label>
+                    <label class="block text-[11px] font-medium text-zinc-400 mb-1">Descripción (Toca el micrófono 🎤 en tu teclado para hablar)</label>
                     <input type="text" id="tx-desc" required placeholder="Ej. Supermercado, Gasolina..." class="w-full bg-zinc-900 border border-cardborder rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-emerald-500">
                 </div>
 
@@ -691,11 +672,11 @@
             dlAnchor.remove();
         }
 
-        // UNIVERSAL KEYBOARD DICTATION GUIDE (Works instantly on iPhone & Android)
-        function startVoiceDictationGuide() {
+        // INSTANT VOICE HELPER (Opens keyboard microphone instantly on iPhone & Android)
+        function focusForVoice() {
             const descInput = document.getElementById('tx-desc');
             descInput.focus();
-            alert("🎤 Toca el ícono de micrófono en tu teclado virtual (abajo a la derecha en iPhone / barra superior en Android) para dictar tu gasto o ingreso.");
+            descInput.placeholder = "Habla ahora usando el micrófono del teclado...";
         }
 
         function handleReceiptScan(event) {
