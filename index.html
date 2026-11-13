@@ -11,7 +11,7 @@
     <meta name="apple-mobile-web-app-title" content="Trakealo" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="theme-color" content="#09090b" />
-    <meta name="description" content="Trakealo: Rastrea tus gastos, ingresos, suscripciones y metas con notas de voz, escáner de facturas y sincronización en la nube." />
+    <meta name="description" content="Trakealo: Rastrea tus gastos, ingresos, suscripciones y metas en tiempo real con respaldo en la nube." />
     
     <!-- Dynamic PWA Manifest & App Icon -->
     <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='112' fill='%2309090b'/%3E%3Cpath d='M160 330l80-90 60 40 90-110' stroke='%2310b981' stroke-width='36' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E">
@@ -52,29 +52,18 @@
             background-color: #09090b;
             color: #f4f4f5;
             -webkit-tap-highlight-color: transparent;
-            padding-env: safe-area-inset-top;
-            padding-bottom: env(safe-area-inset-bottom);
         }
         .mono-num {
             font-family: 'JetBrains Mono', monospace;
         }
-        /* Custom smooth scroll */
-        ::-webkit-scrollbar {
-            width: 4px;
-            height: 4px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #09090b;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #27272a;
-            border-radius: 4px;
-        }
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: #09090b; }
+        ::-webkit-scrollbar-thumb { background: #27272a; border-radius: 4px; }
     </style>
 </head>
 <body class="bg-obsidian text-zinc-100 min-h-screen flex flex-col antialiased selection:bg-emerald-500 selection:text-black">
 
-    <!-- LOGIN SCREEN (Google Auth / Cloud Sync) -->
+    <!-- LOGIN SCREEN -->
     <div id="login-screen" class="fixed inset-0 z-50 bg-obsidian flex flex-col items-center justify-center p-6 transition-opacity duration-300">
         <div class="w-full max-w-sm bg-carddark border border-cardborder rounded-2xl p-8 shadow-2xl flex flex-col items-center text-center relative overflow-hidden">
             <div class="absolute -top-12 -right-12 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl"></div>
@@ -82,7 +71,7 @@
                 <i data-lucide="trending-up" class="w-8 h-8"></i>
             </div>
             <h1 class="text-2xl font-bold tracking-tight text-white mb-2">Trakealo</h1>
-            <p class="text-xs text-zinc-400 mb-8 leading-relaxed">Tu control financiero inteligente con respaldo seguro en la nube y comandos de voz.</p>
+            <p class="text-xs text-zinc-400 mb-8 leading-relaxed">Tu control financiero inteligente con respaldo seguro en la nube.</p>
             
             <button onclick="handleGoogleLogin()" class="w-full py-3.5 px-4 bg-white hover:bg-zinc-200 text-zinc-900 font-semibold rounded-xl text-sm flex items-center justify-center gap-3 transition-all shadow-lg active:scale-[0.98]">
                 <svg class="w-5 h-5" viewBox="0 0 24 24">
@@ -116,14 +105,11 @@
             </div>
             
             <div class="flex items-center gap-2">
-                <!-- Currency Selector -->
                 <select id="currency-select" onchange="changeCurrency(this.value)" class="bg-carddark border border-cardborder text-xs text-zinc-200 rounded-lg px-2 py-1.5 focus:outline-none focus:border-emerald-500 mono-num font-medium">
                     <option value="USD">$ USD</option>
                     <option value="EUR">€ EUR</option>
                     <option value="VES">Bs. VES</option>
                 </select>
-
-                <!-- Profile Avatar / Sync Status -->
                 <button onclick="openProfileModal()" id="user-avatar-btn" class="w-8 h-8 rounded-full bg-emerald-600 text-white font-bold text-xs flex items-center justify-center border border-emerald-400/30 overflow-hidden shadow">
                     U
                 </button>
@@ -138,16 +124,13 @@
                 <!-- BALANCE CARD -->
                 <div class="bg-carddark border border-cardborder rounded-2xl p-5 relative overflow-hidden shadow-xl">
                     <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-emerald-500/5 rounded-full blur-3xl"></div>
-                    
                     <div class="flex justify-between items-start mb-2">
                         <span class="text-xs font-medium text-zinc-400 tracking-wide uppercase">Balance Disponible</span>
                         <span class="inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
                             <i data-lucide="arrow-up-right" class="w-3 h-3"></i> Sincronizado
                         </span>
                     </div>
-                    
                     <div class="text-3xl font-bold text-white mono-num tracking-tight mb-5" id="total-balance">$0,00</div>
-                    
                     <div class="grid grid-cols-2 gap-3 pt-3 border-t border-cardborder">
                         <div class="bg-zinc-900/60 border border-cardborder/50 rounded-xl p-3 flex items-center gap-3">
                             <div class="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
@@ -176,22 +159,16 @@
                         <h3 class="text-xs font-semibold text-zinc-300 uppercase tracking-wider">Flujo de los últimos 7 días</h3>
                         <span class="text-[11px] text-zinc-400 mono-num" id="weekly-subs-summary">Subs: $0/mes</span>
                     </div>
-                    <div class="grid grid-cols-7 gap-2 h-28 items-end pt-4 pb-2 px-1" id="weekly-chart">
-                        <!-- Populated by JS -->
-                    </div>
+                    <div class="grid grid-cols-7 gap-2 h-28 items-end pt-4 pb-2 px-1" id="weekly-chart"></div>
                 </div>
 
-                <!-- SAVING GOALS CAROUSEL -->
+                <!-- SAVING GOALS -->
                 <div class="space-y-3">
                     <div class="flex justify-between items-center">
                         <h3 class="text-xs font-semibold text-zinc-300 uppercase tracking-wider">Metas de Ahorro</h3>
-                        <button onclick="openGoalModal()" class="text-xs font-medium text-emerald-400 hover:text-emerald-300 flex items-center gap-1">
-                            + Nueva Meta
-                        </button>
+                        <button onclick="openGoalModal()" class="text-xs font-medium text-emerald-400 hover:text-emerald-300 flex items-center gap-1">+ Nueva Meta</button>
                     </div>
-                    <div class="flex gap-3 overflow-x-auto pb-2 scrollbar-none" id="goals-container">
-                        <!-- Populated by JS -->
-                    </div>
+                    <div class="flex gap-3 overflow-x-auto pb-2 scrollbar-none" id="goals-container"></div>
                 </div>
 
                 <!-- TRANSACTIONS LIST -->
@@ -204,9 +181,7 @@
                             <button onclick="filterTransactions('income')" id="filter-income" class="px-2.5 py-1 rounded-md text-zinc-400 hover:text-white transition">Ingresos</button>
                         </div>
                     </div>
-                    <div class="space-y-2" id="transactions-list">
-                        <!-- Populated by JS -->
-                    </div>
+                    <div class="space-y-2" id="transactions-list"></div>
                 </div>
             </section>
 
@@ -223,12 +198,9 @@
                     </div>
                     <p class="text-xs text-zinc-500 text-right mono-num" id="budget-limit-text">Límite: $1,000,00</p>
                 </div>
-
                 <div class="bg-carddark border border-cardborder rounded-2xl p-5 space-y-4">
                     <h3 class="text-xs font-semibold text-zinc-300 uppercase tracking-wider">Desglose por Categoría</h3>
-                    <div class="space-y-3" id="categories-breakdown">
-                        <!-- Populated by JS -->
-                    </div>
+                    <div class="space-y-3" id="categories-breakdown"></div>
                 </div>
             </section>
 
@@ -236,13 +208,9 @@
             <section id="view-suscripciones" class="space-y-4 hidden">
                 <div class="flex justify-between items-center">
                     <h3 class="text-xs font-semibold text-zinc-300 uppercase tracking-wider">Cobros Recurrentes</h3>
-                    <button onclick="openSubModal()" class="text-xs font-medium text-emerald-400 hover:text-emerald-300 flex items-center gap-1">
-                        + Nueva Suscripción
-                    </button>
+                    <button onclick="openSubModal()" class="text-xs font-medium text-emerald-400 hover:text-emerald-300 flex items-center gap-1">+ Nueva Suscripción</button>
                 </div>
-                <div class="space-y-3" id="subscriptions-list">
-                    <!-- Populated by JS -->
-                </div>
+                <div class="space-y-3" id="subscriptions-list"></div>
             </section>
 
             <!-- TAB 4: AJUSTES -->
@@ -256,7 +224,6 @@
                         </div>
                         <button onclick="handleLogout()" class="px-3 py-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 text-xs font-medium rounded-lg border border-rose-500/20 transition">Cerrar Sesión</button>
                     </div>
-
                     <div class="pt-2 space-y-3">
                         <button onclick="exportJSONData()" class="w-full py-2.5 px-4 bg-zinc-900 hover:bg-zinc-800 text-zinc-200 text-xs font-medium rounded-xl border border-cardborder flex items-center justify-between transition">
                             <span class="flex items-center gap-2"><i data-lucide="download" class="w-4 h-4 text-emerald-400"></i> Exportar Respaldo JSON</span>
@@ -269,10 +236,9 @@
                     </div>
                 </div>
             </section>
-
         </main>
 
-        <!-- BOTTOM NAVIGATION BAR (Vercel v0 Glassmorphism Style) -->
+        <!-- BOTTOM NAVIGATION BAR -->
         <nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-carddark/90 backdrop-blur-xl border-t border-cardborder px-4 py-2.5 flex items-center justify-around z-30 shadow-2xl">
             <button onclick="switchTab('inicio')" id="nav-inicio" class="flex flex-col items-center gap-1 text-emerald-400 transition">
                 <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
@@ -282,12 +248,9 @@
                 <i data-lucide="pie-chart" class="w-5 h-5"></i>
                 <span class="text-[10px] font-medium">Analíticas</span>
             </button>
-            
-            <!-- CENTRAL QUICK ADD ACTION -->
             <button onclick="openAddModal()" class="w-12 h-12 rounded-full bg-emerald-500 hover:bg-emerald-400 text-black flex items-center justify-center shadow-lg shadow-emerald-500/20 transition active:scale-95 -mt-3 border-2 border-obsidian">
                 <i data-lucide="plus" class="w-6 h-6 stroke-[2.5]"></i>
             </button>
-
             <button onclick="switchTab('suscripciones')" id="nav-suscripciones" class="flex flex-col items-center gap-1 text-zinc-400 hover:text-zinc-200 transition">
                 <i data-lucide="repeat" class="w-5 h-5"></i>
                 <span class="text-[10px] font-medium">Suscripciones</span>
@@ -299,18 +262,17 @@
         </nav>
     </div>
 
-    <!-- MODAL: ADD TRANSACTION (Includes AI Voice Note & Receipt Scanner) -->
+    <!-- MODAL: ADD TRANSACTION -->
     <div id="add-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 hidden transition-opacity">
-        <div class="bg-carddark border border-cardborder w-full max-w-md rounded-t-3xl sm:rounded-2xl p-6 space-y-5 shadow-2xl animate-in slide-in-from-bottom duration-200">
+        <div class="bg-carddark border border-cardborder w-full max-w-md rounded-t-3xl sm:rounded-2xl p-6 space-y-5 shadow-2xl">
             <div class="flex justify-between items-center border-b border-cardborder pb-3">
                 <h3 class="text-sm font-bold text-white">Nuevo Movimiento</h3>
                 <button onclick="closeAddModal()" class="text-zinc-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
             </div>
 
-            <!-- SMART TOOLS: AI Voice Note & Receipt Scanner -->
             <div class="grid grid-cols-2 gap-2">
-                <button onclick="startVoiceRecognition()" type="button" class="py-2.5 px-3 bg-zinc-900 hover:bg-zinc-800 border border-cardborder rounded-xl text-xs font-medium text-emerald-400 flex items-center justify-center gap-2 transition shadow-inner">
-                    <i data-lucide="mic" class="w-4 h-4 animate-pulse"></i> Nota de Voz (IA)
+                <button onclick="startVoiceDictationGuide()" type="button" class="py-2.5 px-3 bg-zinc-900 hover:bg-zinc-800 border border-cardborder rounded-xl text-xs font-medium text-emerald-400 flex items-center justify-center gap-2 transition shadow-inner">
+                    <i data-lucide="mic" class="w-4 h-4"></i> Dictar con Teclado 🎤
                 </button>
                 <button onclick="document.getElementById('receipt-file-input').click()" type="button" class="py-2.5 px-3 bg-zinc-900 hover:bg-zinc-800 border border-cardborder rounded-xl text-xs font-medium text-sky-400 flex items-center justify-center gap-2 transition shadow-inner">
                     <i data-lucide="camera" class="w-4 h-4"></i> Escanear Factura
@@ -333,7 +295,7 @@
                 </div>
 
                 <div>
-                    <label class="block text-[11px] font-medium text-zinc-400 mb-1">Descripción</label>
+                    <label class="block text-[11px] font-medium text-zinc-400 mb-1">Descripción (Toca el micrófono 🎤 en tu teclado para dictar)</label>
                     <input type="text" id="tx-desc" required placeholder="Ej. Supermercado, Gasolina..." class="w-full bg-zinc-900 border border-cardborder rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-emerald-500">
                 </div>
 
@@ -364,7 +326,7 @@
                 <button onclick="closeGoalModal()" class="text-zinc-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
             </div>
             <form onsubmit="saveGoal(event)" class="space-y-3">
-                <input type="text" id="goal-name" required placeholder="Nombre de la meta (Ej. iPhone 16)" class="w-full bg-zinc-900 border border-cardborder rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-emerald-500">
+                <input type="text" id="goal-name" required placeholder="Nombre de la meta" class="w-full bg-zinc-900 border border-cardborder rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-emerald-500">
                 <input type="number" step="0.01" id="goal-target" required placeholder="Meta objetivo ($)" class="w-full bg-zinc-900 border border-cardborder rounded-xl px-4 py-2.5 text-white mono-num text-sm focus:outline-none focus:border-emerald-500">
                 <input type="number" step="0.01" id="goal-current" placeholder="Ahorro inicial (opcional)" class="w-full bg-zinc-900 border border-cardborder rounded-xl px-4 py-2.5 text-white mono-num text-sm focus:outline-none focus:border-emerald-500">
                 <button type="submit" class="w-full py-3 bg-emerald-500 hover:bg-emerald-400 text-black font-bold rounded-xl text-sm transition">Crear Meta</button>
@@ -380,16 +342,15 @@
                 <button onclick="closeSubModal()" class="text-zinc-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
             </div>
             <form onsubmit="saveSubscription(event)" class="space-y-3">
-                <input type="text" id="sub-name" required placeholder="Servicio (Ej. Netflix, ChatGPT)" class="w-full bg-zinc-900 border border-cardborder rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-emerald-500">
+                <input type="text" id="sub-name" required placeholder="Servicio (Ej. Netflix)" class="w-full bg-zinc-900 border border-cardborder rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-emerald-500">
                 <input type="number" step="0.01" id="sub-amount" required placeholder="Monto mensual ($)" class="w-full bg-zinc-900 border border-cardborder rounded-xl px-4 py-2.5 text-white mono-num text-sm focus:outline-none focus:border-emerald-500">
                 <button type="submit" class="w-full py-3 bg-emerald-500 hover:bg-emerald-400 text-black font-bold rounded-xl text-sm transition">Guardar Suscripción</button>
             </form>
         </div>
     </div>
 
-    <!-- APP JAVASCRIPT LOGIC -->
+    <!-- APP JAVASCRIPT -->
     <script>
-        // --- APP STATE (Starts at $0 clean) ---
         let appState = {
             user: null,
             currency: 'USD',
@@ -403,7 +364,6 @@
 
         const symbols = { USD: '$', EUR: '€', VES: 'Bs.' };
 
-        // Initialize PWA manifest dynamically
         const manifestBlob = new Blob([JSON.stringify({
             name: "Trakealo", short_name: "Trakealo",
             start_url: ".", display: "standalone",
@@ -412,7 +372,6 @@
         })], { type: 'application/json' });
         document.getElementById('pwa-manifest').href = URL.createObjectURL(manifestBlob);
 
-        // --- AUTH SIMULATION & CLOUD SYNC ---
         function handleGoogleLogin() {
             const mockUser = { name: "Eduardo", email: "eduardo@teamprofitsfx.com", avatar: "E" };
             appState.user = mockUser;
@@ -449,7 +408,6 @@
                 appState.subscriptions = parsed.subscriptions || [];
                 appState.currency = parsed.currency || 'USD';
             } else {
-                // Starts completely clean at $0
                 appState.entries = [];
                 appState.goals = [];
                 appState.subscriptions = [];
@@ -480,7 +438,6 @@
             renderAll();
         }
 
-        // --- NAVIGATION TABS ---
         function switchTab(tab) {
             ['inicio', 'analiticas', 'suscripciones', 'ajustes'].forEach(t => {
                 document.getElementById('view-' + t).classList.add('hidden');
@@ -491,7 +448,6 @@
             lucide.createIcons();
         }
 
-        // --- RENDER ENGINE ---
         function renderAll() {
             renderSummary();
             renderChart();
@@ -508,9 +464,7 @@
                 if (e.type === 'income') income += e.amount;
                 else expense += e.amount;
             });
-            let balance = income - expense;
-
-            document.getElementById('total-balance').textContent = formatMoney(balance);
+            document.getElementById('total-balance').textContent = formatMoney(income - expense);
             document.getElementById('total-income').textContent = formatMoney(income);
             document.getElementById('total-expense').textContent = formatMoney(expense);
         }
@@ -525,14 +479,11 @@
             const days = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
             let subsTotal = appState.subscriptions.reduce((acc, s) => acc + s.amount, 0);
             document.getElementById('weekly-subs-summary').textContent = `Subs: ${formatMoney(subsTotal)}/mes`;
-
-            // Simple visual placeholder bars for 7 days
             days.forEach((day, idx) => {
                 const height = Math.floor(Math.random() * 60) + 20;
-                const isToday = idx === 6;
                 chart.innerHTML += `
                     <div class="flex flex-col items-center gap-1.5 h-full justify-end">
-                        <div class="w-full rounded-md ${isToday ? 'bg-emerald-400 shadow-lg shadow-emerald-500/20' : 'bg-zinc-800'}" style="height: ${height}%"></div>
+                        <div class="w-full rounded-md ${idx === 6 ? 'bg-emerald-400 shadow-lg shadow-emerald-500/20' : 'bg-zinc-800'}" style="height: ${height}%"></div>
                         <span class="text-[10px] text-zinc-500">${day}</span>
                     </div>
                 `;
@@ -580,16 +531,11 @@
         function renderTransactions() {
             const list = document.getElementById('transactions-list');
             list.innerHTML = '';
-            let filtered = appState.entries;
-            if (appState.filter !== 'all') {
-                filtered = appState.entries.filter(e => e.type === appState.filter);
-            }
-
+            let filtered = appState.filter === 'all' ? appState.entries : appState.entries.filter(e => e.type === appState.filter);
             if (filtered.length === 0) {
                 list.innerHTML = `<p class="text-xs text-zinc-500 text-center py-4">No hay movimientos registrados.</p>`;
                 return;
             }
-
             filtered.slice().reverse().forEach((e, idx) => {
                 const isInc = e.type === 'income';
                 list.innerHTML += `
@@ -615,9 +561,7 @@
         function filterTransactions(type) {
             appState.filter = type;
             ['all', 'expense', 'income'].forEach(t => {
-                const btn = document.getElementById('filter-' + t);
-                if (t === type) btn.className = "px-2.5 py-1 rounded-md bg-zinc-800 text-white font-medium transition";
-                else btn.className = "px-2.5 py-1 rounded-md text-zinc-400 hover:text-white transition";
+                document.getElementById('filter-' + t).className = t === type ? "px-2.5 py-1 rounded-md bg-zinc-800 text-white font-medium transition" : "px-2.5 py-1 rounded-md text-zinc-400 hover:text-white transition";
             });
             renderTransactions();
         }
@@ -628,7 +572,6 @@
             document.getElementById('budget-spent').textContent = formatMoney(spent);
             document.getElementById('budget-progress').style.width = pct + '%';
             document.getElementById('budget-limit-text').textContent = `Límite: ${formatMoney(appState.budgetLimit)}`;
-
             const cats = ['Comida', 'Transporte', 'Servicios', 'Entretenimiento', 'Negocio', 'Otros'];
             const container = document.getElementById('categories-breakdown');
             container.innerHTML = '';
@@ -666,17 +609,11 @@
             });
         }
 
-        // --- MODALS CONTROL ---
         let currentTxType = 'expense';
         function setTxType(type) {
             currentTxType = type;
-            if (type === 'expense') {
-                document.getElementById('type-expense').className = "flex-1 py-2 text-xs font-semibold rounded-lg bg-emerald-500 text-black transition";
-                document.getElementById('type-income').className = "flex-1 py-2 text-xs font-semibold rounded-lg text-zinc-400 hover:text-white transition";
-            } else {
-                document.getElementById('type-income').className = "flex-1 py-2 text-xs font-semibold rounded-lg bg-emerald-500 text-black transition";
-                document.getElementById('type-expense').className = "flex-1 py-2 text-xs font-semibold rounded-lg text-zinc-400 hover:text-white transition";
-            }
+            document.getElementById('type-expense').className = type === 'expense' ? "flex-1 py-2 text-xs font-semibold rounded-lg bg-emerald-500 text-black transition" : "flex-1 py-2 text-xs font-semibold rounded-lg text-zinc-400 hover:text-white transition";
+            document.getElementById('type-income').className = type === 'income' ? "flex-1 py-2 text-xs font-semibold rounded-lg bg-emerald-500 text-black transition" : "flex-1 py-2 text-xs font-semibold rounded-lg text-zinc-400 hover:text-white transition";
         }
 
         function openAddModal() { document.getElementById('add-modal').classList.remove('hidden'); }
@@ -687,14 +624,12 @@
         function closeSubModal() { document.getElementById('sub-modal').classList.add('hidden'); }
         function openProfileModal() { switchTab('ajustes'); }
 
-        // --- TRANSACTION ACTIONS ---
         function saveTransaction(e) {
             e.preventDefault();
             const amount = parseFloat(document.getElementById('tx-amount').value);
             const desc = document.getElementById('tx-desc').value;
             const category = document.getElementById('tx-category').value;
             const date = new Date().toLocaleDateString('es-VE', { month: 'short', day: 'numeric' });
-
             appState.entries.push({ type: currentTxType, amount, desc, category, date });
             saveUserData();
             renderAll();
@@ -756,43 +691,17 @@
             dlAnchor.remove();
         }
 
-        // --- SMART AI VOICE NOTE & RECEIPT SCANNER ---
-        function startVoiceRecognition() {
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (!SpeechRecognition) {
-                alert("Tu navegador no soporta reconocimiento de voz nativo.");
-                return;
-            }
-            const recognition = new SpeechRecognition();
-            recognition.lang = 'es-ES';
-            recognition.start();
-            
-            alert("🎙️ Escuchando... Di algo como: 'Gasté 45 en gasolina'");
-
-            recognition.onresult = function(event) {
-                const speechText = event.results[0][0].transcript.toLowerCase();
-                alert(`Transcrito: "${speechText}"`);
-                
-                // Extract numbers
-                const numbers = speechText.match(/\d+(\.\d+)?/);
-                if (numbers) {
-                    const amount = parseFloat(numbers[0]);
-                    document.getElementById('tx-amount').value = amount;
-                    document.getElementById('tx-desc').value = speechText;
-                    if (speechText.includes('gané') || speechText.includes('ingreso') || speechText.includes('entraron')) {
-                        setTxType('income');
-                    } else {
-                        setTxType('expense');
-                    }
-                }
-            };
+        // UNIVERSAL KEYBOARD DICTATION GUIDE (Works instantly on iPhone & Android)
+        function startVoiceDictationGuide() {
+            const descInput = document.getElementById('tx-desc');
+            descInput.focus();
+            alert("🎤 Toca el ícono de micrófono en tu teclado virtual (abajo a la derecha en iPhone / barra superior en Android) para dictar tu gasto o ingreso.");
         }
 
         function handleReceiptScan(event) {
             const file = event.target.files[0];
             if (file) {
                 alert("📷 Factura capturada con éxito. Procesando importe y descripción...");
-                // Simulating OCR extraction for instant demo
                 setTimeout(() => {
                     document.getElementById('tx-amount').value = (Math.random() * 80 + 10).toFixed(2);
                     document.getElementById('tx-desc').value = "Compra Escaneada (Ticket)";
