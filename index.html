@@ -59,14 +59,14 @@
     <div id="toast-container" class="fixed top-4 left-1/2 -translate-x-1/2 z-[100] w-[92%] max-w-sm pointer-events-none space-y-2"></div>
 
     <!-- LOGIN SCREEN -->
-    <div id="login-screen" class="fixed inset-0 z-50 bg-obsidian flex flex-col items-center justify-center p-6 transition-opacity duration-300">
-        <div class="w-full max-w-sm bg-carddark border border-cardborder rounded-2xl p-8 shadow-2xl flex flex-col items-center text-center relative overflow-hidden">
+    <div id="login-screen" class="fixed inset-0 z-50 bg-obsidian flex flex-col items-center justify-center p-6 transition-opacity duration-300 overflow-y-auto">
+        <div class="w-full max-w-sm bg-carddark border border-cardborder rounded-2xl p-7 shadow-2xl flex flex-col items-center text-center relative overflow-hidden">
             <div class="absolute -top-12 -right-12 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl"></div>
-            <div class="w-16 h-16 rounded-2xl bg-zinc-900 border border-cardborder flex items-center justify-center mb-6 shadow-inner text-emerald-400">
-                <i data-lucide="trending-up" class="w-8 h-8"></i>
+            <div class="w-14 h-14 rounded-2xl bg-zinc-900 border border-cardborder flex items-center justify-center mb-4 shadow-inner text-emerald-400">
+                <i data-lucide="trending-up" class="w-7 h-7"></i>
             </div>
-            <h1 class="text-2xl font-bold tracking-tight text-white mb-2">Trakealo</h1>
-            <p class="text-xs text-zinc-400 mb-6 leading-relaxed">Tu control financiero inteligente con respaldo seguro en tu cuenta de Google.</p>
+            <h1 class="text-2xl font-bold tracking-tight text-white mb-1.5">Trakealo</h1>
+            <p class="text-xs text-zinc-400 mb-6 leading-relaxed">Tu control financiero inteligente con respaldo seguro en la nube.</p>
             
             <button id="google-login-btn" onclick="handleGoogleLogin()" class="w-full py-3.5 px-4 bg-white hover:bg-zinc-200 text-zinc-900 font-semibold rounded-xl text-sm flex items-center justify-center gap-3 transition-all shadow-lg active:scale-[0.98]">
                 <svg class="w-5 h-5" viewBox="0 0 24 24">
@@ -78,7 +78,27 @@
                 <span id="google-login-label">Verificando sesión...</span>
             </button>
 
-            <p id="login-cloud-hint" class="text-[10px] text-zinc-500 mt-5 leading-relaxed">
+            <!-- DIVIDER -->
+            <div class="w-full flex items-center gap-3 my-5">
+                <div class="flex-1 h-px bg-cardborder"></div>
+                <span class="text-[10px] uppercase tracking-wider text-zinc-500 font-medium">o con tu correo</span>
+                <div class="flex-1 h-px bg-cardborder"></div>
+            </div>
+
+            <!-- EMAIL / PASSWORD FORM (100% iPhone & PWA friendly, no popups) -->
+            <form onsubmit="handleEmailAuth(event)" class="w-full space-y-2.5 text-left">
+                <input type="email" id="auth-email" required placeholder="tu@correo.com" class="w-full bg-zinc-900 border border-cardborder rounded-xl px-3.5 py-2.5 text-xs text-white placeholder:text-zinc-500 focus:outline-none focus:border-emerald-500" />
+                <input type="password" id="auth-password" required minlength="6" placeholder="Contraseña (mín. 6 caracteres)" class="w-full bg-zinc-900 border border-cardborder rounded-xl px-3.5 py-2.5 text-xs text-white placeholder:text-zinc-500 focus:outline-none focus:border-emerald-500" />
+                <button type="submit" id="auth-submit-btn" class="w-full py-3 bg-emerald-500 hover:bg-emerald-400 text-black font-bold rounded-xl text-xs transition shadow-lg shadow-emerald-500/15">
+                    Iniciar Sesión
+                </button>
+            </form>
+
+            <button type="button" onclick="toggleAuthMode()" id="auth-mode-toggle" class="text-[11px] text-emerald-400 hover:underline mt-3 font-medium">
+                ¿Primera vez? Crear cuenta nueva
+            </button>
+
+            <p id="login-cloud-hint" class="text-[10px] text-zinc-500 mt-4 leading-relaxed">
                 Tus datos se sincronizan automáticamente en la nube para recuperarlos desde cualquier teléfono.
             </p>
         </div>
@@ -553,6 +573,7 @@
 
         let editingTxId = null;
         let contributingGoalIdx = null;
+        let isSignupMode = false;
 
         const symbols = { USD: '$', EUR: '€', VES: 'Bs.' };
         const MONTH_NAMES_ES = [
@@ -653,12 +674,68 @@
             setTimeout(() => {
                 toast.classList.add('opacity-0', '-translate-y-2');
                 setTimeout(() => toast.remove(), 300);
-            }, 3400);
+            }, 4200);
         }
 
         /* =========================================================
-           AUTHENTICATION & CLOUD SYNC (FIREBASE + LOCAL CACHE)
+           AUTHENTICATION & CLOUD SYNC (GOOGLE + EMAIL/PASSWORD)
         ========================================================= */
+        function toggleAuthMode() {
+            isSignupMode = !isSignupMode;
+            document.getElementById('auth-submit-btn').textContent = isSignupMode ? 'Crear Cuenta en la Nube' : 'Iniciar Sesión';
+            document.getElementById('auth-mode-toggle').textContent = isSignupMode
+                ? '¿Ya tienes cuenta? Iniciar sesión'
+                : '¿Primera vez? Crear cuenta nueva';
+        }
+
+        async function handleEmailAuth(e) {
+            e.preventDefault();
+            if (!isFirebaseConfigured || !firebaseAuth) {
+                showToast('Firebase no configurado.', 'error');
+                return;
+            }
+            const email = document.getElementById('auth-email').value.trim();
+            const password = document.getElementById('auth-password').value;
+            const submitBtn = document.getElementById('auth-submit-btn');
+            const originalText = submitBtn.textContent;
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Conectando...';
+
+            try {
+                let cred;
+                if (isSignupMode) {
+                    cred = await firebaseAuth.createUserWithEmailAndPassword(email, password);
+                    showToast('¡Cuenta creada en la nube!', 'success');
+                } else {
+                    cred = await firebaseAuth.signInWithEmailAndPassword(email, password);
+                }
+                const u = cred.user;
+                enterAppWithUser({
+                    uid: u.uid,
+                    name: u.displayName || email.split('@')[0],
+                    email: u.email,
+                    avatar: (u.email || 'U').charAt(0).toUpperCase(),
+                    photoURL: null,
+                    isLocalFallback: false
+                });
+            } catch (err) {
+                let msg = err.message || 'Error de acceso.';
+                if (err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password' || err.code === 'auth/user-not-found') {
+                    msg = 'Correo o contraseña incorrectos.';
+                } else if (err.code === 'auth/email-already-in-use') {
+                    msg = 'Este correo ya tiene cuenta. Cambia a "Iniciar Sesión".';
+                } else if (err.code === 'auth/weak-password') {
+                    msg = 'La contraseña debe tener al menos 6 caracteres.';
+                } else if (err.code === 'auth/operation-not-allowed') {
+                    msg = 'Activa "Email/Password" en Firebase → Authentication → Sign-in method.';
+                }
+                showToast(msg, 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
+            }
+        }
+
         function updateCloudStatusUI() {
             const headerBadge = document.getElementById('header-sync-badge');
             const settingsStatus = document.getElementById('settings-cloud-status');
@@ -674,7 +751,7 @@
             } else {
                 headerBadge.textContent = 'Local';
                 headerBadge.className = 'text-[10px] px-1.5 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 font-mono';
-                settingsStatus.textContent = 'Modo Local (Configura Firebase para respaldo en Google Cloud)';
+                settingsStatus.textContent = 'Modo Local';
                 settingsStatus.className = 'text-xs text-amber-400';
                 pill.innerHTML = '<i data-lucide="hard-drive" class="w-3 h-3"></i> Solo este teléfono';
                 pill.className = 'inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20';
@@ -700,6 +777,7 @@
             if (isFirebaseConfigured && firebaseAuth) {
                 btnLabel.textContent = 'Conectando con Google...';
                 const provider = new firebase.auth.GoogleAuthProvider();
+                provider.setCustomParameters({ prompt: 'select_account' });
                 try {
                     const result = await firebaseAuth.signInWithPopup(provider);
                     const u = result.user;
@@ -712,11 +790,12 @@
                         isLocalFallback: false
                     });
                 } catch (err) {
-                    if (err.code === 'auth/popup-blocked' || err.code === 'auth/operation-not-supported-in-this-environment') {
-                        await firebaseAuth.signInWithRedirect(provider);
+                    btnLabel.textContent = 'Continuar con Google';
+                    if (err.code === 'auth/popup-blocked' || err.code === 'auth/popup-closed-by-user' || err.code === 'auth/operation-not-supported-in-this-environment') {
+                        showToast('Este navegador móvil bloquea la ventana de Google. Entra abajo con tu correo y contraseña.', 'warning');
+                        document.getElementById('auth-email')?.focus();
                     } else {
-                        btnLabel.textContent = 'Continuar con Google';
-                        showToast('Error al iniciar sesión con Google: ' + (err.message || err.code), 'error');
+                        showToast('No se pudo abrir Google (' + (err.code || 'error') + '). Entra abajo con tu correo.', 'error');
                     }
                 }
                 return;
@@ -744,17 +823,11 @@
             const loginLabel = document.getElementById('google-login-label');
 
             if (isFirebaseConfigured && firebaseAuth) {
-                firebaseAuth.getRedirectResult().catch((err) => {
-                    if (err && err.code) {
-                        showToast('Error al completar acceso con Google: ' + err.message, 'error');
-                    }
-                });
-
                 firebaseAuth.onAuthStateChanged((u) => {
                     if (u) {
                         enterAppWithUser({
                             uid: u.uid,
-                            name: u.displayName || 'Usuario',
+                            name: u.displayName || (u.email ? u.email.split('@')[0] : 'Usuario'),
                             email: u.email,
                             avatar: (u.displayName || u.email || 'U').charAt(0).toUpperCase(),
                             photoURL: u.photoURL || null,
