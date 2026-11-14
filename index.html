@@ -33,15 +33,26 @@
         }
     </script>
     <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Tesseract.js for real client-side Receipt OCR -->
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #09090b; color: #f4f4f5; -webkit-tap-highlight-color: transparent; }
         .mono-num { font-family: 'JetBrains Mono', monospace; }
         ::-webkit-scrollbar { width: 4px; height: 4px; }
         ::-webkit-scrollbar-track { background: #09090b; }
         ::-webkit-scrollbar-thumb { background: #27272a; border-radius: 4px; }
+        @keyframes pulse-ring {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.45); }
+            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+        .mic-listening { animation: pulse-ring 1.4s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
     </style>
 </head>
 <body class="bg-obsidian text-zinc-100 min-h-screen flex flex-col antialiased selection:bg-emerald-500 selection:text-black">
+
+    <!-- TOAST NOTIFICATION CONTAINER -->
+    <div id="toast-container" class="fixed top-4 left-1/2 -translate-x-1/2 z-[100] w-[92%] max-w-sm pointer-events-none space-y-2"></div>
 
     <!-- LOGIN SCREEN -->
     <div id="login-screen" class="fixed inset-0 z-50 bg-obsidian flex flex-col items-center justify-center p-6 transition-opacity duration-300">
@@ -244,24 +255,69 @@
 
     <!-- MODAL: ADD TRANSACTION -->
     <div id="add-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 hidden transition-opacity">
-        <div class="bg-carddark border border-cardborder w-full max-w-md rounded-t-3xl sm:rounded-2xl p-6 space-y-5 shadow-2xl">
+        <div class="bg-carddark border border-cardborder w-full max-w-md rounded-t-3xl sm:rounded-2xl p-6 space-y-4 shadow-2xl max-h-[92vh] overflow-y-auto">
             <div class="flex justify-between items-center border-b border-cardborder pb-3">
-                <h3 class="text-sm font-bold text-white">Nuevo Movimiento</h3>
-                <button onclick="closeAddModal()" class="text-zinc-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+                <div>
+                    <h3 class="text-sm font-bold text-white">Nuevo Movimiento</h3>
+                    <p class="text-[10px] text-zinc-400">Usa tu voz o escanea una factura para auto-rellenar</p>
+                </div>
+                <button onclick="closeAddModal()" class="text-zinc-400 hover:text-white p-1"><i data-lucide="x" class="w-5 h-5"></i></button>
             </div>
 
             <!-- SMART TOOLS -->
             <div class="grid grid-cols-2 gap-2">
-                <button onclick="focusForVoice()" type="button" class="py-2.5 px-3 bg-zinc-900 hover:bg-zinc-800 border border-cardborder rounded-xl text-xs font-medium text-emerald-400 flex items-center justify-center gap-2 transition shadow-inner">
-                    <i data-lucide="mic" class="w-4 h-4"></i> Dictar por Voz 🎤
+                <button id="voice-btn" onclick="toggleVoiceRecording()" type="button" class="py-2.5 px-3 bg-zinc-900 hover:bg-zinc-800 border border-cardborder rounded-xl text-xs font-medium text-emerald-400 flex items-center justify-center gap-2 transition shadow-inner active:scale-[0.98]">
+                    <i data-lucide="mic" class="w-4 h-4"></i> <span id="voice-btn-label">Dictar por Voz</span>
                 </button>
-                <button onclick="document.getElementById('receipt-file-input').click()" type="button" class="py-2.5 px-3 bg-zinc-900 hover:bg-zinc-800 border border-cardborder rounded-xl text-xs font-medium text-sky-400 flex items-center justify-center gap-2 transition shadow-inner">
-                    <i data-lucide="camera" class="w-4 h-4"></i> Escanear Factura
+                <button id="scan-btn" onclick="document.getElementById('receipt-file-input').click()" type="button" class="py-2.5 px-3 bg-zinc-900 hover:bg-zinc-800 border border-cardborder rounded-xl text-xs font-medium text-sky-400 flex items-center justify-center gap-2 transition shadow-inner active:scale-[0.98]">
+                    <i data-lucide="camera" class="w-4 h-4"></i> <span>Escanear Factura</span>
                 </button>
                 <input type="file" id="receipt-file-input" accept="image/*" capture="environment" class="hidden" onchange="handleReceiptScan(event)">
             </div>
 
-            <form id="transaction-form" onsubmit="saveTransaction(event)" class="space-y-4">
+            <!-- VOICE LIVE TRANSCRIPT & SMART PARSER BAR -->
+            <div class="bg-zinc-900/80 border border-cardborder rounded-xl p-3 space-y-2">
+                <div class="flex items-center justify-between">
+                    <span class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400 flex items-center gap-1.5">
+                        <span id="voice-status-dot" class="w-1.5 h-1.5 rounded-full bg-zinc-600"></span>
+                        <span id="voice-status-text">Dictado Inteligente (Voz o Teclado 🎤)</span>
+                    </span>
+                    <button type="button" onclick="clearSmartInput()" id="clear-smart-btn" class="text-[10px] text-zinc-500 hover:text-zinc-300 hidden">Limpiar</button>
+                </div>
+                <div class="relative">
+                    <input
+                        type="text"
+                        id="smart-voice-input"
+                        oninput="handleSmartInputLive(this.value)"
+                        placeholder='Ej: "Gasté 25.50 en supermercado" o "Cobré 500 por trading"'
+                        class="w-full bg-obsidian border border-cardborder rounded-lg px-3 py-2 text-xs text-white placeholder:text-zinc-600 focus:outline-none focus:border-emerald-500"
+                    />
+                </div>
+                <div id="smart-parse-feedback" class="hidden flex flex-wrap items-center gap-1.5 pt-0.5 text-[10px]"></div>
+            </div>
+
+            <!-- RECEIPT OCR STATUS PANEL -->
+            <div id="receipt-scan-panel" class="hidden bg-zinc-900/80 border border-cardborder rounded-xl p-3 space-y-2.5">
+                <div class="flex items-center gap-3">
+                    <img id="receipt-preview-img" src="" alt="Factura" class="w-11 h-14 object-cover rounded-lg border border-cardborder bg-obsidian shrink-0" />
+                    <div class="flex-1 min-w-0 space-y-1.5">
+                        <div class="flex items-center justify-between text-[11px]">
+                            <span id="ocr-status-text" class="font-medium text-sky-400 truncate">Procesando imagen...</span>
+                            <span id="ocr-percent-text" class="mono-num text-zinc-400">0%</span>
+                        </div>
+                        <div class="w-full bg-obsidian rounded-full h-1.5 overflow-hidden border border-cardborder">
+                            <div id="ocr-progress-bar" class="bg-sky-400 h-1.5 rounded-full transition-all duration-200" style="width: 0%"></div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span id="ocr-result-summary" class="text-[10px] text-zinc-400 truncate">Extrayendo monto y comercio...</span>
+                            <button type="button" onclick="toggleOcrRawText()" id="ocr-toggle-raw" class="hidden text-[10px] text-zinc-400 hover:text-white underline shrink-0 ml-2">Ver texto</button>
+                        </div>
+                    </div>
+                </div>
+                <pre id="ocr-raw-text" class="hidden max-h-24 overflow-y-auto text-[10px] font-mono text-zinc-400 bg-obsidian border border-cardborder rounded-lg p-2 whitespace-pre-wrap"></pre>
+            </div>
+
+            <form id="transaction-form" onsubmit="saveTransaction(event)" class="space-y-3.5">
                 <div class="flex bg-zinc-900 border border-cardborder rounded-xl p-1">
                     <button type="button" onclick="setTxType('expense')" id="type-expense" class="flex-1 py-2 text-xs font-semibold rounded-lg bg-emerald-500 text-black transition">Gasto</button>
                     <button type="button" onclick="setTxType('income')" id="type-income" class="flex-1 py-2 text-xs font-semibold rounded-lg text-zinc-400 hover:text-white transition">Ingreso</button>
@@ -271,12 +327,12 @@
                     <label class="block text-[11px] font-medium text-zinc-400 mb-1">Monto</label>
                     <div class="relative">
                         <span id="form-currency-symbol" class="absolute left-3.5 top-3 text-zinc-400 font-mono font-bold">$</span>
-                        <input type="number" step="0.01" id="tx-amount" required placeholder="0.00" class="w-full bg-zinc-900 border border-cardborder rounded-xl pl-8 pr-4 py-2.5 text-white mono-num focus:outline-none focus:border-emerald-500 text-base">
+                        <input type="number" step="0.01" min="0.01" id="tx-amount" required placeholder="0.00" class="w-full bg-zinc-900 border border-cardborder rounded-xl pl-8 pr-4 py-2.5 text-white mono-num focus:outline-none focus:border-emerald-500 text-base">
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-[11px] font-medium text-zinc-400 mb-1">Descripción (Toca el micrófono 🎤 en tu teclado para hablar)</label>
+                    <label class="block text-[11px] font-medium text-zinc-400 mb-1">Descripción</label>
                     <input type="text" id="tx-desc" required placeholder="Ej. Supermercado, Gasolina..." class="w-full bg-zinc-900 border border-cardborder rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-emerald-500">
                 </div>
 
@@ -352,6 +408,39 @@
             icons: [{ src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='112' fill='%2309090b'/%3E%3C/svg%3E", sizes: "512x512", type: "image/svg+xml" }]
         })], { type: 'application/json' });
         document.getElementById('pwa-manifest').href = URL.createObjectURL(manifestBlob);
+
+        /* =========================================================
+           TOAST SYSTEM (v0-style non-blocking alerts)
+        ========================================================= */
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const colors = {
+                success: 'border-emerald-500/40 bg-carddark text-emerald-400',
+                error: 'border-rose-500/40 bg-carddark text-rose-400',
+                info: 'border-sky-500/40 bg-carddark text-sky-400',
+                warning: 'border-amber-500/40 bg-carddark text-amber-400'
+            };
+            const icons = {
+                success: 'check-circle-2',
+                error: 'alert-circle',
+                info: 'sparkles',
+                warning: 'alert-triangle'
+            };
+            const toast = document.createElement('div');
+            toast.className = `pointer-events-auto border ${colors[type] || colors.info} rounded-xl px-3.5 py-2.5 shadow-2xl backdrop-blur-md flex items-center gap-2.5 text-xs font-medium transition-all duration-300 opacity-0 -translate-y-2`;
+            toast.innerHTML = `<i data-lucide="${icons[type] || 'sparkles'}" class="w-4 h-4 shrink-0"></i><span class="text-zinc-100 leading-snug">${message}</span>`;
+            container.appendChild(toast);
+            lucide.createIcons();
+
+            requestAnimationFrame(() => {
+                toast.classList.remove('opacity-0', '-translate-y-2');
+            });
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', '-translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 3400);
+        }
 
         function handleGoogleLogin() {
             const mockUser = { name: "Eduardo", email: "eduardo@teamprofitsfx.com", avatar: "E" };
@@ -517,7 +606,7 @@
                 list.innerHTML = `<p class="text-xs text-zinc-500 text-center py-4">No hay movimientos registrados.</p>`;
                 return;
             }
-            filtered.slice().reverse().forEach((e, idx) => {
+            filtered.slice().reverse().forEach((e) => {
                 const isInc = e.type === 'income';
                 list.innerHTML += `
                     <div class="bg-carddark border border-cardborder rounded-xl p-3.5 flex items-center justify-between shadow-sm">
@@ -597,8 +686,28 @@
             document.getElementById('type-income').className = type === 'income' ? "flex-1 py-2 text-xs font-semibold rounded-lg bg-emerald-500 text-black transition" : "flex-1 py-2 text-xs font-semibold rounded-lg text-zinc-400 hover:text-white transition";
         }
 
-        function openAddModal() { document.getElementById('add-modal').classList.remove('hidden'); }
-        function closeAddModal() { document.getElementById('add-modal').classList.add('hidden'); }
+        function openAddModal() {
+            document.getElementById('add-modal').classList.remove('hidden');
+            lucide.createIcons();
+        }
+
+        function closeAddModal() {
+            stopVoiceRecording();
+            document.getElementById('add-modal').classList.add('hidden');
+            resetSmartHelpers();
+        }
+
+        function resetSmartHelpers() {
+            document.getElementById('smart-voice-input').value = '';
+            document.getElementById('smart-parse-feedback').classList.add('hidden');
+            document.getElementById('smart-parse-feedback').innerHTML = '';
+            document.getElementById('clear-smart-btn').classList.add('hidden');
+            document.getElementById('receipt-scan-panel').classList.add('hidden');
+            document.getElementById('ocr-raw-text').classList.add('hidden');
+            document.getElementById('ocr-raw-text').textContent = '';
+            document.getElementById('receipt-file-input').value = '';
+        }
+
         function openGoalModal() { document.getElementById('goal-modal').classList.remove('hidden'); }
         function closeGoalModal() { document.getElementById('goal-modal').classList.add('hidden'); }
         function openSubModal() { document.getElementById('sub-modal').classList.remove('hidden'); }
@@ -608,14 +717,20 @@
         function saveTransaction(e) {
             e.preventDefault();
             const amount = parseFloat(document.getElementById('tx-amount').value);
-            const desc = document.getElementById('tx-desc').value;
+            const desc = document.getElementById('tx-desc').value.trim();
             const category = document.getElementById('tx-category').value;
+            if (!amount || isNaN(amount) || amount <= 0) {
+                showToast('Ingresa un monto válido mayor a 0', 'error');
+                return;
+            }
             const date = new Date().toLocaleDateString('es-VE', { month: 'short', day: 'numeric' });
             appState.entries.push({ type: currentTxType, amount, desc, category, date });
             saveUserData();
             renderAll();
             closeAddModal();
             document.getElementById('transaction-form').reset();
+            setTxType('expense');
+            showToast(`${currentTxType === 'income' ? 'Ingreso' : 'Gasto'} guardado: ${formatMoney(amount)}`, 'success');
         }
 
         function deleteTransaction(idx) {
@@ -658,7 +773,7 @@
                 appState.subscriptions = [];
                 saveUserData();
                 renderAll();
-                alert("Datos reiniciados a cero exitosamente.");
+                showToast("Datos reiniciados a cero exitosamente.", "info");
             }
         }
 
@@ -672,23 +787,622 @@
             dlAnchor.remove();
         }
 
-        // INSTANT VOICE HELPER (Opens keyboard microphone instantly on iPhone & Android)
-        function focusForVoice() {
-            const descInput = document.getElementById('tx-desc');
-            descInput.focus();
-            descInput.placeholder = "Habla ahora usando el micrófono del teclado...";
+        /* =========================================================
+           NATURAL LANGUAGE PARSER (SPANISH VOICE + TEXT)
+        ========================================================= */
+        const CATEGORY_KEYWORDS = {
+            Comida: [
+                'comida', 'supermercado', 'mercado', 'automercado', 'bodega', 'panaderia', 'panadería',
+                'almuerzo', 'cena', 'desayuno', 'cafe', 'café', 'restaurante', 'restaurant', 'pizza',
+                'hamburguesa', 'sushi', 'pollo', 'carne', 'frutas', 'verduras', 'agua', 'refresco',
+                'cerveza', 'farmatodo', 'excelsior', 'gama', 'plazas', 'central madeirense', 'kfc', 'mcdonald'
+            ],
+            Transporte: [
+                'transporte', 'gasolina', 'combustible', 'uber', 'ridery', 'yummy', 'taxi', 'pasaje',
+                'metro', 'bus', 'autobus', 'autobús', 'peaje', 'estacionamiento', 'parking', 'caucho',
+                'aceite', 'taller', 'mecanico', 'mecánico', 'vuelo', 'avion', 'avión', 'pdv', 'estacion'
+            ],
+            Servicios: [
+                'servicio', 'servicios', 'luz', 'electricidad', 'corpoelec', 'agua', 'hidrocapital',
+                'internet', 'wifi', 'fibra', 'telefono', 'teléfono', 'saldo', 'recarga', 'movistar',
+                'digitel', 'cantv', 'gas', 'alquiler', 'renta', 'condominio', 'factura', 'seguro', 'impuesto'
+            ],
+            Entretenimiento: [
+                'entretenimiento', 'netflix', 'spotify', 'disney', 'hbo', 'amazon prime', 'youtube',
+                'cine', 'entrada', 'boletos', 'concierto', 'fiesta', 'bar', 'juego', 'juegos', 'playstation',
+                'xbox', 'steam', 'gimnasio', 'gym', 'suscripcion', 'suscripción'
+            ],
+            Negocio: [
+                'negocio', 'trading', 'broker', 'cuenta', 'fondeo', 'ftmo', 'cliente', 'proyecto',
+                'oficina', 'laptop', 'software', 'dominio', 'hosting', 'publicidad', 'ads', 'marketing',
+                'inversion', 'inversión', 'ganancia', 'profit', 'sueldo', 'salario', 'nomina', 'nómina',
+                'honorarios', 'venta', 'comision', 'comisión'
+            ]
+        };
+
+        const INCOME_KEYWORDS = [
+            'ingreso', 'ingresos', 'cobre', 'cobré', 'gane', 'gané', 'pagaron', 'me pagaron',
+            'sueldo', 'salario', 'venta', 'vendi', 'vendí', 'recibi', 'recibí', 'deposito',
+            'depósito', 'abono', 'abone', 'abonaron', 'profit', 'retiro', 'dividendos', 'remesa'
+        ];
+
+        const EXPENSE_KEYWORDS = [
+            'gaste', 'gasté', 'gasto', 'pague', 'pagué', 'compre', 'compré', 'costo', 'costó',
+            'cuesta', 'factura', 'recibo', 'compra', 'pago'
+        ];
+
+        const SPANISH_NUMBERS = {
+            cero: 0, un: 1, uno: 1, una: 1, dos: 2, tres: 3, cuatro: 4, cinco: 5,
+            seis: 6, siete: 7, ocho: 8, nueve: 9, diez: 10, once: 11, doce: 12,
+            trece: 13, catorce: 14, quince: 15, dieciseis: 16, dieciséis: 16,
+            diecisiete: 17, dieciocho: 18, diecinueve: 19, veinte: 20,
+            veintiuno: 21, veintiun: 21, veintiuna: 21, veintidos: 22, veintidós: 22,
+            veintitres: 23, veintitrés: 23, veinticuatro: 24, veinticinco: 25,
+            veintiseis: 26, veintiséis: 26, veintisiete: 27, veintiocho: 28, veintinueve: 29,
+            treinta: 30, cuarenta: 40, cincuenta: 50, sesenta: 60, setenta: 70, ochenta: 80, noventa: 90,
+            cien: 100, ciento: 100, doscientos: 200, doscientas: 200, trescientos: 300, trescientas: 300,
+            cuatrocientos: 400, cuatrocientas: 400, quinientos: 500, quinientas: 500,
+            seiscientos: 600, seiscientas: 600, setecientos: 700, setecientas: 700,
+            ochocientos: 800, ochocientas: 800, novecientos: 900, novecientas: 900
+        };
+
+        function normalizeText(str) {
+            return str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
         }
 
-        function handleReceiptScan(event) {
+        function parseSpanishNumberChunk(words) {
+            let total = 0;
+            let current = 0;
+            for (const w of words) {
+                if (w === 'y') continue;
+                if (SPANISH_NUMBERS[w] !== undefined) {
+                    current += SPANISH_NUMBERS[w];
+                } else if (w === 'mil') {
+                    total += (current === 0 ? 1 : current) * 1000;
+                    current = 0;
+                } else if (w === 'millon' || w === 'millones') {
+                    total += (current === 0 ? 1 : current) * 1000000;
+                    current = 0;
+                }
+            }
+            return total + current;
+        }
+
+        function extractAmountFromSpeech(rawText) {
+            // 1. Check numeric digits first (supports 25, 25.50, 25,50, 1.200,50, 1,200.50)
+            const numRegex = /(?:^|[\s$€])(\d{1,3}(?:[.,]\d{3})+(?:[.,]\d{1,2})?|\d+(?:[.,]\d{1,2})?)(?=\s|$|[^\d.,])/g;
+            let match;
+            let bestNum = null;
+            let matchedRaw = null;
+
+            while ((match = numRegex.exec(rawText)) !== null) {
+                let token = match[1];
+                let parsed;
+                // Handle both 1.200,50 and 1,200.50 and 25,50
+                if (token.includes(',') && token.includes('.')) {
+                    if (token.lastIndexOf(',') > token.lastIndexOf('.')) {
+                        parsed = parseFloat(token.replace(/\./g, '').replace(',', '.'));
+                    } else {
+                        parsed = parseFloat(token.replace(/,/g, ''));
+                    }
+                } else if (token.includes(',')) {
+                    const parts = token.split(',');
+                    if (parts[1].length <= 2) parsed = parseFloat(token.replace(',', '.'));
+                    else parsed = parseFloat(token.replace(/,/g, ''));
+                } else if (token.includes('.')) {
+                    const parts = token.split('.');
+                    if (parts.length === 2 && parts[1].length <= 2) parsed = parseFloat(token);
+                    else if (parts.every((p, idx) => idx === 0 || p.length === 3)) parsed = parseFloat(token.replace(/\./g, ''));
+                    else parsed = parseFloat(token);
+                } else {
+                    parsed = parseFloat(token);
+                }
+
+                if (!isNaN(parsed) && parsed > 0) {
+                    bestNum = parsed;
+                    matchedRaw = token;
+                    break;
+                }
+            }
+
+            if (bestNum !== null) return { amount: bestNum, matchedToken: matchedRaw };
+
+            // 2. Fallback: Spanish spoken number words (e.g. "quince con cincuenta", "mil doscientos")
+            const tokens = normalizeText(rawText).replace(/[^\w\s]/g, ' ').split(/\s+/).filter(Boolean);
+            const isNumWord = (w) => SPANISH_NUMBERS[w] !== undefined || w === 'mil' || w === 'millon' || w === 'millones';
+
+            for (let i = 0; i < tokens.length; i++) {
+                if (isNumWord(tokens[i])) {
+                    const intWords = [];
+                    let j = i;
+                    while (j < tokens.length && (isNumWord(tokens[j]) || tokens[j] === 'y')) {
+                        intWords.push(tokens[j]);
+                        j++;
+                    }
+                    // Check for decimal connector ("con", "punto", "coma")
+                    let decimalVal = 0;
+                    if (j < tokens.length - 1 && ['con', 'punto', 'coma'].includes(tokens[j]) && isNumWord(tokens[j + 1])) {
+                        const connector = tokens[j];
+                        j++;
+                        const decWords = [];
+                        while (j < tokens.length && (isNumWord(tokens[j]) || tokens[j] === 'y')) {
+                            decWords.push(tokens[j]);
+                            j++;
+                        }
+                        const decNum = parseSpanishNumberChunk(decWords);
+                        if (connector === 'punto' || connector === 'coma') {
+                            decimalVal = decNum < 10 ? decNum / 10 : decNum / 100;
+                        } else {
+                            decimalVal = decNum / 100;
+                        }
+                    }
+                    const intVal = parseSpanishNumberChunk(intWords);
+                    const total = intVal + decimalVal;
+                    if (total > 0) {
+                        return { amount: parseFloat(total.toFixed(2)), matchedToken: null };
+                    }
+                }
+            }
+            return { amount: null, matchedToken: null };
+        }
+
+        function detectCategoryFromText(text) {
+            const norm = normalizeText(text);
+            for (const [category, keywords] of Object.entries(CATEGORY_KEYWORDS)) {
+                for (const kw of keywords) {
+                    const normKw = normalizeText(kw);
+                    if (norm.includes(normKw)) {
+                        return category;
+                    }
+                }
+            }
+            return 'Otros';
+        }
+
+        function parseNaturalFinancialText(rawText) {
+            const cleaned = rawText.trim();
+            if (!cleaned) return null;
+
+            const norm = normalizeText(cleaned);
+
+            // Detect transaction type
+            let type = 'expense';
+            if (INCOME_KEYWORDS.some(k => new RegExp(`\\b${normalizeText(k)}\\b`).test(norm))) {
+                type = 'income';
+            } else if (EXPENSE_KEYWORDS.some(k => new RegExp(`\\b${normalizeText(k)}\\b`).test(norm))) {
+                type = 'expense';
+            }
+
+            // Extract amount
+            const { amount, matchedToken } = extractAmountFromSpeech(cleaned);
+
+            // Detect category
+            const category = detectCategoryFromText(cleaned);
+
+            // Build clean description
+            let desc = cleaned;
+            if (matchedToken) {
+                desc = desc.replace(matchedToken, ' ');
+            }
+            // Remove spoken number words only if amount came from spoken words
+            if (!matchedToken && amount !== null) {
+                const numberWordKeys = Object.keys(SPANISH_NUMBERS).concat(['mil', 'millon', 'millones']);
+                const wordRegex = new RegExp(`\\b(${numberWordKeys.join('|')})\\b`, 'gi');
+                desc = desc.replace(wordRegex, ' ');
+            }
+            // Strip command & currency filler words
+            desc = desc
+                .replace(/\b(gaste|gasté|pague|pagué|compre|compré|cobre|cobré|gane|gané|recibi|recibí|me pagaron|ingreso|gasto|dolares|dólares|usd|euros|eur|bolivares|bolívares|bs|pesos|con|por|en|de|un|una|el|la|los|las|para)\b/gi, ' ')
+                .replace(/[$€]/g, ' ')
+                .replace(/\s+/g, ' ')
+                .trim();
+
+            if (!desc) {
+                desc = category !== 'Otros' ? category : (type === 'income' ? 'Ingreso por voz' : 'Gasto por voz');
+            } else {
+                desc = desc.charAt(0).toUpperCase() + desc.slice(1);
+            }
+
+            return { type, amount, category, desc };
+        }
+
+        function applyParsedDataToForm(parsed) {
+            if (!parsed) return;
+
+            setTxType(parsed.type);
+            if (parsed.amount !== null && !isNaN(parsed.amount)) {
+                document.getElementById('tx-amount').value = parsed.amount.toFixed(2);
+            }
+            if (parsed.desc) {
+                document.getElementById('tx-desc').value = parsed.desc;
+            }
+            if (parsed.category) {
+                document.getElementById('tx-category').value = parsed.category;
+            }
+
+            const feedback = document.getElementById('smart-parse-feedback');
+            feedback.classList.remove('hidden');
+            feedback.innerHTML = `
+                <span class="px-2 py-0.5 rounded-md ${parsed.type === 'income' ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30' : 'bg-rose-500/15 text-rose-400 border border-rose-500/30'} font-medium">
+                    ${parsed.type === 'income' ? 'Ingreso' : 'Gasto'}
+                </span>
+                ${parsed.amount ? `<span class="px-2 py-0.5 rounded-md bg-zinc-800 text-white mono-num border border-cardborder">${appState.currencySymbol}${parsed.amount.toFixed(2)}</span>` : '<span class="px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-400 border border-amber-500/20">Falta monto</span>'}
+                <span class="px-2 py-0.5 rounded-md bg-zinc-800 text-zinc-300 border border-cardborder">${parsed.category}</span>
+            `;
+        }
+
+        function handleSmartInputLive(val) {
+            const clearBtn = document.getElementById('clear-smart-btn');
+            if (val.trim().length > 0) {
+                clearBtn.classList.remove('hidden');
+                const parsed = parseNaturalFinancialText(val);
+                applyParsedDataToForm(parsed);
+            } else {
+                clearBtn.classList.add('hidden');
+                document.getElementById('smart-parse-feedback').classList.add('hidden');
+            }
+        }
+
+        function clearSmartInput() {
+            document.getElementById('smart-voice-input').value = '';
+            document.getElementById('smart-parse-feedback').classList.add('hidden');
+            document.getElementById('clear-smart-btn').classList.add('hidden');
+        }
+
+        /* =========================================================
+           WEB SPEECH API (MOBILE-SAFE SYNCHRONOUS IMPLEMENTATION)
+        ========================================================= */
+        let speechRecognition = null;
+        let isListening = false;
+        let finalTranscriptBuffer = '';
+
+        function setVoiceUIState(listening, statusLabel = null) {
+            isListening = listening;
+            const btn = document.getElementById('voice-btn');
+            const btnLabel = document.getElementById('voice-btn-label');
+            const dot = document.getElementById('voice-status-dot');
+            const statusText = document.getElementById('voice-status-text');
+
+            if (listening) {
+                btn.className = "py-2.5 px-3 bg-rose-500/15 hover:bg-rose-500/25 border border-rose-500/40 rounded-xl text-xs font-semibold text-rose-400 flex items-center justify-center gap-2 transition mic-listening";
+                btnLabel.textContent = "Detener Voz";
+                dot.className = "w-2 h-2 rounded-full bg-rose-500 animate-pulse";
+                statusText.textContent = statusLabel || "Escuchando... Habla claro ahora";
+            } else {
+                btn.className = "py-2.5 px-3 bg-zinc-900 hover:bg-zinc-800 border border-cardborder rounded-xl text-xs font-medium text-emerald-400 flex items-center justify-center gap-2 transition shadow-inner active:scale-[0.98]";
+                btnLabel.textContent = "Dictar por Voz";
+                dot.className = "w-1.5 h-1.5 rounded-full bg-emerald-500";
+                statusText.textContent = statusLabel || "Dictado Inteligente (Voz o Teclado 🎤)";
+            }
+        }
+
+        function stopVoiceRecording() {
+            if (speechRecognition && isListening) {
+                try { speechRecognition.stop(); } catch (_) {}
+            }
+            setVoiceUIState(false);
+        }
+
+        function toggleVoiceRecording() {
+            if (isListening) {
+                stopVoiceRecording();
+                return;
+            }
+
+            const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+            // Check HTTPS requirement on mobile browsers
+            if (location.protocol !== 'https:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
+                showToast('El micrófono requiere HTTPS. Usa el dictado del teclado 🎤 en el campo de abajo.', 'warning');
+                document.getElementById('smart-voice-input').focus();
+                return;
+            }
+
+            if (!SpeechRec) {
+                showToast('Tu navegador no soporta voz web. Toca el 🎤 de tu teclado en el campo de texto.', 'warning');
+                document.getElementById('smart-voice-input').focus();
+                return;
+            }
+
+            try {
+                speechRecognition = new SpeechRec();
+                speechRecognition.lang = navigator.language && navigator.language.startsWith('es') ? navigator.language : 'es-ES';
+                speechRecognition.interimResults = true;
+                speechRecognition.continuous = false; // Most reliable across Android Chrome & iOS Safari
+                speechRecognition.maxAlternatives = 1;
+
+                finalTranscriptBuffer = '';
+
+                speechRecognition.onstart = () => {
+                    setVoiceUIState(true, 'Escuchando... Ej: "Gasté 20 en comida"');
+                };
+
+                speechRecognition.onresult = (event) => {
+                    let interim = '';
+                    // Track event.resultIndex cleanly to avoid duplicate words on Android Chrome
+                    for (let i = event.resultIndex; i < event.results.length; i++) {
+                        const transcript = event.results[i][0].transcript;
+                        if (event.results[i].isFinal) {
+                            finalTranscriptBuffer += (finalTranscriptBuffer ? ' ' : '') + transcript.trim();
+                        } else {
+                            interim += transcript;
+                        }
+                    }
+
+                    const combined = (finalTranscriptBuffer + ' ' + interim).trim();
+                    if (combined) {
+                        const input = document.getElementById('smart-voice-input');
+                        input.value = combined;
+                        handleSmartInputLive(combined);
+                    }
+                };
+
+                speechRecognition.onerror = (event) => {
+                    let msg = 'Error de voz. Puedes usar el 🎤 de tu teclado.';
+                    if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
+                        msg = 'Permiso de micrófono denegado o bloqueado en PWA. Usa el 🎤 de tu teclado abajo.';
+                    } else if (event.error === 'no-speech') {
+                        msg = 'No se escuchó voz. Intenta hablar más cerca del micrófono.';
+                    } else if (event.error === 'network') {
+                        msg = 'Sin conexión para reconocimiento de voz. Usa el teclado.';
+                    } else if (event.error === 'audio-capture') {
+                        msg = 'No se detectó micrófono disponible.';
+                    }
+                    setVoiceUIState(false, 'Usa el 🎤 del teclado si tu teléfono bloquea el mic');
+                    showToast(msg, 'warning');
+                    document.getElementById('smart-voice-input').focus();
+                };
+
+                speechRecognition.onend = () => {
+                    setVoiceUIState(false);
+                    const finalVal = document.getElementById('smart-voice-input').value.trim();
+                    if (finalVal) {
+                        const parsed = parseNaturalFinancialText(finalVal);
+                        applyParsedDataToForm(parsed);
+                        if (parsed && parsed.amount) {
+                            showToast(`Detectado: ${parsed.desc} (${appState.currencySymbol}${parsed.amount.toFixed(2)})`, 'success');
+                        } else {
+                            showToast('Texto capturado. Verifica o ingresa el monto.', 'info');
+                        }
+                    }
+                };
+
+                // MUST be called synchronously inside user click handler for iOS & Android
+                speechRecognition.start();
+            } catch (err) {
+                setVoiceUIState(false);
+                showToast('No se pudo iniciar el micrófono. Usa el 🎤 de tu teclado abajo.', 'warning');
+                document.getElementById('smart-voice-input').focus();
+            }
+        }
+
+        /* =========================================================
+           RECEIPT IMAGE PREPROCESSING & REAL TESSERACT OCR
+        ========================================================= */
+        function toggleOcrRawText() {
+            const pre = document.getElementById('ocr-raw-text');
+            pre.classList.toggle('hidden');
+        }
+
+        async function preprocessReceiptImage(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        const maxDim = 1500;
+                        let width = img.width;
+                        let height = img.height;
+                        if (width > maxDim || height > maxDim) {
+                            const ratio = Math.min(maxDim / width, maxDim / height);
+                            width = Math.round(width * ratio);
+                            height = Math.round(height * ratio);
+                        }
+
+                        const canvas = document.createElement('canvas');
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+
+                        // Grayscale + mild contrast enhancement for sharper OCR
+                        const imgData = ctx.getImageData(0, 0, width, height);
+                        const data = imgData.data;
+                        const contrast = 1.35;
+                        const intercept = 128 * (1 - contrast);
+
+                        for (let i = 0; i < data.length; i += 4) {
+                            const gray = 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
+                            const boosted = Math.max(0, Math.min(255, gray * contrast + intercept));
+                            data[i] = data[i + 1] = data[i + 2] = boosted;
+                        }
+                        ctx.putImageData(imgData, 0, 0);
+
+                        resolve({
+                            ocrDataUrl: canvas.toDataURL('image/jpeg', 0.9),
+                            previewDataUrl: e.target.result
+                        });
+                    };
+                    img.onerror = reject;
+                    img.src = e.target.result;
+                };
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function extractReceiptDetails(rawText) {
+            const lines = rawText
+                .split(/\r?\n/)
+                .map(l => l.trim())
+                .filter(l => l.length > 1);
+
+            // 1. Extract TOTAL amount intelligently
+            let detectedTotal = null;
+            const totalLineRegex = /\b(total\s*a\s*pagar|gran\s*total|total\s*general|total\s*usd|total\s*bs|total\s*neto|importe\s*total|monto\s*total|neto\s*a\s*pagar|a\s*pagar|total)\b/i;
+            const ignoreLineRegex = /\b(subtotal|sub-total|sub\s*total|cambio|vuelto|efectivo|recibido|ahorro|rif|nit|tel|tlf|fecha|hora|caja|ticket|factura\s*no)\b/i;
+            const moneyRegex = /(\d{1,3}(?:[.,]\d{3})*(?:[.,]\d{2})|\d+[.,]\d{2})/g;
+
+            const parseMoneyToken = (token) => {
+                if (token.includes(',') && token.includes('.')) {
+                    return token.lastIndexOf(',') > token.lastIndexOf('.')
+                        ? parseFloat(token.replace(/\./g, '').replace(',', '.'))
+                        : parseFloat(token.replace(/,/g, ''));
+                } else if (token.includes(',')) {
+                    return parseFloat(token.replace(',', '.'));
+                }
+                return parseFloat(token);
+            };
+
+            // Pass A: Explicit TOTAL lines (not subtotal)
+            for (let i = lines.length - 1; i >= 0; i--) {
+                const line = lines[i];
+                if (totalLineRegex.test(line) && !/\bsub[\s-]*total\b/i.test(line)) {
+                    const matches = line.match(moneyRegex);
+                    if (matches && matches.length > 0) {
+                        const val = parseMoneyToken(matches[matches.length - 1]);
+                        if (!isNaN(val) && val > 0 && val < 10000000) {
+                            detectedTotal = val;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            // Pass B: Currency-tagged lines or largest decimal value in lower 60% of receipt
+            if (detectedTotal === null) {
+                const candidates = [];
+                const startIdx = Math.floor(lines.length * 0.35);
+                for (let i = startIdx; i < lines.length; i++) {
+                    const line = lines[i];
+                    if (ignoreLineRegex.test(line)) continue;
+                    // Skip dates (e.g., 14/11/2026)
+                    if (/\d{1,2}[\/-]\d{1,2}[\/-]\d{2,4}/.test(line)) continue;
+
+                    const matches = line.match(moneyRegex);
+                    if (matches) {
+                        matches.forEach(m => {
+                            const val = parseMoneyToken(m);
+                            if (!isNaN(val) && val > 0 && val < 1000000) {
+                                candidates.push(val);
+                            }
+                        });
+                    }
+                }
+                if (candidates.length > 0) {
+                    detectedTotal = Math.max(...candidates);
+                }
+            }
+
+            // 2. Extract Merchant / Store Name from top header lines
+            let merchant = '';
+            const headerNoise = /^(factura|seniat|rif|nit|ticket|recibo|contribuyente|fecha|hora|caja|cajero|cliente|telefono|tlf|sucursal|bienvenido|gracias)/i;
+            for (let i = 0; i < Math.min(6, lines.length); i++) {
+                const candidate = lines[i].replace(/[^a-zA-ZÀ-ÿ0-9\s&.-]/g, '').trim();
+                const letterCount = (candidate.match(/[a-zA-ZÀ-ÿ]/g) || []).length;
+                if (letterCount >= 3 && candidate.length >= 3 && !headerNoise.test(candidate)) {
+                    merchant = candidate.slice(0, 38);
+                    break;
+                }
+            }
+
+            // 3. Detect category from full receipt text
+            const category = detectCategoryFromText(rawText);
+            const desc = merchant ? `Compra en ${merchant}` : 'Compra Escaneada (Factura)';
+
+            return {
+                amount: detectedTotal,
+                desc,
+                category
+            };
+        }
+
+        async function handleReceiptScan(event) {
             const file = event.target.files[0];
-            if (file) {
-                alert("📷 Factura capturada con éxito. Procesando importe y descripción...");
-                setTimeout(() => {
-                    document.getElementById('tx-amount').value = (Math.random() * 80 + 10).toFixed(2);
-                    document.getElementById('tx-desc').value = "Compra Escaneada (Ticket)";
-                    setTxType('expense');
-                    alert("¡Datos extraídos de la factura y rellenados automáticamente!");
-                }, 1200);
+            if (!file) return;
+
+            const panel = document.getElementById('receipt-scan-panel');
+            const previewImg = document.getElementById('receipt-preview-img');
+            const statusText = document.getElementById('ocr-status-text');
+            const percentText = document.getElementById('ocr-percent-text');
+            const progressBar = document.getElementById('ocr-progress-bar');
+            const summaryText = document.getElementById('ocr-result-summary');
+            const rawPre = document.getElementById('ocr-raw-text');
+            const toggleBtn = document.getElementById('ocr-toggle-raw');
+
+            panel.classList.remove('hidden');
+            rawPre.classList.add('hidden');
+            toggleBtn.classList.add('hidden');
+            statusText.textContent = 'Optimizando foto...';
+            statusText.className = 'font-medium text-sky-400 truncate';
+            percentText.textContent = '5%';
+            progressBar.style.width = '5%';
+            progressBar.className = 'bg-sky-400 h-1.5 rounded-full transition-all duration-200';
+            summaryText.textContent = 'Preparando lectura OCR';
+
+            try {
+                const { ocrDataUrl, previewDataUrl } = await preprocessReceiptImage(file);
+                previewImg.src = previewDataUrl;
+
+                if (typeof Tesseract === 'undefined') {
+                    throw new Error('Librería OCR no cargada. Verifica tu conexión.');
+                }
+
+                statusText.textContent = 'Leyendo factura...';
+
+                const result = await Tesseract.recognize(ocrDataUrl, 'spa+eng', {
+                    logger: (m) => {
+                        if (m.status === 'recognizing text' && typeof m.progress === 'number') {
+                            const pct = Math.max(10, Math.round(m.progress * 100));
+                            percentText.textContent = pct + '%';
+                            progressBar.style.width = pct + '%';
+                        } else if (m.status && m.status.includes('loading')) {
+                            statusText.textContent = 'Cargando motor OCR...';
+                        }
+                    }
+                });
+
+                const rawText = (result?.data?.text || '').trim();
+                rawPre.textContent = rawText || '(No se detectó texto legible)';
+                toggleBtn.classList.remove('hidden');
+
+                if (!rawText) {
+                    statusText.textContent = 'Sin texto legible';
+                    statusText.className = 'font-medium text-amber-400 truncate';
+                    summaryText.textContent = 'Intenta con mejor luz y enfoque.';
+                    showToast('No se pudo leer texto claro en la foto. Intenta acercar más la factura.', 'warning');
+                    return;
+                }
+
+                const extracted = extractReceiptDetails(rawText);
+
+                setTxType('expense');
+                if (extracted.amount !== null) {
+                    document.getElementById('tx-amount').value = extracted.amount.toFixed(2);
+                }
+                document.getElementById('tx-desc').value = extracted.desc;
+                document.getElementById('tx-category').value = extracted.category;
+
+                percentText.textContent = '100%';
+                progressBar.style.width = '100%';
+                progressBar.className = 'bg-emerald-500 h-1.5 rounded-full transition-all duration-200';
+                statusText.textContent = 'Factura procesada';
+                statusText.className = 'font-medium text-emerald-400 truncate';
+
+                if (extracted.amount !== null) {
+                    summaryText.textContent = `Total: ${appState.currencySymbol}${extracted.amount.toFixed(2)} • ${extracted.category}`;
+                    showToast(`Factura leída: ${appState.currencySymbol}${extracted.amount.toFixed(2)} (${extracted.category})`, 'success');
+                } else {
+                    summaryText.textContent = `${extracted.category} • Verifica el monto total`;
+                    showToast('Se detectó el comercio, pero no el monto total. Ingrésalo manualmente.', 'warning');
+                }
+            } catch (err) {
+                console.error('OCR Error:', err);
+                statusText.textContent = 'Error al escanear';
+                statusText.className = 'font-medium text-rose-400 truncate';
+                progressBar.className = 'bg-rose-500 h-1.5 rounded-full';
+                summaryText.textContent = 'Verifica conexión o intenta otra foto.';
+                showToast('No se pudo procesar la factura. Revisa tu conexión o toma otra foto más nítida.', 'error');
             }
         }
     </script>
