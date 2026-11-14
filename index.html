@@ -51,7 +51,7 @@
             "Organización y análisis financiero por mes y categoría",
             "Exportación de reportes mensuales compatibles con Google Sheets (.CSV UTF-8)",
             "Metas de ahorro y seguimiento de suscripciones recurrentes",
-            "Respaldo multi-dispositivo en la nube con autenticación segura"
+            "Modo offline con sincronización automática al recuperar conexión"
           ],
           "offers": {
             "@type": "Offer",
@@ -89,10 +89,10 @@
             },
             {
               "@type": "Question",
-              "name": "¿Mis datos financieros se respaldan si cambio de teléfono?",
+              "name": "¿Puedo usar Trakealo sin internet en la calle?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Sí. Al iniciar sesión con tu cuenta en Trakealo, tus movimientos, metas y suscripciones se sincronizan en la nube para recuperarlos desde cualquier teléfono."
+                "text": "Sí. Una vez iniciada tu sesión, Trakealo guarda tus movimientos de forma local si estás sin señal y los sincroniza automáticamente con tu cuenta en la nube al recuperar datos móviles o Wi-Fi."
               }
             }
           ]
@@ -210,7 +210,7 @@
             </div>
 
             <!-- Custom Trakealo Isologo Banner -->
-            <div id="login-logo-slot" class="w-full flex flex-col items-center mb-3">
+            <div id="login-logo-slot" class="w-full flex flex-col items-center mb-6">
                 <img
                     src="./logo.png"
                     alt="Trakealo"
@@ -229,8 +229,6 @@
                 </div>
                 <h1 class="sr-only">Trakealo</h1>
             </div>
-
-            <p class="text-xs text-zinc-400 mb-6 leading-relaxed">Telemetría financiera personal por voz, escáner OCR de facturas y respaldo en la nube.</p>
             
             <button id="google-login-btn" onclick="handleGoogleLogin()" class="w-full py-3.5 px-4 bg-white hover:bg-zinc-200 text-zinc-900 font-semibold rounded-xl text-sm flex items-center justify-center gap-3 transition-all shadow-lg active:scale-[0.98]">
                 <svg class="w-5 h-5" viewBox="0 0 24 24">
@@ -265,10 +263,6 @@
                 <div class="bg-zinc-900/70 border border-cardborder/60 rounded-lg py-1.5 px-1">📷 OCR Tickets</div>
                 <div class="bg-zinc-900/70 border border-cardborder/60 rounded-lg py-1.5 px-1">📊 Sheets CSV</div>
             </div>
-
-            <p id="login-cloud-hint" class="text-[10px] text-zinc-500 mt-3 leading-relaxed">
-                Tus datos se sincronizan cifrados en la nube para recuperarlos desde cualquier dispositivo.
-            </p>
         </div>
     </div>
 
@@ -708,11 +702,20 @@
     <!-- SEO & GEO SEMANTIC SUMMARY (READABLE BY SEARCH & AI CRAWLERS) -->
     <section class="sr-only" aria-label="Información de Trakealo">
         <h2>Trakealo: Control Financiero Inteligente por Voz, OCR y Nube</h2>
-        <p>Trakealo es una aplicación financiera moderna diseñada para registrar gastos e ingresos dictando con tu voz en español o tomando una fotografía a tu factura o ticket mediante tecnología OCR. Organiza tus finanzas por mes, controla metas de ahorro, administra suscripciones recurrentes, respalda tus datos en la nube y exporta tus reportes mensuales en formato CSV compatible con Google Sheets y Excel.</p>
+        <p>Trakealo es una aplicación financiera moderna diseñada para registrar gastos e ingresos dictando con tu voz en español o tomando una fotografía a tu factura o ticket mediante tecnología OCR. Organiza tus finanzas por mes, controla metas de ahorro, administra suscripciones recurrentes, funciona sin conexión y exporta tus reportes mensuales en formato CSV compatible con Google Sheets y Excel.</p>
     </section>
 
     <!-- APP JAVASCRIPT -->
     <script>
+        /* =========================================================
+           SERVICE WORKER REGISTRATION (FOR FULL OFFLINE APP OPEN)
+        ========================================================= */
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js').catch(() => {});
+            });
+        }
+
         /* =========================================================
            FIREBASE CONFIGURATION (trakealo-cloud)
         ========================================================= */
@@ -755,7 +758,8 @@
             budgetLimit: 1000,
             entries: [],
             goals: [],
-            subscriptions: []
+            subscriptions: [],
+            pendingSync: false
         };
 
         let editingTxId = null;
@@ -869,7 +873,7 @@
         }
 
         /* =========================================================
-           AUTHENTICATION & CLOUD SYNC (GOOGLE + EMAIL/PASSWORD)
+           AUTHENTICATION & OFFLINE-FIRST CLOUD SYNC
         ========================================================= */
         function toggleAuthMode() {
             isSignupMode = !isSignupMode;
@@ -881,6 +885,10 @@
 
         async function handleEmailAuth(e) {
             e.preventDefault();
+            if (!navigator.onLine) {
+                showToast('Necesitas internet la primera vez para iniciar sesión.', 'warning');
+                return;
+            }
             if (!isFirebaseConfigured || !firebaseAuth) {
                 showToast('Firebase no configurado.', 'error');
                 return;
@@ -932,7 +940,18 @@
             const settingsStatus = document.getElementById('settings-cloud-status');
             const pill = document.getElementById('sync-status-pill');
 
-            if (isFirebaseConfigured && firebaseAuth && firebaseDb && appState.user?.uid && !appState.user.isLocalFallback) {
+            const isCloudUser = isFirebaseConfigured && firebaseAuth && firebaseDb && appState.user?.uid && !appState.user.isLocalFallback;
+
+            if (!navigator.onLine || appState.pendingSync) {
+                headerBadge.textContent = 'Offline';
+                headerBadge.className = 'w-fit text-[9px] px-1.5 py-0.5 rounded-md bg-amber-500/10 text-amber-400 border border-amber-500/25 font-mono tracking-widest uppercase';
+                settingsStatus.textContent = appState.pendingSync
+                    ? 'Cambios locales pendientes (se subirán al volver la señal)'
+                    : 'Sin conexión (Guardando en la memoria del teléfono)';
+                settingsStatus.className = 'text-xs text-amber-400';
+                pill.innerHTML = `<i data-lucide="wifi-off" class="w-3 h-3"></i> ${appState.pendingSync ? 'Pendiente subir' : 'Offline'}`;
+                pill.className = 'inline-flex items-center gap-1 text-[10px] font-mono font-medium px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/25 shrink-0';
+            } else if (isCloudUser) {
                 headerBadge.textContent = 'Cloud';
                 headerBadge.className = 'w-fit text-[9px] px-1.5 py-0.5 rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/25 font-mono tracking-widest uppercase';
                 settingsStatus.textContent = 'Google Cloud Activo (Respaldo automático multi-teléfono)';
@@ -963,6 +982,10 @@
         }
 
         async function handleGoogleLogin() {
+            if (!navigator.onLine) {
+                showToast('Necesitas conexión a internet la primera vez para iniciar sesión con Google.', 'warning');
+                return;
+            }
             const btnLabel = document.getElementById('google-login-label');
 
             if (isFirebaseConfigured && firebaseAuth) {
@@ -1010,8 +1033,32 @@
             location.reload();
         }
 
+        // Listen for network reconnection to automatically sync offline records
+        window.addEventListener('online', async () => {
+            updateCloudStatusUI();
+            lucide.createIcons();
+            if (appState.user && appState.pendingSync) {
+                await syncPendingToCloud();
+            }
+        });
+
+        window.addEventListener('offline', () => {
+            updateCloudStatusUI();
+            lucide.createIcons();
+            showToast('Modo sin conexión: tus registros se guardarán en el teléfono y se subirán luego.', 'warning');
+        });
+
         window.addEventListener('DOMContentLoaded', () => {
             const loginLabel = document.getElementById('google-login-label');
+            const savedUser = localStorage.getItem('trakealo_user');
+
+            // Instant offline-first boot if user already logged in previously
+            if (savedUser) {
+                try {
+                    const parsedUser = JSON.parse(savedUser);
+                    enterAppWithUser(parsedUser);
+                } catch (_) {}
+            }
 
             if (isFirebaseConfigured && firebaseAuth) {
                 firebaseAuth.onAuthStateChanged((u) => {
@@ -1030,16 +1077,34 @@
                 });
             } else {
                 if (loginLabel) loginLabel.textContent = 'Continuar con Google';
-                const savedUser = localStorage.getItem('trakealo_user');
-                if (savedUser) {
-                    appState.user = JSON.parse(savedUser);
-                    document.getElementById('login-screen').style.display = 'none';
-                    document.getElementById('app-container').classList.remove('hidden');
-                    loadUserData();
-                }
             }
             lucide.createIcons();
         });
+
+        async function syncPendingToCloud() {
+            if (!navigator.onLine || !isFirebaseConfigured || !firebaseDb || !appState.user?.uid || appState.user.isLocalFallback) {
+                return false;
+            }
+            try {
+                const docRef = firebaseDb.collection('users').doc(appState.user.uid);
+                const snap = await docRef.get();
+                if (snap.exists) {
+                    const cloud = snap.data();
+                    const cloudEntries = migrateLegacyEntries(cloud.entries || []);
+                    // Merge by unique id so neither offline entries nor cloud entries are lost
+                    const mergedMap = new Map();
+                    cloudEntries.forEach(e => mergedMap.set(e.id, e));
+                    appState.entries.forEach(e => mergedMap.set(e.id, e));
+                    appState.entries = Array.from(mergedMap.values());
+                }
+                await saveUserData(true);
+                showToast('Cambios sin conexión sincronizados con la nube.', 'success');
+                return true;
+            } catch (err) {
+                console.error('Auto-sync error:', err);
+                return false;
+            }
+        }
 
         async function loadUserData() {
             const storageKey = 'trakealo_data_' + (appState.user?.uid || appState.user?.email || 'guest');
@@ -1052,16 +1117,27 @@
                 appState.subscriptions = parsed.subscriptions || [];
                 appState.currency = parsed.currency || 'USD';
                 appState.budgetLimit = parsed.budgetLimit || 1000;
+                appState.pendingSync = Boolean(parsed.pendingSync);
             } else {
                 appState.entries = [];
                 appState.goals = [];
                 appState.subscriptions = [];
+                appState.pendingSync = false;
             }
 
             applyUserHeaderUI();
             renderAll();
 
+            if (!navigator.onLine) return;
+
             if (isFirebaseConfigured && firebaseDb && appState.user?.uid && !appState.user.isLocalFallback) {
+                // If user recorded data offline earlier, push/merge up first before pulling
+                if (appState.pendingSync) {
+                    await syncPendingToCloud();
+                    renderAll();
+                    return;
+                }
+
                 try {
                     const docRef = firebaseDb.collection('users').doc(appState.user.uid);
                     const snap = await docRef.get();
@@ -1072,12 +1148,14 @@
                         appState.subscriptions = cloud.subscriptions || [];
                         appState.currency = cloud.currency || 'USD';
                         appState.budgetLimit = cloud.budgetLimit || 1000;
+                        appState.pendingSync = false;
                         localStorage.setItem(storageKey, JSON.stringify({
                             entries: appState.entries,
                             goals: appState.goals,
                             subscriptions: appState.subscriptions,
                             currency: appState.currency,
-                            budgetLimit: appState.budgetLimit
+                            budgetLimit: appState.budgetLimit,
+                            pendingSync: false
                         }));
                         applyUserHeaderUI();
                         renderAll();
@@ -1086,7 +1164,6 @@
                     }
                 } catch (err) {
                     console.error('Firestore load error:', err);
-                    showToast('Usando caché local. No se pudo conectar con la nube.', 'warning');
                 }
             }
         }
@@ -1107,8 +1184,9 @@
             updateCloudStatusUI();
         }
 
-        async function saveUserData() {
+        async function saveUserData(silent = false) {
             if (!appState.user) return;
+            const storageKey = 'trakealo_data_' + (appState.user.uid || appState.user.email || 'guest');
             const payload = {
                 entries: appState.entries,
                 goals: appState.goals,
@@ -1117,17 +1195,31 @@
                 budgetLimit: appState.budgetLimit,
                 updatedAt: new Date().toISOString()
             };
-            const storageKey = 'trakealo_data_' + (appState.user.uid || appState.user.email || 'guest');
-            localStorage.setItem(storageKey, JSON.stringify(payload));
 
-            if (isFirebaseConfigured && firebaseDb && appState.user.uid && !appState.user.isLocalFallback) {
-                try {
-                    await firebaseDb.collection('users').doc(appState.user.uid).set(payload, { merge: true });
-                } catch (err) {
-                    console.error('Firestore save error:', err);
-                    showToast('Guardado local; se sincronizará cuando vuelva la conexión.', 'warning');
-                }
+            const canSyncCloud = navigator.onLine && isFirebaseConfigured && firebaseDb && appState.user.uid && !appState.user.isLocalFallback;
+
+            if (!canSyncCloud) {
+                appState.pendingSync = true;
+                localStorage.setItem(storageKey, JSON.stringify({ ...payload, pendingSync: true }));
+                updateCloudStatusUI();
+                lucide.createIcons();
+                return;
             }
+
+            localStorage.setItem(storageKey, JSON.stringify({ ...payload, pendingSync: false }));
+
+            try {
+                await firebaseDb.collection('users').doc(appState.user.uid).set(payload, { merge: true });
+                appState.pendingSync = false;
+                localStorage.setItem(storageKey, JSON.stringify({ ...payload, pendingSync: false }));
+            } catch (err) {
+                console.error('Firestore save error:', err);
+                appState.pendingSync = true;
+                localStorage.setItem(storageKey, JSON.stringify({ ...payload, pendingSync: true }));
+                if (!silent) showToast('Guardado en el teléfono; se subirá cuando vuelva la señal.', 'warning');
+            }
+            updateCloudStatusUI();
+            lucide.createIcons();
         }
 
         function changeCurrency(val) {
