@@ -171,6 +171,22 @@
         }
         .mic-listening { animation: pulse-ring 1.4s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
     </style>
+    <script>
+        function tryNextLogoExt(img, fallbackId) {
+            const exts = ['./logo.png', './logo.jpg', './logo.jpeg', './logo.webp'];
+            const attempt = parseInt(img.dataset.attempt || '0', 10) + 1;
+            if (attempt < exts.length) {
+                img.dataset.attempt = String(attempt);
+                img.src = exts[attempt];
+            } else {
+                img.style.display = 'none';
+                if (fallbackId) {
+                    const fb = document.getElementById(fallbackId);
+                    if (fb) fb.classList.remove('hidden');
+                }
+            }
+        }
+    </script>
 </head>
 <body class="bg-obsidian text-zinc-100 min-h-screen flex flex-col antialiased selection:bg-emerald-500 selection:text-black">
 
@@ -180,7 +196,6 @@
     <!-- LOGIN SCREEN -->
     <div id="login-screen" class="fixed inset-0 z-50 bg-obsidian/95 backdrop-blur-sm flex flex-col items-center justify-center p-6 transition-opacity duration-300 overflow-y-auto">
         <div class="w-full max-w-sm hud-panel border border-cardborder rounded-2xl p-7 shadow-2xl flex flex-col items-center text-center relative overflow-hidden">
-            <!-- HUD Corner Brackets (SpaceX Telemetry Aesthetic) -->
             <span class="absolute top-2.5 left-2.5 w-3 h-3 border-t border-l border-emerald-500/60 rounded-tl-sm pointer-events-none"></span>
             <span class="absolute top-2.5 right-2.5 w-3 h-3 border-t border-r border-emerald-500/60 rounded-tr-sm pointer-events-none"></span>
             <span class="absolute bottom-2.5 left-2.5 w-3 h-3 border-b border-l border-emerald-500/60 rounded-bl-sm pointer-events-none"></span>
@@ -194,13 +209,13 @@
                 SYS // FINANZAS v2.0
             </div>
 
-            <!-- Custom Trakealo Isologo Banner (with graceful fallback if logo.png is not uploaded yet) -->
+            <!-- Custom Trakealo Isologo Banner -->
             <div id="login-logo-slot" class="w-full flex flex-col items-center mb-3">
                 <img
                     src="./logo.png"
                     alt="Trakealo"
                     class="w-64 max-w-full h-auto rounded-xl border border-cardborder/70 shadow-lg shadow-emerald-500/5 object-contain"
-                    onerror="this.style.display='none'; document.getElementById('login-logo-fallback').classList.remove('hidden');"
+                    onerror="tryNextLogoExt(this, 'login-logo-fallback')"
                 />
                 <div id="login-logo-fallback" class="hidden flex flex-col items-center">
                     <div class="w-14 h-14 rounded-2xl bg-zinc-900 border border-emerald-500/30 flex items-center justify-center mb-3 shadow-lg shadow-emerald-500/10">
@@ -227,14 +242,12 @@
                 <span id="google-login-label">Verificando sesión...</span>
             </button>
 
-            <!-- DIVIDER -->
             <div class="w-full flex items-center gap-3 my-5">
                 <div class="flex-1 h-px bg-cardborder"></div>
                 <span class="text-[10px] uppercase tracking-[0.14em] text-zinc-500 font-mono">o acceso directo</span>
                 <div class="flex-1 h-px bg-cardborder"></div>
             </div>
 
-            <!-- EMAIL / PASSWORD FORM (100% iPhone & PWA friendly, no popups) -->
             <form onsubmit="handleEmailAuth(event)" class="w-full space-y-2.5 text-left">
                 <input type="email" id="auth-email" required placeholder="tu@correo.com" class="w-full bg-obsidian border border-cardborder rounded-xl px-3.5 py-2.5 text-xs text-white placeholder:text-zinc-500 focus:outline-none focus:border-emerald-500 transition" />
                 <input type="password" id="auth-password" required minlength="6" placeholder="Contraseña (mín. 6 caracteres)" class="w-full bg-obsidian border border-cardborder rounded-xl px-3.5 py-2.5 text-xs text-white placeholder:text-zinc-500 focus:outline-none focus:border-emerald-500 transition" />
@@ -247,7 +260,6 @@
                 ¿Primera vez? Crear cuenta nueva
             </button>
 
-            <!-- Feature Telemetry Strip (Also great for SEO/GEO visibility) -->
             <div class="w-full grid grid-cols-3 gap-1.5 mt-5 pt-4 border-t border-cardborder/70 text-[10px] font-mono text-zinc-400">
                 <div class="bg-zinc-900/70 border border-cardborder/60 rounded-lg py-1.5 px-1">🎙️ Voz IA</div>
                 <div class="bg-zinc-900/70 border border-cardborder/60 rounded-lg py-1.5 px-1">📷 OCR Tickets</div>
@@ -263,29 +275,28 @@
     <!-- MAIN APP CONTAINER -->
     <div id="app-container" class="flex-1 flex flex-col max-w-md mx-auto w-full pb-28 relative hidden">
         
-        <!-- HEADER -->
-        <header class="px-4 pt-5 pb-3.5 flex items-center justify-between border-b border-cardborder bg-obsidian/85 backdrop-blur-xl sticky top-0 z-30">
-            <div class="flex items-center gap-3 min-w-0">
-                <!-- Header Emblem (Uses icon.png if provided, otherwise matching orbital SVG) -->
-                <div id="header-logo-slot" class="w-9 h-9 rounded-xl bg-carddark border border-emerald-500/35 flex items-center justify-center shadow-inner shadow-emerald-500/15 shrink-0 overflow-hidden">
-                    <img
-                        src="./icon.png"
-                        alt="Trakealo"
-                        class="w-full h-full object-cover"
-                        onerror="this.style.display='none'; document.getElementById('header-logo-svg').classList.remove('hidden');"
-                    />
-                    <svg id="header-logo-svg" class="hidden w-6 h-6" viewBox="0 0 64 64" fill="none">
-                        <circle cx="32" cy="32" r="20" stroke="#d4d4d8" stroke-width="4.5" />
-                        <path d="M12 45 L27 30 L34 36 L52 17" stroke="#10b981" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" />
-                        <path d="M41 17 L52 17 L52 28" stroke="#10b981" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
+        <!-- HEADER WITH VISIBLE CUSTOM LOGO -->
+        <header class="px-4 pt-4 pb-3 flex items-center justify-between border-b border-cardborder bg-obsidian/85 backdrop-blur-xl sticky top-0 z-30 gap-2">
+            <div class="flex items-center gap-2.5 min-w-0">
+                <img
+                    src="./logo.png"
+                    alt="Trakealo"
+                    class="h-9 w-32 sm:h-10 sm:w-36 object-cover object-center rounded-lg border border-cardborder/80 shadow-md shadow-emerald-500/10 shrink-0"
+                    onerror="tryNextLogoExt(this, 'header-logo-fallback')"
+                />
+                <div id="header-logo-fallback" class="hidden flex items-center gap-2 min-w-0">
+                    <div class="w-9 h-9 rounded-xl bg-carddark border border-emerald-500/35 flex items-center justify-center shadow-inner shadow-emerald-500/15 shrink-0">
+                        <svg class="w-6 h-6" viewBox="0 0 64 64" fill="none">
+                            <circle cx="32" cy="32" r="20" stroke="#d4d4d8" stroke-width="4.5" />
+                            <path d="M12 45 L27 30 L34 36 L52 17" stroke="#10b981" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" />
+                            <path d="M41 17 L52 17 L52 28" stroke="#10b981" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                    </div>
+                    <span class="text-sm font-bold tracking-wider uppercase text-white">Trakealo</span>
                 </div>
-                <div class="min-w-0">
-                    <h1 class="text-sm font-bold tracking-wider uppercase text-white flex items-center gap-1.5">
-                        Trakealo
-                        <span id="header-sync-badge" class="text-[9px] px-1.5 py-0.5 rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/25 font-mono tracking-widest uppercase">Cloud</span>
-                    </h1>
-                    <p class="text-[11px] text-zinc-400 truncate font-mono" id="header-user-name">SYS // TELEMETRÍA ACTIVA</p>
+                <div class="flex flex-col justify-center min-w-0">
+                    <span id="header-sync-badge" class="w-fit text-[9px] px-1.5 py-0.5 rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/25 font-mono tracking-widest uppercase">Cloud</span>
+                    <p class="text-[10px] text-zinc-400 truncate font-mono mt-0.5" id="header-user-name">CMD // ACTIVO</p>
                 </div>
             </div>
             
@@ -398,7 +409,6 @@
 
             <!-- TAB 2: ANALÍTICAS -->
             <section id="view-analiticas" class="space-y-5 hidden">
-                <!-- PERIOD SELECTOR MIRROR + EXPORT -->
                 <div class="flex items-center justify-between gap-2 hud-panel border border-cardborder rounded-xl p-2.5">
                     <div class="flex items-center gap-2 flex-1 min-w-0">
                         <i data-lucide="calendar" class="w-4 h-4 text-emerald-400 shrink-0 ml-1"></i>
@@ -410,7 +420,6 @@
                     </button>
                 </div>
 
-                <!-- TOP INSIGHT CARD -->
                 <div class="hud-panel border border-cardborder rounded-2xl p-5 space-y-3">
                     <h3 class="text-[10px] font-mono font-semibold text-zinc-300 uppercase tracking-[0.14em]">Análisis de Mayor Impacto</h3>
                     <div class="grid grid-cols-2 gap-3">
@@ -427,7 +436,6 @@
                     </div>
                 </div>
 
-                <!-- BUDGET PROGRESS -->
                 <div class="hud-panel border border-cardborder rounded-2xl p-5 space-y-4">
                     <div class="flex justify-between items-center">
                         <h3 class="text-[10px] font-mono font-semibold text-zinc-300 uppercase tracking-[0.14em]">Presupuesto del Mes</h3>
@@ -445,7 +453,6 @@
                     <p class="text-xs text-zinc-500 text-right mono-num" id="budget-limit-text">Límite: $1,000,00</p>
                 </div>
 
-                <!-- CATEGORY BREAKDOWN -->
                 <div class="hud-panel border border-cardborder rounded-2xl p-5 space-y-4">
                     <h3 class="text-[10px] font-mono font-semibold text-zinc-300 uppercase tracking-[0.14em]">Desglose por Categoría</h3>
                     <div class="space-y-3" id="categories-breakdown"></div>
@@ -476,7 +483,6 @@
                         <button onclick="handleLogout()" class="px-3 py-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 text-xs font-medium rounded-lg border border-rose-500/20 transition shrink-0">Cerrar Sesión</button>
                     </div>
 
-                    <!-- GOOGLE SHEETS EXPORT BOX -->
                     <div class="bg-obsidian/80 border border-cardborder rounded-xl p-3.5 space-y-2.5">
                         <div class="flex items-center justify-between">
                             <span class="text-xs font-semibold text-white flex items-center gap-2">
@@ -546,7 +552,6 @@
                 <button onclick="closeAddModal()" class="text-zinc-400 hover:text-white p-1"><i data-lucide="x" class="w-5 h-5"></i></button>
             </div>
 
-            <!-- SMART TOOLS -->
             <div class="grid grid-cols-2 gap-2">
                 <button id="voice-btn" onclick="toggleVoiceRecording()" type="button" class="py-2.5 px-3 bg-obsidian hover:bg-zinc-900 border border-cardborder rounded-xl text-xs font-medium text-emerald-400 flex items-center justify-center gap-2 transition shadow-inner active:scale-[0.98]">
                     <i data-lucide="mic" class="w-4 h-4"></i> <span id="voice-btn-label">Dictar por Voz</span>
@@ -557,7 +562,6 @@
                 <input type="file" id="receipt-file-input" accept="image/*" capture="environment" class="hidden" onchange="handleReceiptScan(event)">
             </div>
 
-            <!-- VOICE LIVE TRANSCRIPT & SMART PARSER BAR -->
             <div class="bg-obsidian/80 border border-cardborder rounded-xl p-3 space-y-2">
                 <div class="flex items-center justify-between">
                     <span class="text-[10px] font-mono font-semibold uppercase tracking-wider text-zinc-400 flex items-center gap-1.5">
@@ -578,7 +582,6 @@
                 <div id="smart-parse-feedback" class="hidden flex flex-wrap items-center gap-1.5 pt-0.5 text-[10px]"></div>
             </div>
 
-            <!-- RECEIPT OCR STATUS PANEL -->
             <div id="receipt-scan-panel" class="hidden bg-obsidian/80 border border-cardborder rounded-xl p-3 space-y-2.5">
                 <div class="flex items-center gap-3">
                     <img id="receipt-preview-img" src="" alt="Factura" class="w-11 h-14 object-cover rounded-lg border border-cardborder bg-obsidian shrink-0" />
@@ -931,14 +934,14 @@
 
             if (isFirebaseConfigured && firebaseAuth && firebaseDb && appState.user?.uid && !appState.user.isLocalFallback) {
                 headerBadge.textContent = 'Cloud';
-                headerBadge.className = 'text-[9px] px-1.5 py-0.5 rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/25 font-mono tracking-widest uppercase';
+                headerBadge.className = 'w-fit text-[9px] px-1.5 py-0.5 rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/25 font-mono tracking-widest uppercase';
                 settingsStatus.textContent = 'Google Cloud Activo (Respaldo automático multi-teléfono)';
                 settingsStatus.className = 'text-xs text-emerald-400';
                 pill.innerHTML = '<i data-lucide="cloud" class="w-3 h-3"></i> Sincronizado';
                 pill.className = 'inline-flex items-center gap-1 text-[10px] font-mono font-medium px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/25 shrink-0';
             } else {
                 headerBadge.textContent = 'Local';
-                headerBadge.className = 'text-[9px] px-1.5 py-0.5 rounded-md bg-amber-500/10 text-amber-400 border border-amber-500/25 font-mono tracking-widest uppercase';
+                headerBadge.className = 'w-fit text-[9px] px-1.5 py-0.5 rounded-md bg-amber-500/10 text-amber-400 border border-amber-500/25 font-mono tracking-widest uppercase';
                 settingsStatus.textContent = 'Modo Local';
                 settingsStatus.className = 'text-xs text-amber-400';
                 pill.innerHTML = '<i data-lucide="hard-drive" class="w-3 h-3"></i> Solo este teléfono';
@@ -1093,7 +1096,7 @@
             appState.currencySymbol = symbols[appState.currency] || '$';
             document.getElementById('form-currency-symbol').textContent = appState.currencySymbol;
             document.getElementById('settings-user-email').textContent = appState.user?.email || 'usuario@gmail.com';
-            document.getElementById('header-user-name').textContent = appState.user?.name ? `CMD // ${appState.user.name.split(' ')[0].toUpperCase()}` : 'SYS // TELEMETRÍA ACTIVA';
+            document.getElementById('header-user-name').textContent = appState.user?.name ? `CMD // ${appState.user.name.split(' ')[0].toUpperCase()}` : 'CMD // ACTIVO';
 
             const avatarBtn = document.getElementById('user-avatar-btn');
             if (appState.user?.photoURL) {
