@@ -21,11 +21,13 @@
     <meta property="og:url" content="https://ishootrawdotcom-ctrl.github.io/trakealo/" />
     <meta property="og:title" content="Trakealo — Control Financiero Inteligente por Voz y Facturas OCR" />
     <meta property="og:description" content="Registra gastos hablando o tomando foto a tu factura, analiza tu presupuesto mensual y exporta tus reportes listos para Google Sheets." />
+    <meta property="og:image" content="https://ishootrawdotcom-ctrl.github.io/trakealo/logo.png" />
 
     <!-- Twitter / X Card -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Trakealo — Control Financiero Inteligente" />
     <meta name="twitter:description" content="Finanzas personales de precisión: dictado por voz, escáner OCR de recibos, respaldo en la nube y exportación a Google Sheets." />
+    <meta name="twitter:image" content="https://ishootrawdotcom-ctrl.github.io/trakealo/logo.png" />
 
     <!-- Structured Data JSON-LD for Google & AI Engines (ChatGPT, Gemini, Perplexity) -->
     <script type="application/ld+json">
@@ -38,6 +40,7 @@
           "name": "Trakealo",
           "alternateName": "Trakealo Control Financiero Inteligente",
           "url": "https://ishootrawdotcom-ctrl.github.io/trakealo/",
+          "image": "https://ishootrawdotcom-ctrl.github.io/trakealo/logo.png",
           "applicationCategory": "FinanceApplication",
           "operatingSystem": "iOS, Android, Windows, macOS, Web",
           "inLanguage": "es",
@@ -105,8 +108,9 @@
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="theme-color" content="#09090b" />
     
-    <!-- Dynamic PWA Manifest & App Icon -->
-    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='112' fill='%2309090b'/%3E%3Cpath d='M160 330l80-90 60 40 90-110' stroke='%2310b981' stroke-width='36' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E">
+    <!-- Dynamic PWA Manifest & Matching Orbital App Icon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='112' fill='%2309090b'/%3E%3Ccircle cx='256' cy='256' r='132' stroke='%23d4d4d8' stroke-width='28' fill='none'/%3E%3Cpath d='M120 355 L215 255 L258 295 L385 160' stroke='%2310b981' stroke-width='36' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3Cpath d='M322 160 L385 160 L385 223' stroke='%2310b981' stroke-width='36' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='112' fill='%2309090b'/%3E%3Ccircle cx='256' cy='256' r='132' stroke='%23d4d4d8' stroke-width='28' fill='none'/%3E%3Cpath d='M120 355 L215 255 L258 295 L385 160' stroke='%2310b981' stroke-width='36' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3Cpath d='M322 160 L385 160 L385 223' stroke='%2310b981' stroke-width='36' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E">
     <link rel="manifest" id="pwa-manifest" />
     
     <!-- Fonts & Tailwind -->
@@ -185,16 +189,32 @@
             <div class="absolute -top-14 -right-14 w-36 h-36 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none"></div>
 
             <!-- Telemetry Tag -->
-            <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-zinc-900/90 border border-cardborder text-[10px] font-mono tracking-[0.16em] text-emerald-400 uppercase mb-5">
+            <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-zinc-900/90 border border-cardborder text-[10px] font-mono tracking-[0.16em] text-emerald-400 uppercase mb-4">
                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
                 SYS // FINANZAS v2.0
             </div>
 
-            <!-- Logo Slot (Ready for custom isologo later) -->
-            <div id="login-logo-slot" class="w-14 h-14 rounded-2xl bg-zinc-900 border border-emerald-500/30 flex items-center justify-center mb-4 shadow-lg shadow-emerald-500/10 text-emerald-400">
-                <i data-lucide="trending-up" class="w-7 h-7"></i>
+            <!-- Custom Trakealo Isologo Banner (with graceful fallback if logo.png is not uploaded yet) -->
+            <div id="login-logo-slot" class="w-full flex flex-col items-center mb-3">
+                <img
+                    src="./logo.png"
+                    alt="Trakealo"
+                    class="w-64 max-w-full h-auto rounded-xl border border-cardborder/70 shadow-lg shadow-emerald-500/5 object-contain"
+                    onerror="this.style.display='none'; document.getElementById('login-logo-fallback').classList.remove('hidden');"
+                />
+                <div id="login-logo-fallback" class="hidden flex flex-col items-center">
+                    <div class="w-14 h-14 rounded-2xl bg-zinc-900 border border-emerald-500/30 flex items-center justify-center mb-3 shadow-lg shadow-emerald-500/10">
+                        <svg class="w-8 h-8" viewBox="0 0 64 64" fill="none">
+                            <circle cx="32" cy="32" r="20" stroke="#d4d4d8" stroke-width="4" />
+                            <path d="M12 45 L27 30 L34 36 L52 17" stroke="#10b981" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+                            <path d="M42 17 L52 17 L52 27" stroke="#10b981" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                    </div>
+                    <span class="text-2xl font-bold tracking-tight text-white">Trakealo</span>
+                </div>
+                <h1 class="sr-only">Trakealo</h1>
             </div>
-            <h1 class="text-2xl font-bold tracking-tight text-white mb-1.5">Trakealo</h1>
+
             <p class="text-xs text-zinc-400 mb-6 leading-relaxed">Telemetría financiera personal por voz, escáner OCR de facturas y respaldo en la nube.</p>
             
             <button id="google-login-btn" onclick="handleGoogleLogin()" class="w-full py-3.5 px-4 bg-white hover:bg-zinc-200 text-zinc-900 font-semibold rounded-xl text-sm flex items-center justify-center gap-3 transition-all shadow-lg active:scale-[0.98]">
@@ -246,8 +266,19 @@
         <!-- HEADER -->
         <header class="px-4 pt-5 pb-3.5 flex items-center justify-between border-b border-cardborder bg-obsidian/85 backdrop-blur-xl sticky top-0 z-30">
             <div class="flex items-center gap-3 min-w-0">
-                <div id="header-logo-slot" class="w-9 h-9 rounded-xl bg-carddark border border-emerald-500/30 flex items-center justify-center text-emerald-400 shadow-inner shadow-emerald-500/10 shrink-0">
-                    <i data-lucide="trending-up" class="w-5 h-5"></i>
+                <!-- Header Emblem (Uses icon.png if provided, otherwise matching orbital SVG) -->
+                <div id="header-logo-slot" class="w-9 h-9 rounded-xl bg-carddark border border-emerald-500/35 flex items-center justify-center shadow-inner shadow-emerald-500/15 shrink-0 overflow-hidden">
+                    <img
+                        src="./icon.png"
+                        alt="Trakealo"
+                        class="w-full h-full object-cover"
+                        onerror="this.style.display='none'; document.getElementById('header-logo-svg').classList.remove('hidden');"
+                    />
+                    <svg id="header-logo-svg" class="hidden w-6 h-6" viewBox="0 0 64 64" fill="none">
+                        <circle cx="32" cy="32" r="20" stroke="#d4d4d8" stroke-width="4.5" />
+                        <path d="M12 45 L27 30 L34 36 L52 17" stroke="#10b981" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M41 17 L52 17 L52 28" stroke="#10b981" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
                 </div>
                 <div class="min-w-0">
                     <h1 class="text-sm font-bold tracking-wider uppercase text-white flex items-center gap-1.5">
@@ -738,7 +769,11 @@
             name: "Trakealo", short_name: "Trakealo",
             start_url: ".", display: "standalone",
             background_color: "#09090b", theme_color: "#09090b",
-            icons: [{ src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='112' fill='%2309090b'/%3E%3C/svg%3E", sizes: "512x512", type: "image/svg+xml" }]
+            icons: [{
+                src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='112' fill='%2309090b'/%3E%3Ccircle cx='256' cy='256' r='132' stroke='%23d4d4d8' stroke-width='28' fill='none'/%3E%3Cpath d='M120 355 L215 255 L258 295 L385 160' stroke='%2310b981' stroke-width='36' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3Cpath d='M322 160 L385 160 L385 223' stroke='%2310b981' stroke-width='36' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E",
+                sizes: "512x512",
+                type: "image/svg+xml"
+            }]
         })], { type: 'application/json' });
         document.getElementById('pwa-manifest').href = URL.createObjectURL(manifestBlob);
 
