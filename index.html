@@ -19,15 +19,15 @@
     <meta property="og:site_name" content="Trakealo" />
     <meta property="og:locale" content="es_ES" />
     <meta property="og:url" content="https://ishootrawdotcom-ctrl.github.io/trakealo/" />
-    <meta property="og:title" content="Trakealo — Control Financiero Inteligente por Voz, OCR e Inversiones" />
+    <meta property="og:title" content="Trakealo — Control Financiero Inteligente por Voz y Facturas OCR" />
     <meta property="og:description" content="Registra gastos hablando o tomando foto a tu factura, gestiona sueldo, ahorros e inversiones y crea planes financieros con Apex Mentor IA." />
-    <meta property="og:image" content="https://ishootrawdotcom-ctrl.github.io/trakealo/logo.png" />
+    <meta property="og:image" content="https://ishootrawdotcom-ctrl.github.io/trakealo/app-icon.png" />
 
     <!-- Twitter / X Card -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Trakealo — Control Financiero Inteligente" />
     <meta name="twitter:description" content="Finanzas personales de precisión: voz, OCR de recibos, inversiones, Apex Mentor IA y exportación a Google Sheets." />
-    <meta name="twitter:image" content="https://ishootrawdotcom-ctrl.github.io/trakealo/logo.png" />
+    <meta name="twitter:image" content="https://ishootrawdotcom-ctrl.github.io/trakealo/app-icon.png" />
 
     <!-- Structured Data JSON-LD for Google & AI Engines -->
     <script type="application/ld+json">
@@ -40,7 +40,7 @@
           "name": "Trakealo",
           "alternateName": "Trakealo Control Financiero Inteligente",
           "url": "https://ishootrawdotcom-ctrl.github.io/trakealo/",
-          "image": "https://ishootrawdotcom-ctrl.github.io/trakealo/logo.png",
+          "image": "https://ishootrawdotcom-ctrl.github.io/trakealo/app-icon.png",
           "applicationCategory": "FinanceApplication",
           "operatingSystem": "iOS, Android, Windows, macOS, Web",
           "inLanguage": "es",
@@ -77,17 +77,17 @@
     }
     </script>
 
-    <!-- PWA & iOS / Android Native App Meta Tags -->
+    <!-- PWA & iOS / Android Native Home Screen Icon -->
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="Trakealo" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="theme-color" id="meta-theme-color" content="#09090b" />
-    
-    <!-- Dynamic PWA Manifest & Matching Orbital App Icon -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='112' fill='%2309090b'/%3E%3Ccircle cx='256' cy='256' r='132' stroke='%23d4d4d8' stroke-width='28' fill='none'/%3E%3Cpath d='M120 355 L215 255 L258 295 L385 160' stroke='%2310b981' stroke-width='36' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3Cpath d='M322 160 L385 160 L385 223' stroke='%2310b981' stroke-width='36' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E">
-    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='112' fill='%2309090b'/%3E%3Ccircle cx='256' cy='256' r='132' stroke='%23d4d4d8' stroke-width='28' fill='none'/%3E%3Cpath d='M120 355 L215 255 L258 295 L385 160' stroke='%2310b981' stroke-width='36' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3Cpath d='M322 160 L385 160 L385 223' stroke='%2310b981' stroke-width='36' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E">
-    <link rel="manifest" id="pwa-manifest" />
+
+    <link rel="icon" type="image/png" sizes="512x512" href="./app-icon.png?v=5" />
+    <link rel="apple-touch-icon" sizes="180x180" href="./app-icon.png?v=5" />
+    <link rel="apple-touch-icon-precomposed" sizes="180x180" href="./app-icon.png?v=5" />
+    <link rel="manifest" href="./manifest.json?v=5" />
     
     <!-- Fonts & Tailwind -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -106,9 +106,7 @@
         }
     </script>
     <script src="https://unpkg.com/lucide@latest"></script>
-    <!-- Tesseract.js for real client-side Receipt OCR -->
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-    <!-- Firebase SDKs (Compat) for Real Google Auth & Cloud Firestore Sync -->
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
@@ -157,7 +155,7 @@
             padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 125px);
         }
 
-        /* LIGHT MODE THEME (Preserving exact SpaceX crispness in light mode) */
+        /* LIGHT MODE THEME */
         html:not(.dark) body {
             background-color: #f4f4f5;
             color: #09090b;
@@ -223,7 +221,7 @@
     </style>
     <script>
         function tryNextLogoExt(img, fallbackId) {
-            const exts = ['./logo.png', './logo.jpg', './logo.jpeg', './logo.webp'];
+            const exts = ['./app-icon.png?v=5', './logo.png', './logo.jpg', './logo.jpeg', './logo.webp'];
             const attempt = parseInt(img.dataset.attempt || '0', 10) + 1;
             if (attempt < exts.length) {
                 img.dataset.attempt = String(attempt);
@@ -259,12 +257,12 @@
                 SYS // FINANZAS v2.5
             </div>
 
-            <!-- Custom Trakealo Isologo Banner -->
+            <!-- Custom Trakealo Logo / App Icon -->
             <div id="login-logo-slot" class="w-full flex flex-col items-center mb-6">
                 <img
-                    src="./logo.png"
+                    src="./app-icon.png?v=5"
                     alt="Trakealo"
-                    class="w-64 max-w-full h-auto rounded-xl border border-cardborder/70 shadow-lg shadow-emerald-500/5 object-contain bg-[#09090b]"
+                    class="w-32 h-32 rounded-2xl border border-emerald-500/30 shadow-lg shadow-emerald-500/15 object-cover bg-[#09090b]"
                     onerror="tryNextLogoExt(this, 'login-logo-fallback')"
                 />
                 <div id="login-logo-fallback" class="hidden flex flex-col items-center">
@@ -321,25 +319,25 @@
         
         <!-- HEADER (SAFE-AREA FIXED BELOW IPHONE CLOCK & BATTERY) -->
         <header class="px-4 safe-header pb-3 flex items-center justify-between border-b border-cardborder bg-obsidian/85 backdrop-blur-xl sticky top-0 z-30 gap-2">
-            <div class="flex items-center gap-2 min-w-0">
-                <img
-                    src="./logo.png"
-                    alt="Trakealo"
-                    class="h-8 w-28 sm:h-9 sm:w-32 object-cover object-center rounded-lg border border-cardborder/80 shadow-md shadow-emerald-500/10 shrink-0 bg-[#09090b]"
-                    onerror="tryNextLogoExt(this, 'header-logo-fallback')"
-                />
-                <div id="header-logo-fallback" class="hidden flex items-center gap-2 min-w-0">
-                    <div class="w-8 h-8 rounded-xl bg-carddark border border-emerald-500/35 flex items-center justify-center shadow-inner shadow-emerald-500/15 shrink-0">
-                        <svg class="w-5 h-5" viewBox="0 0 64 64" fill="none">
-                            <circle cx="32" cy="32" r="20" stroke="#d4d4d8" stroke-width="4.5" />
-                            <path d="M12 45 L27 30 L34 36 L52 17" stroke="#10b981" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" />
-                            <path d="M41 17 L52 17 L52 28" stroke="#10b981" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" />
-                        </svg>
-                    </div>
-                    <span class="text-xs font-bold tracking-wider uppercase text-white">Trakealo</span>
+            <div class="flex items-center gap-2.5 min-w-0">
+                <div class="w-10 h-10 rounded-xl border border-emerald-500/35 shadow-md shadow-emerald-500/15 shrink-0 overflow-hidden bg-[#09090b] flex items-center justify-center">
+                    <img
+                        src="./app-icon.png?v=5"
+                        alt="Trakealo"
+                        class="w-full h-full object-cover"
+                        onerror="this.style.display='none'; document.getElementById('header-logo-fallback-svg').classList.remove('hidden');"
+                    />
+                    <svg id="header-logo-fallback-svg" class="hidden w-6 h-6" viewBox="0 0 64 64" fill="none">
+                        <circle cx="32" cy="32" r="20" stroke="#d4d4d8" stroke-width="4.5" />
+                        <path d="M12 45 L27 30 L34 36 L52 17" stroke="#10b981" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M41 17 L52 17 L52 28" stroke="#10b981" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
                 </div>
                 <div class="flex flex-col justify-center min-w-0">
-                    <span id="header-sync-badge" class="w-fit text-[9px] px-1.5 py-0.5 rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/25 font-mono tracking-widest uppercase">Cloud</span>
+                    <div class="flex items-center gap-1.5">
+                        <span class="text-sm font-bold tracking-wider uppercase text-white">Trakealo</span>
+                        <span id="header-sync-badge" class="w-fit text-[9px] px-1.5 py-0.5 rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/25 font-mono tracking-widest uppercase">Cloud</span>
+                    </div>
                     <p class="text-[10px] text-zinc-400 truncate font-mono mt-0.5" id="header-user-name">CMD // ACTIVO</p>
                 </div>
             </div>
@@ -364,7 +362,6 @@
             
             <!-- TAB 1: INICIO -->
             <section id="view-inicio" class="space-y-5">
-                <!-- PERIOD ORGANIZER BAR -->
                 <div class="flex items-center justify-between gap-2 hud-panel border border-cardborder rounded-xl p-2.5">
                     <div class="flex items-center gap-2 flex-1 min-w-0">
                         <i data-lucide="calendar" class="w-4 h-4 text-emerald-400 shrink-0 ml-1"></i>
@@ -376,7 +373,7 @@
                     </button>
                 </div>
 
-                <!-- BALANCE TELEMETRY CARD (SPACEX HUD STYLE) -->
+                <!-- BALANCE TELEMETRY CARD -->
                 <div class="hud-panel border border-cardborder rounded-2xl p-5 relative overflow-hidden">
                     <span class="absolute top-2.5 left-2.5 w-2.5 h-2.5 border-t border-l border-emerald-500/50 rounded-tl-sm pointer-events-none"></span>
                     <span class="absolute top-2.5 right-2.5 w-2.5 h-2.5 border-t border-r border-emerald-500/50 rounded-tr-sm pointer-events-none"></span>
@@ -500,7 +497,6 @@
 
             <!-- TAB 2: ANALÍTICAS & APEX MENTOR IA -->
             <section id="view-analiticas" class="space-y-5 hidden">
-                <!-- SUB-TAB SWITCHER -->
                 <div class="flex bg-carddark border border-cardborder rounded-xl p-1 gap-1">
                     <button onclick="switchAnalyticsSubtab('metrics')" id="subtab-metrics" class="flex-1 py-2 text-xs font-mono font-bold rounded-lg bg-emerald-500 text-black transition">
                         📊 Métricas & Vida
@@ -510,7 +506,6 @@
                     </button>
                 </div>
 
-                <!-- SUBTAB A: METRICS & LIFE HOURS -->
                 <div id="analytics-panel-metrics" class="space-y-5">
                     <div class="flex items-center justify-between gap-2 hud-panel border border-cardborder rounded-xl p-2.5">
                         <div class="flex items-center gap-2 flex-1 min-w-0">
@@ -523,7 +518,6 @@
                         </button>
                     </div>
 
-                    <!-- EXCLUSIVE FEATURE: LIFE-HOURS & INDEPENDENCE INDEX -->
                     <div class="hud-panel border border-emerald-500/30 rounded-2xl p-5 space-y-3 relative overflow-hidden">
                         <div class="absolute top-0 left-0 right-0 h-px hud-glow-line"></div>
                         <div class="flex items-center justify-between">
@@ -583,7 +577,6 @@
                     </div>
                 </div>
 
-                <!-- SUBTAB B: APEX MENTOR IA (GRANT CARDONE / BRIAN TRACY / MYRON GOLDEN) -->
                 <div id="analytics-panel-mentor" class="space-y-5 hidden">
                     <div class="hud-panel border border-emerald-500/35 rounded-2xl p-5 space-y-4 relative overflow-hidden">
                         <div class="absolute top-0 left-0 right-0 h-px hud-glow-line"></div>
@@ -600,7 +593,6 @@
                             </div>
                         </div>
 
-                        <!-- Data Readiness Bar -->
                         <div class="bg-obsidian/70 border border-cardborder rounded-xl p-3 space-y-1.5">
                             <div class="flex justify-between text-[11px]">
                                 <span class="font-mono text-zinc-400">Madurez de Datos</span>
@@ -612,7 +604,6 @@
                             <p id="mentor-data-hint" class="text-[10px] text-zinc-500"></p>
                         </div>
 
-                        <!-- Mentor Style Selector -->
                         <div class="space-y-1.5">
                             <label class="text-[10px] font-mono uppercase tracking-wider text-zinc-400 block">Enfoque del Mentor</label>
                             <select id="mentor-style-select" class="w-full bg-obsidian border border-cardborder rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-emerald-500">
@@ -629,10 +620,8 @@
                         </button>
                     </div>
 
-                    <!-- Generated Plan Output -->
                     <div id="mentor-plan-output" class="hidden space-y-4"></div>
 
-                    <!-- Alerts & Reminders Card -->
                     <div class="hud-panel border border-cardborder rounded-2xl p-5 space-y-3.5">
                         <div class="flex items-center justify-between">
                             <h3 class="text-[10px] font-mono font-semibold text-zinc-300 uppercase tracking-[0.14em]">Alertas & Recordatorios Automáticos</h3>
@@ -665,7 +654,6 @@
 
             <!-- TAB 3: INVERSIONES / ACTIVOS & SUSCRIPCIONES -->
             <section id="view-inversiones" class="space-y-5 hidden">
-                <!-- SUB-TAB SWITCHER -->
                 <div class="flex bg-carddark border border-cardborder rounded-xl p-1 gap-1">
                     <button onclick="switchAssetsSubtab('investments')" id="subtab-investments" class="flex-1 py-2 text-xs font-mono font-bold rounded-lg bg-emerald-500 text-black transition">
                         📈 Inversiones
@@ -675,7 +663,6 @@
                     </button>
                 </div>
 
-                <!-- SUBTAB A: INVESTMENTS / ASSETS -->
                 <div id="assets-panel-investments" class="space-y-4">
                     <div class="hud-panel border border-cardborder rounded-2xl p-5 space-y-4 relative overflow-hidden">
                         <div class="absolute top-0 left-0 right-0 h-px hud-glow-line"></div>
@@ -699,7 +686,6 @@
                     <div class="space-y-2.5" id="investments-list"></div>
                 </div>
 
-                <!-- SUBTAB B: SUBSCRIPTIONS -->
                 <div id="assets-panel-subscriptions" class="space-y-4 hidden">
                     <div class="flex justify-between items-center">
                         <div>
@@ -724,7 +710,6 @@
                         <button onclick="handleLogout()" class="px-3 py-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-500 text-xs font-medium rounded-lg border border-rose-500/20 transition shrink-0">Cerrar Sesión</button>
                     </div>
 
-                    <!-- APPEARANCE & FINANCE PROFILE QUICK SETTINGS -->
                     <div class="grid grid-cols-2 gap-2.5">
                         <button onclick="toggleTheme()" class="py-2.5 px-3 bg-obsidian/80 hover:bg-zinc-900 border border-cardborder rounded-xl text-xs font-medium text-zinc-200 flex items-center justify-center gap-2 transition">
                             <i data-lucide="sun-moon" class="w-4 h-4 text-emerald-500"></i>
@@ -769,7 +754,7 @@
             </section>
         </main>
 
-        <!-- FLOATING AI HELP COPILOT BUTTON (BOTTOM-RIGHT CORNER ABOVE DOCK) -->
+        <!-- FLOATING AI HELP COPILOT BUTTON -->
         <button onclick="toggleHelpAgent()" id="help-agent-fab" title="Asistente IA de Trakealo" class="fixed right-4 safe-agent-fab z-30 w-11 h-11 rounded-full bg-carddark border border-emerald-500/50 text-emerald-500 shadow-2xl shadow-emerald-500/20 flex items-center justify-center hover:scale-105 active:scale-95 transition">
             <i data-lucide="bot" class="w-5 h-5"></i>
         </button>
@@ -1137,18 +1122,6 @@
             'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
             'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
         ];
-
-        const manifestBlob = new Blob([JSON.stringify({
-            name: "Trakealo", short_name: "Trakealo",
-            start_url: ".", display: "standalone",
-            background_color: "#09090b", theme_color: "#09090b",
-            icons: [{
-                src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='112' fill='%2309090b'/%3E%3Ccircle cx='256' cy='256' r='132' stroke='%23d4d4d8' stroke-width='28' fill='none'/%3E%3Cpath d='M120 355 L215 255 L258 295 L385 160' stroke='%2310b981' stroke-width='36' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3Cpath d='M322 160 L385 160 L385 223' stroke='%2310b981' stroke-width='36' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E",
-                sizes: "512x512",
-                type: "image/svg+xml"
-            }]
-        })], { type: 'application/json' });
-        document.getElementById('pwa-manifest').href = URL.createObjectURL(manifestBlob);
 
         /* =========================================================
            THEME ENGINE (LIGHT & DARK — DARK DEFAULT)
@@ -2019,7 +1992,6 @@
             const spent = scopedExpenses.reduce((acc, e) => acc + e.amount, 0);
             const pct = Math.min(Math.round((spent / appState.budgetLimit) * 100), 100);
 
-            // Exclusive Feature: Life-Hours & Orbital Passive Freedom Index
             const salaryBase = appState.monthlySalary > 0 ? appState.monthlySalary : getEntriesForPeriod().filter(e => e.type === 'income').reduce((a, b) => a + b.amount, 0);
             const hourlyRate = salaryBase > 0 ? salaryBase / 160 : 0;
             const lifeHours = hourlyRate > 0 ? (spent / hourlyRate) : 0;
@@ -2259,14 +2231,12 @@
             const netFlow = effectiveIncome - totalExpenses;
             const saveRate = effectiveIncome > 0 ? Math.round((netFlow / effectiveIncome) * 100) : 0;
 
-            // Find top spending category ("Financial Frog")
             const catTotals = {};
             scoped.filter(e => e.type === 'expense').forEach(e => {
                 catTotals[e.category] = (catTotals[e.category] || 0) + e.amount;
             });
             const topCatEntry = Object.entries(catTotals).sort((a, b) => b[1] - a[1])[0] || ['Sin gastos', 0];
 
-            // Calculations per mentor philosophy
             const tracyTargetSave = effectiveIncome * 0.20;
             const cardoneTarget40 = effectiveIncome * 0.40;
             const cardoneIncomeGap = Math.max(0, (totalExpenses + cardoneTarget40) - effectiveIncome);
@@ -2277,7 +2247,6 @@
 
             const blocks = [];
 
-            // Header Diagnostics
             blocks.push(`
                 <div class="hud-panel border border-cardborder rounded-2xl p-4 space-y-2">
                     <div class="flex justify-between items-center">
@@ -2425,7 +2394,7 @@
         }
 
         /* =========================================================
-           AI HELP COPILOT WIDGET (CORNER SUPPORT AGENT)
+           AI HELP COPILOT WIDGET
         ========================================================= */
         function toggleHelpAgent() {
             document.getElementById('help-agent-modal').classList.toggle('hidden');
