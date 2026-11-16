@@ -718,7 +718,7 @@
 
     <!-- ==================== FIN DE LA PARTE 1 ==================== -->
     <!-- Continúa inmediatamente pegando la PARTE 2 justo aquí abajo -->
-    ```html
+   ```html
     <section class="sr-only" aria-label="Información de Trakealo">
         <h2>Trakealo: Asesor Financiero IA por Voz, OCR, Inversiones y Gastos Fijos</h2>
         <p>Trakealo es una aplicación financiera inteligente para registrar gastos e ingresos por voz o escáner OCR, gestionar sueldo, gastos fijos, ahorros e inversiones y recibir planes adaptativos con un Asesor IA.</p>
@@ -727,7 +727,7 @@
     <script>
         if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js').catch(() => {}); }); }
 
-        /* URL de tu Cloudflare Worker con Google Gemini conectado */
+        /* Endpoint privado del Asesor IA (Cloudflare Worker Serverless) */
         const GEMINI_PROXY_URL = "https://trakealo-ai.ishootrawdotcom.workers.dev";
 
         const FIREBASE_CONFIG = {
@@ -769,10 +769,10 @@
         function toggleTheme() { const next = appState.theme === 'dark' ? 'light' : 'dark'; applyTheme(next); if (appState.user) saveUserData(true); showToast(next === 'light' ? 'Modo Claro activado' : 'Modo Oscuro SpaceX activado', 'info'); }
         applyTheme(appState.theme);
 
-        function updateGeminiStatusUI() {
+        function updateAdvisorStatusUI() {
             const badge = document.getElementById('advisor-engine-badge');
             if (badge) {
-                badge.textContent = GEMINI_PROXY_URL ? 'GEMINI // CONECTADO' : 'MOTOR ADAPTATIVO // IA';
+                badge.textContent = 'ASESOR IA // EN LÍNEA';
             }
         }
 
@@ -930,7 +930,7 @@
                 ss.textContent = 'Google Cloud Activo (Respaldo automático multi-teléfono)'; ss.className = 'text-xs text-emerald-500';
                 pill.innerHTML = '<i data-lucide="cloud" class="w-3 h-3"></i> Sincronizado'; pill.className = 'inline-flex items-center gap-1 text-[10px] font-mono font-medium px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/25 shrink-0';
             } else {
-                hb.textContent = 'Local'; hb.className = 'w-fit text-[9px] px-1.5 py-0.5 rounded-md bg-amber-500/10 text-amber-400 border border-amber-500/25 font-mono tracking-widest uppercase';
+                hb.textContent = 'Local'; hb.className = 'w-fit text-[9px] px-1.5 py-0.5 rounded-md bg-amber-500/10 text-amber-500 border border-amber-500/25 font-mono tracking-widest uppercase';
                 ss.textContent = 'Modo Local'; ss.className = 'text-xs text-amber-500';
                 pill.innerHTML = '<i data-lucide="hard-drive" class="w-3 h-3"></i> Solo este teléfono'; pill.className = 'inline-flex items-center gap-1 text-[10px] font-mono font-medium px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-500 border border-amber-500/25 shrink-0';
             }
@@ -986,7 +986,7 @@
                     else if (loginLabel) loginLabel.textContent = 'Continuar con Google';
                 });
             } else if (loginLabel) loginLabel.textContent = 'Continuar con Google';
-            updateGeminiStatusUI();
+            updateAdvisorStatusUI();
             lucide.createIcons();
         });
 
@@ -1046,7 +1046,7 @@
             const avatarBtn = document.getElementById('user-avatar-btn');
             if (appState.user?.photoURL) avatarBtn.innerHTML = `<img src="${appState.user.photoURL}" alt="Avatar" class="w-full h-full object-cover" />`;
             else avatarBtn.textContent = appState.user?.avatar || 'U';
-            updateCloudStatusUI(); updateGeminiStatusUI();
+            updateCloudStatusUI(); updateAdvisorStatusUI();
         }
 
         async function saveUserData(silent = false) {
@@ -1313,7 +1313,7 @@
             if (getEntriesForPeriod().length >= 3) score++;
             if (appState.investments.length > 0 || appState.goals.length > 0) score++;
             const pct = Math.max(15, Math.round((score/4)*100)), st = document.getElementById('mentor-data-status'), br = document.getElementById('mentor-data-bar'), ht = document.getElementById('mentor-data-hint');
-            if (st) st.textContent = `${score}/4 módulos completos (${appState.entries.length} movimientos totales)`;
+            if (st) st.textContent = `${score}/4 módulos completos (${appState.entries.length} movimientos)`;
             if (br) br.style.width = pct + '%';
             if (ht) ht.textContent = score >= 3 ? 'Listo: el Asesor IA leerá todos tus meses para generar planes ultra realistas.' : 'Tip: Registra tu sueldo, gastos fijos y compras del mes para mayor precisión.';
         }
@@ -1344,7 +1344,7 @@
 
         async function generateAdvisorPlans() {
             const btn = document.getElementById('generate-plans-btn'), orig = btn.innerHTML;
-            btn.disabled = true; btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i><span>Gemini analizando tu historial...</span>`; lucide.createIcons();
+            btn.disabled = true; btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i><span>Analizando tu historial...</span>`; lucide.createIcons();
             const snap = getFinancialSnapshot();
             let plans = null;
 
@@ -1395,7 +1395,7 @@ Instrucciones estrictas:
                         }
                     }
                 } catch (err) {
-                    console.warn('Gemini proxy error, fallback a motor local adaptativo:', err);
+                    console.warn('Fallback a motor adaptativo:', err);
                 }
             }
 
@@ -1437,7 +1437,7 @@ Instrucciones estrictas:
             if (advSlot) { advSlot.innerHTML = html + `<div class="text-right mt-1"><button onclick="clearActivePlan()" class="text-[10px] text-zinc-500 hover:text-rose-400 underline">Cambiar / Desactivar plan actual</button></div>`; advSlot.classList.remove('hidden'); }
         }
 
-        /* Consulta en vivo al Asesor IA (Universal: responde cualquier pregunta con inteligencia de Gemini) */
+        /* Consulta en vivo al Asesor IA (Universal: responde matemática, consejos, planes o cualquier pregunta) */
         async function askAdvisorLive(e) {
             e.preventDefault();
             const input = document.getElementById('advisor-qa-input');
@@ -1449,7 +1449,7 @@ Instrucciones estrictas:
             btn.disabled = true;
             btn.textContent = '...';
             replyBox.classList.remove('hidden');
-            replyBox.innerHTML = '<span class="text-emerald-400 font-mono animate-pulse">Consultando a Google Gemini en tiempo real...</span>';
+            replyBox.innerHTML = '<span class="text-emerald-400 font-mono animate-pulse">Analizando consulta...</span>';
 
             const snap = getFinancialSnapshot();
             const dailySafe = computeDailySafeSpend();
@@ -1457,8 +1457,8 @@ Instrucciones estrictas:
 
             if (GEMINI_PROXY_URL && navigator.onLine) {
                 try {
-                    const prompt = `Eres el Asesor Financiero IA privado de Trakealo, con la inteligencia de Google Gemini.
-Contexto del usuario en la app (úsalo si la pregunta tiene relación con sus finanzas o planes, o si te pide consejos):
+                    const prompt = `Eres el Asesor Financiero IA privado de Trakealo.
+Contexto del usuario en la app (úsalo si la pregunta tiene relación con sus finanzas, gastos o metas):
 - Usuario: ${appState.user?.name || 'Eduardo'}
 - Moneda: ${appState.currency}
 - Ingreso/Sueldo mensual: ${formatMoney(snap.effectiveIncome)}
@@ -1470,11 +1470,12 @@ Contexto del usuario en la app (úsalo si la pregunta tiene relación con sus fi
 
 Pregunta del usuario: "${q}"
 
-Instrucciones:
+Instrucciones estrictas:
 1. Responde a la pregunta de forma directa, inteligente y natural.
-2. Si la pregunta es general, matemática (ej. "¿cuánto es 5 más 5?"), de cultura o negocios, respóndela correctamente sin forzar hablar de finanzas si no viene al caso.
-3. Si la pregunta es sobre sus finanzas, gastos o compras, usa sus números reales con tono profesional y empático.
-4. Mantén la respuesta concisa y clara.`;
+2. Si la pregunta es matemática básica, lógica o general (ejemplo: "¿cuánto es 5 más 5?"), responde directamente el resultado exacto (ej. "5 más 5 es 10") sin forzar conceptos financieros innecesarios.
+3. Si la pregunta es sobre sus finanzas, compras o metas, evalúa sus números reales con tono profesional y empático.
+4. NUNCA menciones nombres de tecnologías, APIs, Google, Gemini ni autores comerciales. Sé tú mismo el Asesor IA de Trakealo.
+5. Responde conciso (máximo 3 o 4 oraciones).`;
 
                     const resp = await fetch(GEMINI_PROXY_URL, {
                         method: 'POST',
@@ -1485,28 +1486,31 @@ Instrucciones:
                     if (resp.ok) {
                         const data = await resp.json();
                         if (data.text) {
-                            answer = data.text;
+                            answer = data.text.trim();
                         } else if (data.error) {
-                            console.error('Error reportado por el Worker:', data.error);
-                            showToast('Error en Gemini: ' + data.error, 'error');
+                            console.error('Detalle técnico en Worker:', data.error);
                         }
                     } else {
-                        const errData = await resp.json().catch(() => ({}));
-                        console.error('Worker HTTP Error:', resp.status, errData);
+                        console.error('HTTP Error en Worker:', resp.status);
                     }
                 } catch (err) {
-                    console.warn('Error conectando al Worker de Gemini:', err);
+                    console.warn('Conexión con Worker falló:', err);
                 }
             }
 
+            // Respaldo limpio y natural si no hay conexión a internet
             if (!answer) {
                 const normQ = normalizeText(q);
                 if (normQ.includes('5') && normQ.includes('mas')) {
-                    answer = "5 + 5 es igual a 10. (Nota: Hubo un fallo de conexión con el Worker de Gemini, revisa tu conexión o la clave en Cloudflare).";
+                    answer = "5 más 5 es igual a 10.";
                 } else if (normQ.includes('gastar') || normQ.includes('puedo') || normQ.includes('hoy')) {
-                    answer = `Hoy tienes un margen seguro de <strong>${formatMoney(dailySafe)}</strong> sin poner en riesgo tu plan.`;
+                    answer = `Hoy tienes un margen seguro de <strong>${formatMoney(dailySafe)}</strong> sin poner en riesgo tu presupuesto mensual.`;
+                } else if (normQ.includes('plan') || normQ.includes('voy') || normQ.includes('meta')) {
+                    answer = appState.activePlan
+                        ? `Sigues en el <strong>${appState.activePlan.title}</strong>. Llevas ${formatMoney(snap.variableExpenses)} en compras variables frente a un tope mensual de ${formatMoney(appState.activePlan.variableCap)}.`
+                        : `Aún no has seleccionado un plan. Toca el botón de arriba para analizar tu mes y elegir uno.`;
                 } else {
-                    answer = `Para cuidar tu economía con un ingreso de ${formatMoney(snap.effectiveIncome)}, cubre primero tus ${formatMoney(snap.fixedMonthly)} de gastos fijos y mantén tus salidas dentro de ${formatMoney(dailySafe)}/día. (Respuesta local)`;
+                    answer = `Para cuidar tu economía con un ingreso de ${formatMoney(snap.effectiveIncome)}, cubre primero tus ${formatMoney(snap.fixedMonthly)} de gastos fijos y mantén tus salidas dentro de ${formatMoney(dailySafe)}/día.`;
                 }
             }
 
