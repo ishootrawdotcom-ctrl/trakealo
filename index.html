@@ -100,7 +100,7 @@
 
             <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-zinc-900/90 border border-cardborder text-[10px] font-mono tracking-[0.16em] text-emerald-400 uppercase mb-4">
                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                SYS // FINANZAS v3.0
+                SYS // FINANZAS v3.1
             </div>
 
             <div id="login-logo-slot" class="w-full flex flex-col items-center mb-6">
@@ -246,15 +246,22 @@
                     </div>
                     <div class="text-3xl sm:text-4xl font-bold text-white mono-num tracking-tight mb-4" id="total-balance">$0,00</div>
                     <div class="grid grid-cols-2 gap-3 pt-3 border-t border-cardborder/80">
-                        <div class="bg-obsidian/70 border border-emerald-500/20 rounded-xl p-3 flex items-center gap-3 relative overflow-hidden">
+                        <div class="bg-obsidian/70 border border-emerald-500/20 rounded-xl p-3 flex items-center gap-2.5 relative overflow-hidden">
                             <div class="absolute left-0 top-0 bottom-0 w-0.5 bg-emerald-500"></div>
                             <div class="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-500 flex items-center justify-center shrink-0"><i data-lucide="arrow-down-left" class="w-4 h-4"></i></div>
-                            <div class="min-w-0"><span class="text-[10px] text-zinc-400 block font-mono uppercase tracking-wider">Ingresos</span><span class="text-sm font-bold text-emerald-500 mono-num truncate block" id="total-income">$0,00</span></div>
+                            <div class="min-w-0">
+                                <span class="text-[10px] text-zinc-400 block font-mono uppercase tracking-wider">Ingresos</span>
+                                <span class="text-sm font-bold text-emerald-500 mono-num truncate block" id="total-income">$0,00</span>
+                            </div>
                         </div>
-                        <div class="bg-obsidian/70 border border-rose-500/20 rounded-xl p-3 flex items-center gap-3 relative overflow-hidden">
+                        <div class="bg-obsidian/70 border border-rose-500/20 rounded-xl p-3 flex items-center gap-2.5 relative overflow-hidden">
                             <div class="absolute left-0 top-0 bottom-0 w-0.5 bg-rose-500"></div>
                             <div class="w-8 h-8 rounded-lg bg-rose-500/10 text-rose-500 flex items-center justify-center shrink-0"><i data-lucide="arrow-up-right" class="w-4 h-4"></i></div>
-                            <div class="min-w-0"><span class="text-[10px] text-zinc-400 block font-mono uppercase tracking-wider">Gastos</span><span class="text-sm font-bold text-rose-500 mono-num truncate block" id="total-expense">$0,00</span></div>
+                            <div class="min-w-0">
+                                <span class="text-[10px] text-zinc-400 block font-mono uppercase tracking-wider">Gastos</span>
+                                <span class="text-sm font-bold text-rose-500 mono-num truncate block" id="total-expense">$0,00</span>
+                                <span class="text-[9px] font-mono text-zinc-500 truncate block" id="total-expense-breakdown">Var: $0 • Fijos: $0</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -344,7 +351,7 @@
                         <p class="text-xs text-zinc-500 text-right mono-num" id="budget-limit-text">Límite: $1,000,00</p>
                     </div>
 
-                    <div class="hud-panel border border-cardborder rounded-2xl p-5 space-y-4"><h3 class="text-[10px] font-mono font-semibold text-zinc-300 uppercase tracking-[0.14em]">Desglose por Categoría</h3><div class="space-y-3" id="categories-breakdown"></div></div>
+                    <div class="hud-panel border border-cardborder rounded-2xl p-5 space-y-4"><h3 class="text-[10px] font-mono font-semibold text-zinc-300 uppercase tracking-[0.14em]">Desglose por Categoría (Incl. Fijos)</h3><div class="space-y-3" id="categories-breakdown"></div></div>
                 </div>
 
                 <div id="analytics-panel-mentor" class="space-y-5 hidden">
@@ -409,7 +416,7 @@
                         <div><h3 class="text-[10px] font-mono font-semibold text-zinc-300 uppercase tracking-[0.14em]">Gastos Fijos Mensuales</h3><p class="text-[11px] text-zinc-500 mono-num" id="subs-total-banner">Total obligatorio: $0,00/mes</p></div>
                         <button onclick="openSubModal()" class="text-xs font-mono font-medium text-emerald-500 hover:underline flex items-center gap-1">+ Nuevo Gasto Fijo</button>
                     </div>
-                    <p class="text-[11px] text-zinc-400 leading-relaxed">Registra aquí compromisos obligatorios de cada mes (alquiler, luz, agua, teléfono, internet, colegio). El Asesor IA los resta antes de crear tus planes.</p>
+                    <p class="text-[11px] text-zinc-400 leading-relaxed">Registra aquí compromisos obligatorios de cada mes (alquiler, luz, agua, teléfono, internet, colegio). Se descuentan automáticamente de tu Balance y se incluyen en tus Gastos.</p>
                     <div class="space-y-3" id="subscriptions-list"></div>
                 </div>
             </section>
@@ -541,8 +548,21 @@
                     <div><label class="block text-[11px] font-medium text-zinc-400 mb-1">Monto</label><div class="relative"><span id="form-currency-symbol" class="absolute left-3.5 top-2.5 text-zinc-400 font-mono font-bold">$</span><input type="number" step="0.01" min="0.01" id="tx-amount" required placeholder="0.00" class="w-full bg-obsidian border border-cardborder rounded-xl pl-8 pr-3 py-2 text-white mono-num focus:outline-none focus:border-emerald-500 text-sm"></div></div>
                     <div><label class="block text-[11px] font-medium text-zinc-400 mb-1">Fecha</label><input type="date" id="tx-date" required class="w-full bg-obsidian border border-cardborder rounded-xl px-3 py-2 text-white text-xs mono-num focus:outline-none focus:border-emerald-500"></div>
                 </div>
-                <div><label class="block text-[11px] font-medium text-zinc-400 mb-1">Descripción</label><input type="text" id="tx-desc" required placeholder="Ej. Supermercado, Gasolina..." class="w-full bg-obsidian border border-cardborder rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-emerald-500"></div>
-                <div><label class="block text-[11px] font-medium text-zinc-400 mb-1">Categoría</label><select id="tx-category" class="w-full bg-obsidian border border-cardborder rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-emerald-500"><option value="Comida">🍔 Comida y Supermercado</option><option value="Transporte">🚗 Transporte y Gasolina</option><option value="Servicios">⚡ Servicios y Facturas</option><option value="Entretenimiento">🎮 Entretenimiento</option><option value="Negocio">💼 Negocio / Trading</option><option value="Otros">📦 Otros</option></select></div>
+                <div><label class="block text-[11px] font-medium text-zinc-400 mb-1">Descripción</label><input type="text" id="tx-desc" required placeholder="Ej. Supermercado, Gasolina, Farmacia..." class="w-full bg-obsidian border border-cardborder rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-emerald-500"></div>
+                <div>
+                    <label class="block text-[11px] font-medium text-zinc-400 mb-1">Categoría</label>
+                    <select id="tx-category" class="w-full bg-obsidian border border-cardborder rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-emerald-500">
+                        <option value="Comida">🍔 Comida y Supermercado</option>
+                        <option value="Transporte">🚗 Carro, Transporte y Gasolina</option>
+                        <option value="Hogar">🏡 Hogar y Cosas de Casa</option>
+                        <option value="Salud">🩺 Salud y Farmacia</option>
+                        <option value="Ropa">👕 Ropa y Personal</option>
+                        <option value="Servicios">⚡ Servicios y Facturas</option>
+                        <option value="Entretenimiento">🎮 Entretenimiento</option>
+                        <option value="Negocio">💼 Negocio / Trading</option>
+                        <option value="Otros">📦 Otros</option>
+                    </select>
+                </div>
                 <button type="submit" id="tx-submit-btn" class="w-full py-3 bg-emerald-500 hover:bg-emerald-400 text-black font-bold rounded-xl text-sm transition shadow-lg shadow-emerald-500/20">Guardar Movimiento</button>
             </form>
         </div>
@@ -612,6 +632,7 @@
         let lastGeneratedPlans = [], editingTxId = null, contributingGoalIdx = null, isSignupMode = false, selectedOnboardingRole = 'Empleado';
         const symbols = { USD: '$', EUR: '€', VES: 'Bs.' };
         const MONTH_NAMES_ES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+        const ALL_CATEGORIES = ['Comida','Transporte','Hogar','Salud','Ropa','Servicios','Entretenimiento','Negocio','Otros'];
 
         function applyTheme(theme) {
             const html = document.documentElement, metaColor = document.getElementById('meta-theme-color'), toggleBtn = document.getElementById('theme-toggle-btn');
@@ -680,6 +701,18 @@
                 if (!c.date) c.date = formatDisplayDateFromISO(c.isoDate);
                 return c;
             });
+        }
+
+        /* Calculates fixed expenses applicable for the active view period */
+        function getFixedExpensesForPeriod(monthKey = appState.selectedMonth, scopedEntries = null) {
+            const fixedMonthly = appState.subscriptions.reduce((a, s) => a + (s.amount || 0), 0);
+            if (fixedMonthly <= 0) return 0;
+            if (monthKey === 'all') {
+                const list = scopedEntries || appState.entries;
+                const months = new Set(list.map(e => e.monthKey).filter(Boolean));
+                return fixedMonthly * Math.max(1, months.size);
+            }
+            return fixedMonthly;
         }
 
         function selectOnboardingRole(role) {
@@ -962,12 +995,17 @@
         function formatMoney(amount) { return appState.currencySymbol + Number(amount || 0).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
 
         function renderSummary() {
-            const scoped = getEntriesForPeriod(); let inc = 0, exp = 0;
-            scoped.forEach(e => { if (e.type === 'income') inc += e.amount; else exp += e.amount; });
+            const scoped = getEntriesForPeriod();
+            let inc = 0, varExp = 0;
+            scoped.forEach(e => { if (e.type === 'income') inc += e.amount; else varExp += e.amount; });
+            const fixedExp = getFixedExpensesForPeriod(appState.selectedMonth, scoped);
+            const totalExp = varExp + fixedExp;
+
             document.getElementById('balance-period-label').textContent = appState.selectedMonth === 'all' ? 'BALANCE // GENERAL' : `BALANCE // ${formatMonthLabel(appState.selectedMonth).toUpperCase()}`;
-            document.getElementById('total-balance').textContent = formatMoney(inc - exp);
+            document.getElementById('total-balance').textContent = formatMoney(inc - totalExp);
             document.getElementById('total-income').textContent = formatMoney(inc);
-            document.getElementById('total-expense').textContent = formatMoney(exp);
+            document.getElementById('total-expense').textContent = formatMoney(totalExp);
+            document.getElementById('total-expense-breakdown').textContent = `Var: ${formatMoney(varExp)} • Fijos: ${formatMoney(fixedExp)}`;
         }
 
         function renderFinanceProfile() {
@@ -1005,7 +1043,7 @@
             document.getElementById('weekly-subs-summary').textContent = `Fijos: ${formatMoney(fixedTotal)}/mes`;
             const buckets = [], scoped = getEntriesForPeriod();
             if (appState.selectedMonth === getCurrentMonthKey() || appState.selectedMonth === 'all') {
-                document.getElementById('chart-title').textContent = 'Telemetría // Gastos últimos 7 días';
+                document.getElementById('chart-title').textContent = 'Telemetría // Gastos diarios (7 días)';
                 for (let i = 6; i >= 0; i--) {
                     const d = new Date(); d.setDate(d.getDate() - i);
                     const iso = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
@@ -1058,9 +1096,9 @@
         }
 
         function renderAnalytics() {
-            const scopedExp = getEntriesForPeriod().filter(e => e.type === 'expense'), varSpent = scopedExp.reduce((a,e) => a + e.amount, 0), fixedM = appState.subscriptions.reduce((a,s) => a + (s.amount||0), 0), totalCommitted = varSpent + fixedM;
+            const scoped = getEntriesForPeriod(), scopedExp = scoped.filter(e => e.type === 'expense'), varSpent = scopedExp.reduce((a,e) => a + e.amount, 0), fixedPeriod = getFixedExpensesForPeriod(appState.selectedMonth, scoped), totalCommitted = varSpent + fixedPeriod;
             const pct = Math.min(Math.round((totalCommitted / appState.budgetLimit) * 100), 100);
-            const salaryBase = appState.monthlySalary > 0 ? appState.monthlySalary : getEntriesForPeriod().filter(e => e.type === 'income').reduce((a,b) => a + b.amount, 0);
+            const salaryBase = appState.monthlySalary > 0 ? appState.monthlySalary : scoped.filter(e => e.type === 'income').reduce((a,b) => a + b.amount, 0);
             const hourlyRate = salaryBase > 0 ? salaryBase / 160 : 0, lifeHours = hourlyRate > 0 ? (totalCommitted / hourlyRate) : 0, passiveM = appState.investments.reduce((a,i) => a + (i.monthlyIncome||0), 0);
             const freedomPct = totalCommitted > 0 ? Math.min(Math.round((passiveM / totalCommitted) * 100), 100) : (passiveM > 0 ? 100 : 0);
 
@@ -1069,9 +1107,12 @@
             document.getElementById('freedom-ratio-pct').textContent = `${freedomPct}%`;
             document.getElementById('budget-spent').textContent = formatMoney(totalCommitted);
             const bar = document.getElementById('budget-progress'); bar.style.width = pct + '%'; bar.className = pct >= 90 ? 'bg-rose-500 h-2.5 rounded-full transition-all duration-500' : 'bg-emerald-500 h-2.5 rounded-full transition-all duration-500';
-            document.getElementById('budget-limit-text').textContent = `Límite: ${formatMoney(appState.budgetLimit)} (${pct}% • Fijos: ${formatMoney(fixedM)})`;
+            document.getElementById('budget-limit-text').textContent = `Límite: ${formatMoney(appState.budgetLimit)} (${pct}% • Fijos: ${formatMoney(fixedPeriod)})`;
 
-            const cats = ['Comida','Transporte','Servicios','Entretenimiento','Negocio','Otros'], catTotals = cats.map(cat => ({ cat, total: scopedExp.filter(e => e.category === cat).reduce((a,e) => a + e.amount, 0) })).sort((a,b) => b.total - a.total);
+            const catTotals = ALL_CATEGORIES.map(cat => ({ cat, total: scopedExp.filter(e => e.category === cat).reduce((a,e) => a + e.amount, 0) }));
+            if (fixedPeriod > 0) catTotals.push({ cat: 'Gastos Fijos (Casa/Servicios)', total: fixedPeriod });
+            catTotals.sort((a,b) => b.total - a.total);
+
             const topCat = catTotals[0];
             document.getElementById('top-category-name').textContent = (topCat && topCat.total > 0) ? topCat.cat : 'Sin gastos';
             document.getElementById('top-category-amount').textContent = formatMoney((topCat && topCat.total > 0) ? topCat.total : 0);
@@ -1081,8 +1122,9 @@
 
             const c = document.getElementById('categories-breakdown'); c.innerHTML = '';
             catTotals.forEach(({ cat, total }) => {
-                const cp = varSpent > 0 ? Math.round((total/varSpent)*100) : 0;
-                c.innerHTML += `<div class="space-y-1.5"><div class="flex justify-between items-center text-xs"><span class="text-zinc-300 font-medium">${cat} <span class="text-[10px] font-mono text-zinc-500">(${cp}%)</span></span><span class="font-mono font-bold text-white">${formatMoney(total)}</span></div><div class="w-full bg-obsidian rounded-full h-1.5 overflow-hidden border border-cardborder/70"><div class="bg-emerald-500 h-1.5 rounded-full transition-all duration-300" style="width:${cp}%"></div></div></div>`;
+                if (total === 0 && !['Comida','Transporte','Hogar','Salud','Ropa','Servicios'].includes(cat)) return;
+                const cp = totalCommitted > 0 ? Math.round((total/totalCommitted)*100) : 0;
+                c.innerHTML += `<div class="space-y-1.5"><div class="flex justify-between items-center text-xs"><span class="text-zinc-300 font-medium">${cat} <span class="text-[10px] font-mono text-zinc-500">(${cp}%)</span></span><span class="font-mono font-bold text-white">${formatMoney(total)}</span></div><div class="w-full bg-obsidian rounded-full h-1.5 overflow-hidden border border-cardborder/70"><div class="${cat.startsWith('Gastos Fijos')?'bg-amber-400':'bg-emerald-500'} h-1.5 rounded-full transition-all duration-300" style="width:${cp}%"></div></div></div>`;
             });
         }
 
@@ -1258,7 +1300,7 @@
             if (q.includes('internet') || q.includes('offline') || q.includes('datos') || q.includes('wifi') || q.includes('calle')) return 'Una vez logueado, puedes usar la app en la calle <strong>sin internet</strong>. Todo se guarda en tu teléfono y se sube automáticamente cuando vuelva la señal.';
             if (q.includes('sheet') || q.includes('excel') || q.includes('exportar') || q.includes('csv')) return 'Elige el mes en <strong>Inicio</strong> y toca <strong>SHEETS</strong> para descargar un <code>.csv</code> listo para Google Sheets.';
             if (q.includes('asesor') || q.includes('plan') || q.includes('ia') || q.includes('6')) return 'Entra a <strong>IA & Datos → Asesor IA</strong> y toca <strong>Analizar Mi Mes y Crear 3 Planes</strong>. Se adapta a tu sueldo y gastos fijos reales, te deja elegir un plan y calcula cuánto puedes gastar cada día.';
-            if (q.includes('fijo') || q.includes('alquiler') || q.includes('luz') || q.includes('sueldo') || q.includes('inversion') || q.includes('activo')) return 'En <strong>Inicio → Base Financiera</strong> configuras sueldo y ahorros. En <strong>Activos → Gastos Fijos</strong> agregas alquiler, luz, agua o internet, y en <strong>Inversiones</strong> tus acciones o propiedades.';
+            if (q.includes('fijo') || q.includes('alquiler') || q.includes('luz') || q.includes('sueldo') || q.includes('inversion') || q.includes('activo')) return 'En <strong>Inicio → Base Financiera</strong> configuras sueldo y ahorros. En <strong>Activos → Gastos Fijos</strong> agregas alquiler, luz, agua o internet (se suman solos a tus Gastos de Inicio), y en <strong>Inversiones</strong> tus acciones o propiedades.';
             return 'Puedo explicarte: <strong>Voz</strong>, <strong>OCR Facturas</strong>, <strong>Asesor IA y 3 Planes</strong>, <strong>Gastos Fijos</strong>, <strong>Inversiones</strong>, <strong>Alarma 6:00 PM</strong>, <strong>Google Sheets</strong> o <strong>Modo Offline</strong>.';
         }
         function submitHelpQuestion(e) {
@@ -1320,12 +1362,13 @@
         function exportGoogleSheetsCSV(monthKey = appState.selectedMonth) {
             const scoped = getEntriesForPeriod(monthKey).slice().sort((a,b) => (a.isoDate||'').localeCompare(b.isoDate||''));
             if (!scoped.length && !appState.goals.length && !appState.subscriptions.length && !appState.investments.length) { showToast(`No hay datos en ${formatMonthLabel(monthKey)}.`, 'warning'); return; }
-            const pt = formatMonthLabel(monthKey), rows = [['TRAKEALO - REPORTE GOOGLE SHEETS'], ['Período', pt, 'Moneda', appState.currency, 'Generado', getTodayISO()], ['Sueldo Base Mensual', Number(appState.monthlySalary||0).toFixed(2), 'Ahorros Acumulados', Number(appState.currentSavings||0).toFixed(2)], [], ['Fecha','Mes','Tipo','Categoría','Descripción','Monto','Moneda']];
+            const pt = formatMonthLabel(monthKey), fixedPeriod = getFixedExpensesForPeriod(monthKey, scoped), rows = [['TRAKEALO - REPORTE GOOGLE SHEETS'], ['Período', pt, 'Moneda', appState.currency, 'Generado', getTodayISO()], ['Sueldo Base Mensual', Number(appState.monthlySalary||0).toFixed(2), 'Ahorros Acumulados', Number(appState.currentSavings||0).toFixed(2)], [], ['Fecha','Mes','Tipo','Categoría','Descripción','Monto','Moneda']];
             let ti = 0, te = 0, cm = {};
             scoped.forEach(e => { const sa = e.type==='income'?e.amount:-e.amount; if (e.type==='income') ti+=e.amount; else { te+=e.amount; cm[e.category]=(cm[e.category]||0)+e.amount; } rows.push([e.isoDate||e.date, formatMonthLabel(e.monthKey||'all'), e.type==='income'?'Ingreso':'Gasto', e.category, e.desc, sa.toFixed(2), appState.currency]); });
-            rows.push([], ['RESUMEN DEL PERÍODO'], ['Total Ingresos', ti.toFixed(2), appState.currency], ['Total Gastos Variables', te.toFixed(2), appState.currency], ['Total Gastos Fijos Mensuales', appState.subscriptions.reduce((a,s)=>a+s.amount,0).toFixed(2), appState.currency], ['Balance Neto Movimientos', (ti-te).toFixed(2), appState.currency]);
+            const totalExpAll = te + fixedPeriod;
+            rows.push([], ['RESUMEN DEL PERÍODO'], ['Total Ingresos', ti.toFixed(2), appState.currency], ['Total Gastos Variables', te.toFixed(2), appState.currency], ['Total Gastos Fijos del Período', fixedPeriod.toFixed(2), appState.currency], ['Total Gastos (Variables + Fijos)', totalExpAll.toFixed(2), appState.currency], ['Balance Neto Real', (ti-totalExpAll).toFixed(2), appState.currency]);
             const sc = Object.entries(cm).sort((a,b)=>b[1]-a[1]);
-            if (sc.length) { rows.push(['Categoría Mayor Gasto', sc[0][0], sc[0][1].toFixed(2)], [], ['DESGLOSE POR CATEGORÍA'], ['Categoría','Total','%']); sc.forEach(([c,a]) => rows.push([c, a.toFixed(2), te>0?((a/te)*100).toFixed(1)+'%':'0%'])); }
+            if (sc.length) { rows.push(['Categoría Mayor Gasto Variable', sc[0][0], sc[0][1].toFixed(2)], [], ['DESGLOSE POR CATEGORÍA'], ['Categoría','Total','%']); sc.forEach(([c,a]) => rows.push([c, a.toFixed(2), totalExpAll>0?((a/totalExpAll)*100).toFixed(1)+'%':'0%'])); if (fixedPeriod>0) rows.push(['Gastos Fijos', fixedPeriod.toFixed(2), totalExpAll>0?((fixedPeriod/totalExpAll)*100).toFixed(1)+'%':'0%']); }
             if (appState.investments.length) { rows.push([], ['INVERSIONES'], ['Tipo','Activo','Invertido','Valor Actual','Pasivo/Mes']); appState.investments.forEach(i => rows.push([i.type, i.name, Number(i.invested).toFixed(2), Number(i.currentValue).toFixed(2), Number(i.monthlyIncome).toFixed(2)])); }
             if (appState.goals.length) { rows.push([], ['METAS'], ['Meta','Ahorrado','Objetivo','Progreso']); appState.goals.forEach(g => rows.push([g.name, Number(g.current).toFixed(2), Number(g.target).toFixed(2), g.target>0?Math.min(Math.round((g.current/g.target)*100),100)+'%':'0%'])); }
             if (appState.subscriptions.length) { rows.push([], ['GASTOS FIJOS'], ['Concepto','Monto Mensual','Moneda']); appState.subscriptions.forEach(s => rows.push([s.name, Number(s.amount).toFixed(2), appState.currency])); }
@@ -1336,8 +1379,11 @@
         function exportJSONData() { const a = document.createElement('a'); a.href = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appState)); a.download = "trakealo_backup.json"; document.body.appendChild(a); a.click(); a.remove(); }
 
         const CATEGORY_KEYWORDS = {
-            Comida: ['comida','supermercado','mercado','automercado','bodega','panaderia','panadería','almuerzo','cena','desayuno','cafe','café','restaurante','restaurant','pizza','hamburguesa','sushi','pollo','carne','frutas','verduras','agua','refresco','cerveza','farmatodo','excelsior','gama','plazas','central madeirense','kfc','mcdonald'],
-            Transporte: ['transporte','gasolina','combustible','uber','ridery','yummy','taxi','pasaje','metro','bus','autobus','autobús','peaje','estacionamiento','parking','caucho','aceite','taller','mecanico','mecánico','vuelo','avion','avión','pdv','estacion'],
+            Comida: ['comida','supermercado','mercado','automercado','bodega','panaderia','panadería','almuerzo','cena','desayuno','cafe','café','restaurante','restaurant','pizza','hamburguesa','sushi','pollo','carne','frutas','verduras','agua','refresco','cerveza','excelsior','gama','plazas','central madeirense','kfc','mcdonald'],
+            Transporte: ['transporte','carro','vehiculo','vehículo','repuesto','cauchera','gasolina','combustible','uber','ridery','yummy','taxi','pasaje','metro','bus','autobus','autobús','peaje','estacionamiento','parking','caucho','aceite','taller','mecanico','mecánico','vuelo','avion','avión','pdv','estacion'],
+            Hogar: ['casa','hogar','mueble','colchon','colchón','cocina','nevera','limpieza','detergente','jabon','jabón','ferreteria','ferretería','bombillo','pintura','decoracion','decoración','utensilios','sabanas','sábanas'],
+            Salud: ['salud','farmacia','farmatodo','locatel','medicina','medicamento','pastilla','doctor','medico','médico','clinica','clínica','consulta','examen','laboratorio','dentista','odontologo','lentes','vitamina','hospital'],
+            Ropa: ['ropa','camisa','pantalon','pantalón','zapatos','tenis','vestido','franela','chaqueta','peluqueria','peluquería','barberia','barbería','corte','perfume','maquillaje','tienda','zara'],
             Servicios: ['servicio','servicios','luz','electricidad','corpoelec','agua','hidrocapital','internet','wifi','fibra','telefono','teléfono','saldo','recarga','movistar','digitel','cantv','gas','alquiler','renta','condominio','factura','seguro','impuesto'],
             Entretenimiento: ['entretenimiento','netflix','spotify','disney','hbo','amazon prime','youtube','cine','entrada','boletos','concierto','fiesta','bar','juego','juegos','playstation','xbox','steam','gimnasio','gym','suscripcion','suscripción'],
             Negocio: ['negocio','trading','broker','cuenta','fondeo','ftmo','cliente','proyecto','oficina','laptop','software','dominio','hosting','publicidad','ads','marketing','inversion','inversión','ganancia','profit','sueldo','salario','nomina','nómina','honorarios','venta','comision','comisión','dividendo']
