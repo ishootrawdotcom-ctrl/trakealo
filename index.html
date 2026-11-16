@@ -3,35 +3,64 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+
+    <!-- SEO & GEO METATAGS -->
     <title>Trakealo — Asesor Financiero IA, Voz, OCR y Control de Gastos</title>
-    <meta name="description" content="Trakealo es tu asesor financiero inteligente con IA para controlar ingresos, sueldo, gastos fijos, ahorros e inversiones mediante dictado por voz, escaneo OCR de facturas y planes mensuales adaptativos." />
+    <meta name="description" content="Trakealo es tu asesor financiero inteligente con IA para controlar ingresos, sueldo, gastos fijos, compras diarias, ahorros e inversiones con dictado por voz y planes adaptativos." />
     <meta name="keywords" content="asesor financiero IA, control financiero, app de gastos personales, registrar gastos por voz, escanear facturas OCR, exportar gastos a Google Sheets, gastos fijos, inversiones, Trakealo" />
     <meta name="author" content="Trakealo" />
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
     <link rel="canonical" href="https://ishootrawdotcom-ctrl.github.io/trakealo/" />
+
+    <!-- Open Graph (WhatsApp, Telegram, Redes) -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Trakealo" />
     <meta property="og:locale" content="es_ES" />
     <meta property="og:url" content="https://ishootrawdotcom-ctrl.github.io/trakealo/" />
     <meta property="og:title" content="Trakealo — Asesor Financiero IA por Voz, Facturas OCR e Inversiones" />
-    <meta property="og:description" content="Registra gastos hablando o tomando foto a tu factura, gestiona sueldo, gastos fijos, ahorros e inversiones y sigue un plan personalizado de IA." />
+    <meta property="og:description" content="Registra gastos hablando o fotografiando facturas, administra tu sueldo, gastos fijos, ahorros e inversiones con un Asesor IA guiado." />
     <meta property="og:image" content="https://ishootrawdotcom-ctrl.github.io/trakealo/app-icon.png" />
+
+    <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Trakealo — Asesor Financiero IA" />
     <meta name="twitter:description" content="Finanzas personales de precisión: voz, OCR de recibos, gastos fijos, inversiones, Asesor IA y exportación a Google Sheets." />
     <meta name="twitter:image" content="https://ishootrawdotcom-ctrl.github.io/trakealo/app-icon.png" />
+
+    <!-- Structured Data JSON-LD for AI Search Engines -->
     <script type="application/ld+json">
-    {"@context":"https://schema.org","@graph":[{"@type":"WebApplication","@id":"https://ishootrawdotcom-ctrl.github.io/trakealo/#app","name":"Trakealo","url":"https://ishootrawdotcom-ctrl.github.io/trakealo/","image":"https://ishootrawdotcom-ctrl.github.io/trakealo/app-icon.png","applicationCategory":"FinanceApplication","operatingSystem":"iOS, Android, Windows, macOS, Web","inLanguage":"es","description":"App financiera con asesor IA adaptativo, voz, escáner OCR de facturas, gastos fijos, inversiones y exportación a Google Sheets.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"¿Qué es Trakealo?","acceptedAnswer":{"@type":"Answer","text":"Asesor financiero inteligente para controlar ingresos, sueldo, gastos fijos, compras diarias, ahorros e inversiones."}},{"@type":"Question","name":"¿Cómo funciona el Asesor IA?","acceptedAnswer":{"@type":"Answer","text":"Analiza tu ingreso real y gastos fijos para generar 3 planes realistas adaptados a tu capacidad y guiarte diariamente."}}]}]}
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebApplication",
+          "@id": "https://ishootrawdotcom-ctrl.github.io/trakealo/#app",
+          "name": "Trakealo",
+          "alternateName": "Trakealo Asesor Financiero IA",
+          "url": "https://ishootrawdotcom-ctrl.github.io/trakealo/",
+          "image": "https://ishootrawdotcom-ctrl.github.io/trakealo/app-icon.png",
+          "applicationCategory": "FinanceApplication",
+          "operatingSystem": "iOS, Android, Windows, macOS, Web",
+          "inLanguage": "es",
+          "description": "App financiera con asesor IA adaptativo, voz, escáner OCR de facturas, control de sueldo, gastos fijos, inversiones y exportación a Google Sheets."
+        }
+      ]
+    }
     </script>
+
+    <!-- PWA & Native Home Screen Meta Tags -->
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="Trakealo" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="theme-color" id="meta-theme-color" content="#09090b" />
+
     <link rel="icon" type="image/png" sizes="512x512" href="./app-icon.png?v=5" />
     <link rel="apple-touch-icon" sizes="180x180" href="./app-icon.png?v=5" />
     <link rel="apple-touch-icon-precomposed" sizes="180x180" href="./app-icon.png?v=5" />
     <link rel="manifest" href="./manifest.json?v=5" />
+
+    <!-- Fonts & Tailwind CSS -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -39,48 +68,124 @@
     <script>
         tailwind.config = {
             darkMode: 'class',
-            theme: { extend: { colors: { obsidian: '#09090b', carddark: '#121216', cardborder: '#27272a' }, fontFamily: { sans: ['Inter', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'] } } }
-        }
+            theme: {
+                extend: {
+                    colors: {
+                        obsidian: '#09090b',
+                        carddark: '#121216',
+                        cardborder: '#27272a'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace']
+                    }
+                }
+            }
+        };
     </script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #09090b; color: #f4f4f5; -webkit-tap-highlight-color: transparent; background-image: radial-gradient(ellipse 85% 45% at 50% -10%, rgba(16,185,129,0.11), transparent 70%), linear-gradient(to right, rgba(39,39,42,0.22) 1px, transparent 1px), linear-gradient(to bottom, rgba(39,39,42,0.22) 1px, transparent 1px); background-size: 100% 100%, 28px 28px, 28px 28px; background-attachment: fixed; transition: background-color 0.25s ease, color 0.25s ease; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #09090b;
+            color: #f4f4f5;
+            -webkit-tap-highlight-color: transparent;
+            background-image:
+                radial-gradient(ellipse 85% 45% at 50% -10%, rgba(16, 185, 129, 0.11), transparent 70%),
+                linear-gradient(to right, rgba(39, 39, 42, 0.22) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(39, 39, 42, 0.22) 1px, transparent 1px);
+            background-size: 100% 100%, 28px 28px, 28px 28px;
+            background-attachment: fixed;
+            transition: background-color 0.25s ease, color 0.25s ease;
+        }
         .mono-num { font-family: 'JetBrains Mono', monospace; }
-        .hud-panel { background: linear-gradient(180deg, rgba(18,18,22,0.94) 0%, rgba(12,12,16,0.97) 100%); box-shadow: inset 0 1px 0 rgba(255,255,255,0.045), 0 16px 36px -16px rgba(0,0,0,0.75); }
-        .hud-glow-line { background: linear-gradient(90deg, transparent, rgba(16,185,129,0.55), transparent); }
-        .chart-grid-bg { background-image: linear-gradient(to bottom, rgba(39,39,42,0.45) 1px, transparent 1px); background-size: 100% 25%; }
+        .hud-panel {
+            background: linear-gradient(180deg, rgba(18, 18, 22, 0.94) 0%, rgba(12, 12, 16, 0.97) 100%);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.045), 0 16px 36px -16px rgba(0, 0, 0, 0.75);
+        }
+        .hud-glow-line {
+            background: linear-gradient(90deg, transparent, rgba(16, 185, 129, 0.55), transparent);
+        }
+        .chart-grid-bg {
+            background-image: linear-gradient(to bottom, rgba(39, 39, 42, 0.45) 1px, transparent 1px);
+            background-size: 100% 25%;
+        }
+
+        /* Safe Areas for iPhone / Notch / Dynamic Island */
         .safe-header { padding-top: calc(env(safe-area-inset-top, 0px) + 12px); }
-        .safe-login { padding-top: calc(env(safe-area-inset-top, 0px) + 20px); padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 20px); }
+        .safe-login {
+            padding-top: calc(env(safe-area-inset-top, 0px) + 20px);
+            padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 20px);
+        }
         .safe-dock { bottom: calc(env(safe-area-inset-bottom, 0px) + 10px); }
         .safe-agent-fab { bottom: calc(env(safe-area-inset-bottom, 0px) + 84px); }
         .safe-main-pad { padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 125px); }
-        html:not(.dark) body { background-color: #f4f4f5; color: #09090b; background-image: radial-gradient(ellipse 85% 45% at 50% -10%, rgba(16,185,129,0.12), transparent 70%), linear-gradient(to right, rgba(212,212,216,0.45) 1px, transparent 1px), linear-gradient(to bottom, rgba(212,212,216,0.45) 1px, transparent 1px); }
-        html:not(.dark) .hud-panel { background: linear-gradient(180deg, rgba(255,255,255,0.96) 0%, rgba(250,250,250,0.98) 100%); box-shadow: 0 10px 28px -14px rgba(9,9,11,0.14); }
-        html:not(.dark) .bg-obsidian, html:not(.dark) .bg-obsidian\/85, html:not(.dark) .bg-obsidian\/95, html:not(.dark) .bg-obsidian\/80, html:not(.dark) .bg-obsidian\/70 { background-color: rgba(244,244,245,0.92) !important; }
-        html:not(.dark) .bg-carddark, html:not(.dark) .bg-carddark\/90 { background-color: rgba(255,255,255,0.95) !important; }
-        html:not(.dark) .bg-zinc-900, html:not(.dark) .bg-zinc-900\/70, html:not(.dark) .bg-zinc-900\/90, html:not(.dark) .bg-zinc-800 { background-color: #e4e4e7 !important; }
-        html:not(.dark) .border-cardborder, html:not(.dark) .border-cardborder\/80, html:not(.dark) .border-cardborder\/70, html:not(.dark) .border-cardborder\/60 { border-color: #d4d4d8 !important; }
-        html:not(.dark) .text-white:not(.keep-white), html:not(.dark) .text-zinc-100, html:not(.dark) .text-zinc-200 { color: #09090b !important; }
+
+        /* Light Mode Theme */
+        html:not(.dark) body {
+            background-color: #f4f4f5;
+            color: #09090b;
+            background-image:
+                radial-gradient(ellipse 85% 45% at 50% -10%, rgba(16, 185, 129, 0.12), transparent 70%),
+                linear-gradient(to right, rgba(212, 212, 216, 0.45) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(212, 212, 216, 0.45) 1px, transparent 1px);
+        }
+        html:not(.dark) .hud-panel {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(250, 250, 250, 0.98) 100%);
+            box-shadow: 0 10px 28px -14px rgba(9, 9, 11, 0.14);
+        }
+        html:not(.dark) .bg-obsidian,
+        html:not(.dark) .bg-obsidian\/85,
+        html:not(.dark) .bg-obsidian\/95,
+        html:not(.dark) .bg-obsidian\/80,
+        html:not(.dark) .bg-obsidian\/70 { background-color: rgba(244, 244, 245, 0.92) !important; }
+        html:not(.dark) .bg-carddark,
+        html:not(.dark) .bg-carddark\/90 { background-color: rgba(255, 255, 255, 0.95) !important; }
+        html:not(.dark) .bg-zinc-900,
+        html:not(.dark) .bg-zinc-900\/70,
+        html:not(.dark) .bg-zinc-900\/90,
+        html:not(.dark) .bg-zinc-800 { background-color: #e4e4e7 !important; }
+        html:not(.dark) .border-cardborder,
+        html:not(.dark) .border-cardborder\/80,
+        html:not(.dark) .border-cardborder\/70,
+        html:not(.dark) .border-cardborder\/60 { border-color: #d4d4d8 !important; }
+        html:not(.dark) .text-white:not(.keep-white),
+        html:not(.dark) .text-zinc-100,
+        html:not(.dark) .text-zinc-200 { color: #09090b !important; }
         html:not(.dark) .text-zinc-300 { color: #27272a !important; }
         html:not(.dark) .text-zinc-400 { color: #52525b !important; }
         html:not(.dark) .text-zinc-500 { color: #71717a !important; }
-        html:not(.dark) .chart-grid-bg { background-image: linear-gradient(to bottom, rgba(212,212,216,0.7) 1px, transparent 1px); }
+        html:not(.dark) .chart-grid-bg { background-image: linear-gradient(to bottom, rgba(212, 212, 216, 0.7) 1px, transparent 1px); }
+
         ::-webkit-scrollbar { width: 4px; height: 4px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #27272a; border-radius: 4px; }
-        @keyframes pulse-ring { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16,185,129,0.45); } 70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(16,185,129,0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16,185,129,0); } }
+        @keyframes pulse-ring {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.45); }
+            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
         .mic-listening { animation: pulse-ring 1.4s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
     </style>
     <script>
         function tryNextLogoExt(img, fallbackId) {
             const exts = ['./app-icon.png?v=5', './logo.png', './logo.jpg', './logo.jpeg', './logo.webp'];
             const attempt = parseInt(img.dataset.attempt || '0', 10) + 1;
-            if (attempt < exts.length) { img.dataset.attempt = String(attempt); img.src = exts[attempt]; }
-            else { img.style.display = 'none'; if (fallbackId) { const fb = document.getElementById(fallbackId); if (fb) fb.classList.remove('hidden'); } }
+            if (attempt < exts.length) {
+                img.dataset.attempt = String(attempt);
+                img.src = exts[attempt];
+            } else {
+                img.style.display = 'none';
+                if (fallbackId) {
+                    const fb = document.getElementById(fallbackId);
+                    if (fb) fb.classList.remove('hidden');
+                }
+            }
         }
     </script>
 </head>
@@ -100,7 +205,7 @@
 
             <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-zinc-900/90 border border-cardborder text-[10px] font-mono tracking-[0.16em] text-emerald-400 uppercase mb-4">
                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                SYS // FINANZAS v3.1
+                SYS // FINANZAS v3.5
             </div>
 
             <div id="login-logo-slot" class="w-full flex flex-col items-center mb-6">
@@ -113,7 +218,7 @@
                 </div>
                 <h1 class="sr-only">Trakealo</h1>
             </div>
-            
+
             <button id="google-login-btn" onclick="handleGoogleLogin()" class="w-full py-3.5 px-4 bg-white hover:bg-zinc-200 text-zinc-900 font-semibold rounded-xl text-sm flex items-center justify-center gap-3 transition-all shadow-lg border border-zinc-300 active:scale-[0.98]">
                 <svg class="w-5 h-5" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
                 <span id="google-login-label">Continuar con Google</span>
@@ -149,6 +254,7 @@
             <span class="absolute bottom-2.5 left-2.5 w-3 h-3 border-b border-l border-emerald-500/60 rounded-bl-sm pointer-events-none"></span>
             <span class="absolute bottom-2.5 right-2.5 w-3 h-3 border-b border-r border-emerald-500/60 rounded-br-sm pointer-events-none"></span>
             <div class="absolute top-0 left-0 right-0 h-px hud-glow-line"></div>
+
             <div class="text-center space-y-1.5">
                 <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-[10px] font-mono tracking-[0.14em] text-emerald-500 uppercase"><i data-lucide="rocket" class="w-3 h-3"></i> Paso Inicial</div>
                 <h2 class="text-lg font-bold text-white">Configura tu Base Financiera</h2>
@@ -357,18 +463,31 @@
                 <div id="analytics-panel-mentor" class="space-y-5 hidden">
                     <div id="advisor-active-plan-panel" class="hidden"></div>
 
+                    <!-- CHAT CON ASESOR IA (CONSULTAS DIARIAS) -->
+                    <div class="hud-panel border border-cardborder rounded-2xl p-4 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[10px] font-mono font-semibold text-emerald-500 uppercase tracking-[0.14em]">💬 Consulta a tu Asesor IA</span>
+                            <span id="advisor-engine-badge" class="text-[9px] font-mono text-zinc-400 uppercase">MOTOR ADAPTATIVO</span>
+                        </div>
+                        <div id="advisor-qa-reply" class="hidden bg-obsidian/80 border border-cardborder rounded-xl p-3 text-xs text-zinc-200 leading-relaxed"></div>
+                        <form onsubmit="askAdvisorLive(event)" class="flex gap-2">
+                            <input type="text" id="advisor-qa-input" required placeholder='Ej: "¿Puedo gastar $30 hoy?" o "¿Cómo voy con mi meta?"' class="flex-1 bg-obsidian border border-cardborder rounded-xl px-3 py-2 text-xs text-white placeholder:text-zinc-500 focus:outline-none focus:border-emerald-500" />
+                            <button type="submit" id="advisor-qa-btn" class="px-3.5 py-2 bg-emerald-500 hover:bg-emerald-400 text-black font-bold rounded-xl text-xs transition shrink-0">Consultar</button>
+                        </form>
+                    </div>
+
                     <div class="hud-panel border border-emerald-500/35 rounded-2xl p-5 space-y-4 relative overflow-hidden">
                         <div class="absolute top-0 left-0 right-0 h-px hud-glow-line"></div>
                         <div class="flex items-start justify-between gap-2">
                             <div>
-                                <span id="advisor-engine-badge" class="text-[10px] font-mono tracking-[0.16em] text-emerald-500 uppercase block">MOTOR ADAPTATIVO // IA</span>
+                                <span class="text-[10px] font-mono tracking-[0.16em] text-emerald-500 uppercase block">PLANIFICADOR INTELIGENTE</span>
                                 <h2 class="text-base font-bold text-white mt-0.5">Asesor Financiero IA</h2>
-                                <p class="text-[11px] text-zinc-400 mt-1 leading-relaxed">Calcula tu capacidad real (sueldo, gastos fijos y ahorros) para generar 3 planes realistas y guiarte día a día.</p>
+                                <p class="text-[11px] text-zinc-400 mt-1 leading-relaxed">Analiza tu historial completo (sueldo, gastos fijos, compras de todos tus meses, ahorros e inversiones) para generar 3 planes realistas.</p>
                             </div>
                             <div class="w-10 h-10 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-500 flex items-center justify-center shrink-0"><i data-lucide="brain-circuit" class="w-5 h-5"></i></div>
                         </div>
                         <div class="bg-obsidian/70 border border-cardborder rounded-xl p-3 space-y-1.5">
-                            <div class="flex justify-between text-[11px]"><span class="font-mono text-zinc-400">Diagnóstico de Datos</span><span id="mentor-data-status" class="font-mono font-bold text-emerald-500">0/4 módulos</span></div>
+                            <div class="flex justify-between text-[11px]"><span class="font-mono text-zinc-400">Volumen de Data Recolectada</span><span id="mentor-data-status" class="font-mono font-bold text-emerald-500">0/4 módulos</span></div>
                             <div class="w-full bg-carddark rounded-full h-1.5 overflow-hidden border border-cardborder"><div id="mentor-data-bar" class="bg-emerald-500 h-1.5 rounded-full transition-all" style="width: 25%"></div></div>
                             <p id="mentor-data-hint" class="text-[10px] text-zinc-500"></p>
                         </div>
@@ -421,7 +540,7 @@
                 </div>
             </section>
 
-            <!-- TAB 4: AJUSTES -->
+            <!-- TAB 4: AJUSTES (CLEAN — NO GEMINI API BOX) -->
             <section id="view-ajustes" class="space-y-4 hidden">
                 <div class="hud-panel border border-cardborder rounded-2xl p-5 space-y-4">
                     <h3 class="text-[10px] font-mono font-semibold text-zinc-300 uppercase tracking-[0.14em]">Cuenta y Respaldo en la Nube</h3>
@@ -432,11 +551,6 @@
                     <div class="grid grid-cols-2 gap-2.5">
                         <button onclick="toggleTheme()" class="py-2.5 px-3 bg-obsidian/80 hover:bg-zinc-900 border border-cardborder rounded-xl text-xs font-medium text-zinc-200 flex items-center justify-center gap-2 transition"><i data-lucide="sun-moon" class="w-4 h-4 text-emerald-500"></i><span id="settings-theme-label">Modo Claro/Oscuro</span></button>
                         <button onclick="openFinanceProfileModal()" class="py-2.5 px-3 bg-obsidian/80 hover:bg-zinc-900 border border-cardborder rounded-xl text-xs font-medium text-zinc-200 flex items-center justify-center gap-2 transition"><i data-lucide="wallet" class="w-4 h-4 text-sky-400"></i><span>Sueldo y Ahorros</span></button>
-                    </div>
-                    <div class="bg-obsidian/80 border border-cardborder rounded-xl p-3.5 space-y-2">
-                        <div class="flex items-center justify-between"><span class="text-xs font-semibold text-white flex items-center gap-2"><i data-lucide="sparkles" class="w-4 h-4 text-emerald-500"></i> Motor IA Externo (Opcional)</span><span id="gemini-status-tag" class="text-[10px] font-mono text-zinc-400">Local Activo</span></div>
-                        <p class="text-[11px] text-zinc-400 leading-relaxed">Opcional: pega tu API Key gratuita de Google Gemini (<code>aistudio.google.com</code>) para potenciar el Asesor con IA generativa.</p>
-                        <div class="flex gap-2"><input type="password" id="gemini-api-key-input" placeholder="AIzaSy... (solo se guarda en tu teléfono)" class="flex-1 bg-carddark border border-cardborder rounded-lg px-2.5 py-2 text-xs text-white focus:outline-none focus:border-emerald-500" /><button onclick="saveGeminiKey()" class="px-3 py-2 bg-emerald-500 hover:bg-emerald-400 text-black text-xs font-bold rounded-lg transition shrink-0">Guardar</button></div>
                     </div>
                     <div class="bg-obsidian/80 border border-cardborder rounded-xl p-3.5 space-y-2.5">
                         <div class="flex items-center justify-between"><span class="text-xs font-semibold text-white flex items-center gap-2"><i data-lucide="file-spreadsheet" class="w-4 h-4 text-emerald-500"></i> Exportar para Google Sheets</span><span class="text-[10px] text-zinc-400 font-mono">.CSV UTF-8</span></div>
@@ -488,7 +602,7 @@
         </div>
     </div>
 
-    <!-- MODALS -->
+    <!-- MODAL: FINANCE PROFILE (SUELDO & AHORROS) -->
     <div id="finance-profile-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 hidden">
         <div class="hud-panel border border-cardborder w-full max-w-md rounded-t-3xl sm:rounded-2xl p-6 space-y-4 shadow-2xl">
             <div class="flex justify-between items-center border-b border-cardborder pb-3"><h3 class="text-sm font-bold text-white">Configurar Sueldo y Ahorros</h3><button onclick="closeFinanceProfileModal()" class="text-zinc-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button></div>
@@ -501,6 +615,7 @@
         </div>
     </div>
 
+    <!-- MODAL: NEW INVESTMENT / ASSET -->
     <div id="inv-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 hidden">
         <div class="hud-panel border border-cardborder w-full max-w-md rounded-t-3xl sm:rounded-2xl p-6 space-y-4 shadow-2xl">
             <div class="flex justify-between items-center border-b border-cardborder pb-3"><h3 class="text-sm font-bold text-white">Nuevo Activo / Inversión</h3><button onclick="closeInvModal()" class="text-zinc-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button></div>
@@ -514,6 +629,7 @@
         </div>
     </div>
 
+    <!-- MODAL: ADD / EDIT TRANSACTION -->
     <div id="add-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 hidden transition-opacity">
         <div class="hud-panel border border-cardborder w-full max-w-md rounded-t-3xl sm:rounded-2xl p-6 space-y-4 shadow-2xl max-h-[92vh] overflow-y-auto relative">
             <div class="absolute top-0 left-0 right-0 h-px hud-glow-line"></div>
@@ -568,6 +684,7 @@
         </div>
     </div>
 
+    <!-- MODAL: NEW GOAL -->
     <div id="goal-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 hidden">
         <div class="hud-panel border border-cardborder w-full max-w-md rounded-t-3xl sm:rounded-2xl p-6 space-y-4 shadow-2xl">
             <div class="flex justify-between items-center border-b border-cardborder pb-3"><h3 class="text-sm font-bold text-white">Nueva Meta de Ahorro</h3><button onclick="closeGoalModal()" class="text-zinc-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button></div>
@@ -575,6 +692,7 @@
         </div>
     </div>
 
+    <!-- MODAL: CONTRIBUTE TO GOAL -->
     <div id="goal-contribute-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 hidden">
         <div class="hud-panel border border-cardborder w-full max-w-md rounded-t-3xl sm:rounded-2xl p-6 space-y-4 shadow-2xl">
             <div class="flex justify-between items-center border-b border-cardborder pb-3"><h3 class="text-sm font-bold text-white" id="contribute-goal-title">Abonar a Meta</h3><button onclick="closeContributeModal()" class="text-zinc-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button></div>
@@ -582,6 +700,7 @@
         </div>
     </div>
 
+    <!-- MODAL: EDIT BUDGET LIMIT -->
     <div id="budget-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 hidden">
         <div class="hud-panel border border-cardborder w-full max-w-md rounded-t-3xl sm:rounded-2xl p-6 space-y-4 shadow-2xl">
             <div class="flex justify-between items-center border-b border-cardborder pb-3"><h3 class="text-sm font-bold text-white">Editar Presupuesto Mensual</h3><button onclick="closeBudgetModal()" class="text-zinc-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button></div>
@@ -589,6 +708,7 @@
         </div>
     </div>
 
+    <!-- MODAL: NEW FIXED EXPENSE -->
     <div id="sub-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 hidden">
         <div class="hud-panel border border-cardborder w-full max-w-md rounded-t-3xl sm:rounded-2xl p-6 space-y-4 shadow-2xl">
             <div class="flex justify-between items-center border-b border-cardborder pb-3"><h3 class="text-sm font-bold text-white">Nuevo Gasto Fijo Mensual</h3><button onclick="closeSubModal()" class="text-zinc-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button></div>
@@ -596,13 +716,19 @@
         </div>
     </div>
 
+    <!-- ==================== FIN DE LA PARTE 1 ==================== -->
+    <!-- Continúa inmediatamente pegando la PARTE 2 justo aquí abajo -->
+    ```html
     <section class="sr-only" aria-label="Información de Trakealo">
         <h2>Trakealo: Asesor Financiero IA por Voz, OCR, Inversiones y Gastos Fijos</h2>
-        <p>Trakealo es una aplicación financiera inteligente para registrar gastos e ingresos por voz o escáner OCR, gestionar sueldo, gastos fijos, ahorros e inversiones y recibir 3 planes adaptativos con un Asesor IA.</p>
+        <p>Trakealo es una aplicación financiera inteligente para registrar gastos e ingresos por voz o escáner OCR, gestionar sueldo, gastos fijos, ahorros e inversiones y recibir planes adaptativos con un Asesor IA.</p>
     </section>
 
     <script>
         if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js').catch(() => {}); }); }
+
+        /* URL de tu Cloudflare Worker con Google Gemini conectado */
+        const GEMINI_PROXY_URL = "https://trakealo-ai.ishootrawdotcom.workers.dev";
 
         const FIREBASE_CONFIG = {
             apiKey: "AIzaSyB2LyjYImhJSPmt82BKKEmHnpI4KvT2ON0",
@@ -643,18 +769,11 @@
         function toggleTheme() { const next = appState.theme === 'dark' ? 'light' : 'dark'; applyTheme(next); if (appState.user) saveUserData(true); showToast(next === 'light' ? 'Modo Claro activado' : 'Modo Oscuro SpaceX activado', 'info'); }
         applyTheme(appState.theme);
 
-        function getGeminiKey() { return localStorage.getItem('trakealo_gemini_key') || ''; }
-        function saveGeminiKey() {
-            const val = (document.getElementById('gemini-api-key-input')?.value || '').trim();
-            if (val) { localStorage.setItem('trakealo_gemini_key', val); showToast('Clave Gemini guardada en este teléfono.', 'success'); }
-            else { localStorage.removeItem('trakealo_gemini_key'); showToast('Clave eliminada. Usando motor IA local.', 'info'); }
-            updateGeminiStatusUI();
-        }
         function updateGeminiStatusUI() {
-            const key = getGeminiKey(), tag = document.getElementById('gemini-status-tag'), badge = document.getElementById('advisor-engine-badge'), input = document.getElementById('gemini-api-key-input');
-            if (input && key && !input.value) input.value = key;
-            if (tag) { tag.textContent = key ? 'Gemini Conectado' : 'Motor Local Activo'; tag.className = key ? 'text-[10px] font-mono text-emerald-500' : 'text-[10px] font-mono text-zinc-400'; }
-            if (badge) badge.textContent = key ? 'GEMINI IA // CONECTADO' : 'MOTOR ADAPTATIVO // IA';
+            const badge = document.getElementById('advisor-engine-badge');
+            if (badge) {
+                badge.textContent = GEMINI_PROXY_URL ? 'GEMINI 2.0 // CONECTADO' : 'MOTOR ADAPTATIVO // IA';
+            }
         }
 
         function normalizeUserState(raw) {
@@ -703,7 +822,6 @@
             });
         }
 
-        /* Calculates fixed expenses applicable for the active view period */
         function getFixedExpensesForPeriod(monthKey = appState.selectedMonth, scopedEntries = null) {
             const fixedMonthly = appState.subscriptions.reduce((a, s) => a + (s.amount || 0), 0);
             if (fixedMonthly <= 0) return 0;
@@ -808,9 +926,9 @@
                 ss.textContent = appState.pendingSync ? 'Cambios locales pendientes (suben al volver señal)' : 'Sin conexión (Guardando local)'; ss.className = 'text-xs text-amber-500';
                 pill.innerHTML = `<i data-lucide="wifi-off" class="w-3 h-3"></i> ${appState.pendingSync ? 'Pendiente' : 'Offline'}`; pill.className = 'inline-flex items-center gap-1 text-[10px] font-mono font-medium px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-500 border border-amber-500/25 shrink-0';
             } else if (isCloudUser) {
-                hb.textContent = 'Cloud'; hb.className = 'w-fit text-[9px] px-1.5 py-0.5 rounded-md bg-emerald-500/10 text-emerald-500 border border-emerald-500/25 font-mono tracking-widest uppercase';
+                hb.textContent = 'Cloud'; hb.className = 'w-fit text-[9px] px-1.5 py-0.5 rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/25 font-mono tracking-widest uppercase';
                 ss.textContent = 'Google Cloud Activo (Respaldo automático multi-teléfono)'; ss.className = 'text-xs text-emerald-500';
-                pill.innerHTML = '<i data-lucide="cloud" class="w-3 h-3"></i> Sincronizado'; pill.className = 'inline-flex items-center gap-1 text-[10px] font-mono font-medium px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/25 shrink-0';
+                pill.innerHTML = '<i data-lucide="cloud" class="w-3 h-3"></i> Sincronizado'; pill.className = 'inline-flex items-center gap-1 text-[10px] font-mono font-medium px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/25 shrink-0';
             } else {
                 hb.textContent = 'Local'; hb.className = 'w-fit text-[9px] px-1.5 py-0.5 rounded-md bg-amber-500/10 text-amber-500 border border-amber-500/25 font-mono tracking-widest uppercase';
                 ss.textContent = 'Modo Local'; ss.className = 'text-xs text-amber-500';
@@ -1195,9 +1313,9 @@
             if (getEntriesForPeriod().length >= 3) score++;
             if (appState.investments.length > 0 || appState.goals.length > 0) score++;
             const pct = Math.max(15, Math.round((score/4)*100)), st = document.getElementById('mentor-data-status'), br = document.getElementById('mentor-data-bar'), ht = document.getElementById('mentor-data-hint');
-            if (st) st.textContent = `${score}/4 módulos completos`;
+            if (st) st.textContent = `${score}/4 módulos completos (${appState.entries.length} movimientos totales)`;
             if (br) br.style.width = pct + '%';
-            if (ht) ht.textContent = score >= 3 ? 'Listo: tus planes se calibran con tu sueldo, gastos fijos y movimientos reales.' : 'Tip: Registra tu sueldo, gastos fijos y movimientos del mes para mayor precisión.';
+            if (ht) ht.textContent = score >= 3 ? 'Listo: el Asesor IA leerá todos tus meses para generar planes ultra realistas.' : 'Tip: Registra tu sueldo, gastos fijos y compras del mes para mayor precisión.';
         }
 
         function buildAdaptiveLocalPlans(snap) {
@@ -1224,22 +1342,70 @@
             ];
         }
 
+        /* Envia toda la data histórica a Google Gemini mediante tu Cloudflare Worker */
         async function generateAdvisorPlans() {
             const btn = document.getElementById('generate-plans-btn'), orig = btn.innerHTML;
-            btn.disabled = true; btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i><span>Analizando tus números...</span>`; lucide.createIcons();
-            const snap = getFinancialSnapshot(), geminiKey = getGeminiKey();
+            btn.disabled = true; btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i><span>Gemini analizando tu historial...</span>`; lucide.createIcons();
+            const snap = getFinancialSnapshot();
             let plans = null;
-            if (geminiKey && navigator.onLine) {
+
+            if (GEMINI_PROXY_URL && navigator.onLine) {
                 try {
-                    const prompt = `Eres un asesor financiero realista. Analiza (moneda ${appState.currency}): Perfil=${appState.incomeType}, Ingreso=${snap.effectiveIncome.toFixed(2)}, GastosFijos=${snap.fixedMonthly.toFixed(2)}, VariablesMes=${snap.variableExpenses.toFixed(2)}, TopCategoria=${snap.topCategory[0]}(${snap.topCategory[1].toFixed(2)}), Ahorros=${appState.currentSavings.toFixed(2)}, PasivoMes=${snap.passiveMonthly.toFixed(2)}. Reglas: 1) NO menciones nombres de autores ni empresarios. 2) Adapta las metas de ahorro al nivel real de ingresos. 3) Responde SOLO JSON array válido de 3 planes: [{"id":"p1","badge":"Suave","title":"...","summary":"...","savePct":8,"monthlySaveTarget":50,"variableCap":300,"extraIncomeTarget":0,"steps":["...","...","..."]}]`;
-                    const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${encodeURIComponent(geminiKey)}`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ contents:[{parts:[{text:prompt}]}], generationConfig:{temperature:0.5} }) });
-                    if (resp.ok) { const d = await resp.json(); const raw = (d?.candidates?.[0]?.content?.parts?.[0]?.text||'').replace(/```json|```/gi,'').trim(); const parsed = JSON.parse(raw); if (Array.isArray(parsed) && parsed.length === 3) plans = parsed; }
-                } catch (e) { console.warn('Gemini fallback:', e); }
+                    // Compila historial completo multi-mes para que la IA entienda tendencias reales
+                    const totalEntriesCount = appState.entries.length;
+                    const monthsFound = Array.from(new Set(appState.entries.map(e => e.monthKey).filter(Boolean)));
+                    const prompt = `Actúa como el Asesor Financiero IA privado de Trakealo. Analiza este perfil financiero real (Moneda: ${appState.currency}):
+- Perfil: ${appState.incomeType}
+- Sueldo/Ingreso base mensual: ${snap.effectiveIncome.toFixed(2)}
+- Gastos fijos obligatorios mensuales (alquiler, servicios, etc.): ${snap.fixedMonthly.toFixed(2)}
+- Gastos variables acumulados del mes activo: ${snap.variableExpenses.toFixed(2)}
+- Categoría de mayor gasto variable: ${snap.topCategory[0]} (${snap.topCategory[1].toFixed(2)})
+- Ahorros actuales acumulados: ${appState.currentSavings.toFixed(2)}
+- Ingreso pasivo mensual por inversiones: ${snap.passiveMonthly.toFixed(2)}
+- Total de movimientos registrados en el historial: ${totalEntriesCount} movimientos en ${monthsFound.length} mes(es).
+- Activos actuales: ${appState.investments.map(i => i.name + ' ($' + i.currentValue + ')').join(', ') || 'Sin activos aún'}.
+
+Instrucciones estrictas:
+1. NUNCA menciones nombres de autores ni empresarios famosos.
+2. Si el ingreso es modesto (ej. $600/mes en Latinoamérica/Venezuela), sé empático y propón metas de ahorro 100% alcanzables tras pagar gastos fijos obligatorios.
+3. Responde ÚNICAMENTE con un JSON array válido (sin markdown, sin bloques de código) con exactamente 3 planes:
+[
+  {
+    "id": "p1",
+    "badge": "Suave",
+    "title": "Nombre del plan 1",
+    "summary": "Resumen conciso y personalizado para el usuario",
+    "savePct": 8,
+    "monthlySaveTarget": 50,
+    "variableCap": 300,
+    "extraIncomeTarget": 0,
+    "steps": ["paso 1 personalizado", "paso 2", "paso 3"]
+  },
+  ... (exactamente 3 objetos)
+]`;
+                    const resp = await fetch(GEMINI_PROXY_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ prompt })
+                    });
+                    if (resp.ok) {
+                        const data = await resp.json();
+                        let raw = (data.text || '').replace(/```json|```/gi, '').trim();
+                        const parsed = JSON.parse(raw);
+                        if (Array.isArray(parsed) && parsed.length === 3) {
+                            plans = parsed;
+                        }
+                    }
+                } catch (err) {
+                    console.warn('Gemini proxy error, fallback a motor local adaptativo:', err);
+                }
             }
+
             if (!plans) plans = buildAdaptiveLocalPlans(snap);
-            lastGeneratedPlans = plans; renderGeneratedPlans(plans, snap);
+            lastGeneratedPlans = plans;
+            renderGeneratedPlans(plans, snap);
             btn.disabled = false; btn.innerHTML = orig; lucide.createIcons();
-            showToast('3 planes personalizados listos. Elige el que quieres seguir.', 'success');
+            showToast('3 planes listos. Selecciona el que quieres seguir.', 'success');
         }
 
         function renderGeneratedPlans(plans, snap) {
@@ -1273,6 +1439,70 @@
             if (advSlot) { advSlot.innerHTML = html + `<div class="text-right mt-1"><button onclick="clearActivePlan()" class="text-[10px] text-zinc-500 hover:text-rose-400 underline">Cambiar / Desactivar plan actual</button></div>`; advSlot.classList.remove('hidden'); }
         }
 
+        /* Consulta en vivo al Asesor IA sobre el plan activo */
+        async function askAdvisorLive(e) {
+            e.preventDefault();
+            const input = document.getElementById('advisor-qa-input');
+            const q = input.value.trim();
+            if (!q) return;
+
+            const btn = document.getElementById('advisor-qa-btn');
+            const replyBox = document.getElementById('advisor-qa-reply');
+            btn.disabled = true;
+            btn.textContent = '...';
+            replyBox.classList.remove('hidden');
+            replyBox.innerHTML = '<span class="text-zinc-400 font-mono">El Asesor IA está evaluando tu consulta...</span>';
+
+            const snap = getFinancialSnapshot();
+            const dailySafe = computeDailySafeSpend();
+            let answer = '';
+
+            if (GEMINI_PROXY_URL && navigator.onLine) {
+                try {
+                    const prompt = `Actúa como el Asesor Financiero IA privado de Trakealo. El usuario te pregunta: "${q}".
+Datos del usuario en Trakealo:
+- Moneda: ${appState.currency}
+- Plan activo: ${appState.activePlan ? appState.activePlan.title + ' (Tope variable: ' + appState.activePlan.variableCap + ', Meta ahorro: ' + appState.activePlan.monthlySaveTarget + ')' : 'Sin plan activo aún'}
+- Sueldo/Base mensual: ${snap.effectiveIncome}
+- Gastos fijos obligatorios: ${snap.fixedMonthly}
+- Gastos variables acumulados este mes: ${snap.variableExpenses}
+- Margen que puede gastar hoy de forma segura: ${dailySafe.toFixed(2)}
+- Ahorros actuales: ${appState.currentSavings}
+
+Responde en máximo 3 oraciones, en tono profesional, directo, empático y 100% enfocado en sus números.`;
+                    const resp = await fetch(GEMINI_PROXY_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ prompt })
+                    });
+                    if (resp.ok) {
+                        const data = await resp.json();
+                        answer = data.text || '';
+                    }
+                } catch (err) {
+                    console.warn('Gemini Q&A fallback:', err);
+                }
+            }
+
+            if (!answer) {
+                const normQ = normalizeText(q);
+                if (normQ.includes('gastar') || normQ.includes('puedo') || normQ.includes('hoy')) {
+                    answer = `Hoy tienes un margen seguro de <strong>${formatMoney(dailySafe)}</strong> sin poner en riesgo tu plan. Si gastas más de eso hoy, tendrás que compensarlo en los días siguientes del mes.`;
+                } else if (normQ.includes('plan') || normQ.includes('voy') || normQ.includes('meta')) {
+                    answer = appState.activePlan
+                        ? `Sigues en el <strong>${appState.activePlan.title}</strong>. Llevas ${formatMoney(snap.variableExpenses)} en compras variables frente a un tope mensual de ${formatMoney(appState.activePlan.variableCap)}.`
+                        : `Aún no has seleccionado un plan. Toca el botón de arriba para analizar tu mes y elegir uno.`;
+                } else {
+                    answer = `Para cuidar tu economía con un ingreso de ${formatMoney(snap.effectiveIncome)}, cubre primero tus ${formatMoney(snap.fixedMonthly)} de gastos fijos y mantén tus salidas diarias dentro de ${formatMoney(dailySafe)}/día.`;
+                }
+            }
+
+            replyBox.innerHTML = answer;
+            btn.disabled = false;
+            btn.textContent = 'Consultar';
+            input.value = '';
+        }
+
         async function enableBrowserAlerts() {
             if (!('Notification' in window)) { showToast('Tu navegador no soporta alertas locales. Usa "Alarma Diaria 6PM".', 'warning'); return; }
             try {
@@ -1301,6 +1531,7 @@
             if (q.includes('sheet') || q.includes('excel') || q.includes('exportar') || q.includes('csv')) return 'Elige el mes en <strong>Inicio</strong> y toca <strong>SHEETS</strong> para descargar un <code>.csv</code> listo para Google Sheets.';
             if (q.includes('asesor') || q.includes('plan') || q.includes('ia') || q.includes('6')) return 'Entra a <strong>IA & Datos → Asesor IA</strong> y toca <strong>Analizar Mi Mes y Crear 3 Planes</strong>. Se adapta a tu sueldo y gastos fijos reales, te deja elegir un plan y calcula cuánto puedes gastar cada día.';
             if (q.includes('fijo') || q.includes('alquiler') || q.includes('luz') || q.includes('sueldo') || q.includes('inversion') || q.includes('activo')) return 'En <strong>Inicio → Base Financiera</strong> configuras sueldo y ahorros. En <strong>Activos → Gastos Fijos</strong> agregas alquiler, luz, agua o internet (se suman solos a tus Gastos de Inicio), y en <strong>Inversiones</strong> tus acciones o propiedades.';
+            if (q.includes('claro') || q.includes('oscuro') || q.includes('tema') || q.includes('light') || q.includes('dark')) return 'Toca el ícono del <strong>Sol / Luna</strong> arriba a la derecha (junto a la moneda) o en <strong>Ajustes</strong> para alternar entre Modo Oscuro y Modo Claro.';
             return 'Puedo explicarte: <strong>Voz</strong>, <strong>OCR Facturas</strong>, <strong>Asesor IA y 3 Planes</strong>, <strong>Gastos Fijos</strong>, <strong>Inversiones</strong>, <strong>Alarma 6:00 PM</strong>, <strong>Google Sheets</strong> o <strong>Modo Offline</strong>.';
         }
         function submitHelpQuestion(e) {
