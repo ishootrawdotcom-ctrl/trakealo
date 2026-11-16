@@ -727,7 +727,6 @@
     <script>
         if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js').catch(() => {}); }); }
 
-        /* Endpoint privado del Asesor IA (Cloudflare Worker Serverless) */
         const GEMINI_PROXY_URL = "https://trakealo-ai.ishootrawdotcom.workers.dev";
 
         const FIREBASE_CONFIG = {
@@ -771,9 +770,7 @@
 
         function updateAdvisorStatusUI() {
             const badge = document.getElementById('advisor-engine-badge');
-            if (badge) {
-                badge.textContent = 'ASESOR IA // EN LÍNEA';
-            }
+            if (badge) badge.textContent = 'ASESOR IA // EN LÍNEA';
         }
 
         function normalizeUserState(raw) {
@@ -930,7 +927,7 @@
                 ss.textContent = 'Google Cloud Activo (Respaldo automático multi-teléfono)'; ss.className = 'text-xs text-emerald-500';
                 pill.innerHTML = '<i data-lucide="cloud" class="w-3 h-3"></i> Sincronizado'; pill.className = 'inline-flex items-center gap-1 text-[10px] font-mono font-medium px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/25 shrink-0';
             } else {
-                hb.textContent = 'Local'; hb.className = 'w-fit text-[9px] px-1.5 py-0.5 rounded-md bg-amber-500/10 text-amber-500 border border-amber-500/25 font-mono tracking-widest uppercase';
+                hb.textContent = 'Local'; hb.className = 'w-fit text-[9px] px-1.5 py-0.5 rounded-md bg-amber-500/10 text-amber-400 border border-amber-500/25 font-mono tracking-widest uppercase';
                 ss.textContent = 'Modo Local'; ss.className = 'text-xs text-amber-500';
                 pill.innerHTML = '<i data-lucide="hard-drive" class="w-3 h-3"></i> Solo este teléfono'; pill.className = 'inline-flex items-center gap-1 text-[10px] font-mono font-medium px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-500 border border-amber-500/25 shrink-0';
             }
@@ -1364,8 +1361,8 @@
 - Activos actuales: ${appState.investments.map(i => i.name + ' ($' + i.currentValue + ')').join(', ') || 'Sin activos aún'}.
 
 Instrucciones estrictas:
-1. NUNCA menciones nombres de autores ni empresarios famosos.
-2. Si el ingreso es modesto (ej. $600/mes en Latinoamérica/Venezuela), sé empático y propón metas de ahorro 100% alcanzables tras pagar gastos fijos obligatorios.
+1. NUNCA menciones nombres de autores, celebridades ni tecnologías externas.
+2. Si el ingreso es modesto (ej. $600/mes), sé empático y propón metas de ahorro 100% alcanzables tras pagar gastos fijos obligatorios.
 3. Responde ÚNICAMENTE con un JSON array válido (sin markdown, sin bloques de código) con exactamente 3 planes:
 [
   {
@@ -1378,8 +1375,7 @@ Instrucciones estrictas:
     "variableCap": 300,
     "extraIncomeTarget": 0,
     "steps": ["paso 1 personalizado", "paso 2", "paso 3"]
-  },
-  ... (exactamente 3 objetos)
+  }
 ]`;
                     const resp = await fetch(GEMINI_PROXY_URL, {
                         method: 'POST',
@@ -1388,14 +1384,17 @@ Instrucciones estrictas:
                     });
                     if (resp.ok) {
                         const data = await resp.json();
-                        let raw = (data.text || '').replace(/```json|```/gi, '').trim();
-                        const parsed = JSON.parse(raw);
-                        if (Array.isArray(parsed) && parsed.length === 3) {
-                            plans = parsed;
+                        if (data.ok && data.text) {
+                            console.log('[Trakealo Dev] Planes generados por IA en la nube:', data.modelUsed);
+                            let raw = data.text.replace(/```json|```/gi, '').trim();
+                            const parsed = JSON.parse(raw);
+                            if (Array.isArray(parsed) && parsed.length === 3) plans = parsed;
+                        } else {
+                            console.warn('[Trakealo Dev] Error en servicio IA:', data.error);
                         }
                     }
                 } catch (err) {
-                    console.warn('Fallback a motor adaptativo:', err);
+                    console.warn('[Trakealo Dev] Usando motor local de respaldo:', err);
                 }
             }
 
@@ -1437,7 +1436,6 @@ Instrucciones estrictas:
             if (advSlot) { advSlot.innerHTML = html + `<div class="text-right mt-1"><button onclick="clearActivePlan()" class="text-[10px] text-zinc-500 hover:text-rose-400 underline">Cambiar / Desactivar plan actual</button></div>`; advSlot.classList.remove('hidden'); }
         }
 
-        /* Consulta en vivo al Asesor IA (Universal: responde matemática, consejos, planes o cualquier pregunta) */
         async function askAdvisorLive(e) {
             e.preventDefault();
             const input = document.getElementById('advisor-qa-input');
@@ -1454,12 +1452,13 @@ Instrucciones estrictas:
             const snap = getFinancialSnapshot();
             const dailySafe = computeDailySafeSpend();
             let answer = '';
+            let sourceUsed = 'local';
 
             if (GEMINI_PROXY_URL && navigator.onLine) {
                 try {
-                    const prompt = `Eres el Asesor Financiero IA privado de Trakealo.
-Contexto del usuario en la app (úsalo si la pregunta tiene relación con sus finanzas, gastos o metas):
-- Usuario: ${appState.user?.name || 'Eduardo'}
+                    const prompt = `Eres el Asesor Financiero IA privado exclusivo de la app Trakealo.
+Contexto del usuario en la app:
+- Usuario: ${appState.user?.name || 'Usuario'}
 - Moneda: ${appState.currency}
 - Ingreso/Sueldo mensual: ${formatMoney(snap.effectiveIncome)}
 - Gastos fijos obligatorios: ${formatMoney(snap.fixedMonthly)}
@@ -1470,12 +1469,11 @@ Contexto del usuario en la app (úsalo si la pregunta tiene relación con sus fi
 
 Pregunta del usuario: "${q}"
 
-Instrucciones estrictas:
-1. Responde a la pregunta de forma directa, inteligente y natural.
-2. Si la pregunta es matemática básica, lógica o general (ejemplo: "¿cuánto es 5 más 5?"), responde directamente el resultado exacto (ej. "5 más 5 es 10") sin forzar conceptos financieros innecesarios.
-3. Si la pregunta es sobre sus finanzas, compras o metas, evalúa sus números reales con tono profesional y empático.
-4. NUNCA menciones nombres de tecnologías, APIs, Google, Gemini ni autores comerciales. Sé tú mismo el Asesor IA de Trakealo.
-5. Responde conciso (máximo 3 o 4 oraciones).`;
+Reglas estrictas de comportamiento:
+1. SOLO debes responder preguntas relacionadas con: finanzas personales, dinero, presupuestos, gastos, ingresos, ahorros, inversiones, matemáticas financieras (ej. cálculos de gastos/porcentajes), metas económicas o funcionamiento de la app Trakealo.
+2. Si el usuario pregunta sobre temas irrelevantes fuera de finanzas o de la app (por ejemplo: celebridades como Michael Jackson, música, deportes, recetas de cocina, chismes, historia, política, clima, etc.), NO respondas esa información. Responde amablemente exactamente con este estilo: "Lo siento, soy el Asesor Financiero exclusivo de Trakealo. Mi enfoque es ayudarte únicamente con tu presupuesto, plan de ahorro, gastos, inversiones o dudas sobre la app. ¿En qué aspecto de tus finanzas nos enfocamos hoy?"
+3. NUNCA menciones tecnologías internas (ni Google, ni Gemini, ni API, ni Cloudflare, ni autores externos). Sé tú mismo el Asesor IA de Trakealo.
+4. Responde de forma concisa (máximo 3 o 4 oraciones), profesional y práctica.`;
 
                     const resp = await fetch(GEMINI_PROXY_URL, {
                         method: 'POST',
@@ -1485,35 +1483,39 @@ Instrucciones estrictas:
 
                     if (resp.ok) {
                         const data = await resp.json();
-                        if (data.text) {
+                        if (data.ok && data.text) {
                             answer = data.text.trim();
-                        } else if (data.error) {
-                            console.error('Detalle técnico en Worker:', data.error);
+                            sourceUsed = `Nube (${data.modelUsed})`;
+                        } else {
+                            console.warn('[Trakealo Dev] El servicio IA respondió con error:', data.error);
                         }
                     } else {
-                        console.error('HTTP Error en Worker:', resp.status);
+                        console.warn('[Trakealo Dev] Error HTTP al consultar nube:', resp.status);
                     }
                 } catch (err) {
-                    console.warn('Conexión con Worker falló:', err);
+                    console.warn('[Trakealo Dev] Error de red al consultar nube:', err);
                 }
             }
 
-            // Respaldo limpio y natural si no hay conexión a internet
             if (!answer) {
                 const normQ = normalizeText(q);
-                if (normQ.includes('5') && normQ.includes('mas')) {
-                    answer = "5 más 5 es igual a 10.";
+                const financeTerms = ['gast','ingres','dinero','ahorr','inversion','invert','sueldo','salario','presupuest','plan','meta','fijo','alquiler','pag','compr','cobr','cuanto','saldo','balance','app','trakealo','voz','factura','sheet','excel','mes','porcentaje','deuda','negocio','stock','crypto','banco'];
+                const isFinanceTopic = financeTerms.some(t => normQ.includes(t));
+
+                if (!isFinanceTopic) {
+                    answer = "Lo siento, soy el Asesor Financiero exclusivo de Trakealo. Solo puedo ayudarte con tu presupuesto, plan de ahorro, gastos, inversiones o dudas sobre cómo usar la app. ¿En qué meta financiera nos enfocamos hoy?";
                 } else if (normQ.includes('gastar') || normQ.includes('puedo') || normQ.includes('hoy')) {
                     answer = `Hoy tienes un margen seguro de <strong>${formatMoney(dailySafe)}</strong> sin poner en riesgo tu presupuesto mensual.`;
                 } else if (normQ.includes('plan') || normQ.includes('voy') || normQ.includes('meta')) {
                     answer = appState.activePlan
                         ? `Sigues en el <strong>${appState.activePlan.title}</strong>. Llevas ${formatMoney(snap.variableExpenses)} en compras variables frente a un tope mensual de ${formatMoney(appState.activePlan.variableCap)}.`
-                        : `Aún no has seleccionado un plan. Toca el botón de arriba para analizar tu mes y elegir uno.`;
+                        : `Aún no has seleccionado un plan. Toca el botón de abajo para analizar tu mes y elegir el que mejor se adapte a ti.`;
                 } else {
-                    answer = `Para cuidar tu economía con un ingreso de ${formatMoney(snap.effectiveIncome)}, cubre primero tus ${formatMoney(snap.fixedMonthly)} de gastos fijos y mantén tus salidas dentro de ${formatMoney(dailySafe)}/día.`;
+                    answer = `Para cuidar tu economía con un ingreso de ${formatMoney(snap.effectiveIncome)}, cubre primero tus ${formatMoney(snap.fixedMonthly)} de gastos fijos y mantén tus salidas diarias dentro de ${formatMoney(dailySafe)}/día.`;
                 }
             }
 
+            console.log(`[Trakealo Dev] Origen de respuesta: ${sourceUsed}`);
             replyBox.innerHTML = answer.replace(/\n/g, '<br>');
             btn.disabled = false;
             btn.textContent = 'Consultar';
