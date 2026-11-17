@@ -205,7 +205,7 @@
 
             <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-zinc-900/90 border border-cardborder text-[10px] font-mono tracking-[0.16em] text-emerald-400 uppercase mb-4">
                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                SYS // FINANZAS v3.6
+                TRAKEALO // FINANZAS IA
             </div>
 
             <div id="login-logo-slot" class="w-full flex flex-col items-center mb-6">
@@ -302,7 +302,7 @@
                         <span class="text-sm font-bold tracking-wider uppercase text-white">Trakealo</span>
                         <span id="header-sync-badge" class="w-fit text-[9px] px-1.5 py-0.5 rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/25 font-mono tracking-widest uppercase">Cloud</span>
                     </div>
-                    <p class="text-[10px] text-zinc-400 truncate font-mono mt-0.5" id="header-user-name">CMD // ACTIVO</p>
+                    <p class="text-[10px] text-zinc-400 truncate font-mono mt-0.5" id="header-user-name">CUENTA ACTIVA</p>
                     <p class="hidden text-[9px] text-emerald-400 truncate font-mono" id="header-active-plan"></p>
                 </div>
             </div>
@@ -394,6 +394,8 @@
 
                 <div id="home-active-plan-card"></div>
 
+                <div id="home-food-budget-card"></div>
+
                 <div class="hud-panel border border-cardborder rounded-2xl p-5">
                     <div class="flex justify-between items-center mb-3 gap-2">
                         <h3 class="text-[10px] font-mono font-semibold text-zinc-300 uppercase tracking-[0.14em]" id="chart-title">Flujo de los últimos 7 días</h3>
@@ -458,6 +460,8 @@
                         <p class="text-xs text-zinc-500 text-right mono-num" id="budget-limit-text">Límite: $1,000,00</p>
                     </div>
 
+                    <div id="analytics-food-budget-card"></div>
+
                     <div class="hud-panel border border-cardborder rounded-2xl p-5 space-y-4"><h3 class="text-[10px] font-mono font-semibold text-zinc-300 uppercase tracking-[0.14em]">Desglose por Categoría (Incl. Fijos)</h3><div class="space-y-3" id="categories-breakdown"></div></div>
                 </div>
 
@@ -472,7 +476,7 @@
                         </div>
                         <div id="advisor-qa-reply" class="hidden bg-obsidian/80 border border-cardborder rounded-xl p-3 text-xs text-zinc-200 leading-relaxed"></div>
                         <form onsubmit="askAdvisorLive(event)" class="flex gap-2">
-                            <input type="text" id="advisor-qa-input" required placeholder='Ej: "¿Puedo gastar $30 hoy?" o "¿Cómo gano más este mes?"' class="flex-1 bg-obsidian border border-cardborder rounded-xl px-3 py-2 text-xs text-white placeholder:text-zinc-500 focus:outline-none focus:border-emerald-500" />
+                            <input type="text" id="advisor-qa-input" required placeholder='Ej: "¿Puedo gastar $30 hoy?" o "¿Cómo voy con mi comida?"' class="flex-1 bg-obsidian border border-cardborder rounded-xl px-3 py-2 text-xs text-white placeholder:text-zinc-500 focus:outline-none focus:border-emerald-500" />
                             <button type="submit" id="advisor-qa-btn" class="px-3.5 py-2 bg-emerald-500 hover:bg-emerald-400 text-black font-bold rounded-xl text-xs transition shrink-0">Consultar</button>
                         </form>
                     </div>
@@ -483,7 +487,7 @@
                             <div>
                                 <span class="text-[10px] font-mono tracking-[0.16em] text-emerald-500 uppercase block">PLANIFICADOR INTELIGENTE</span>
                                 <h2 class="text-base font-bold text-white mt-0.5">Asesor Financiero IA</h2>
-                                <p class="text-[11px] text-zinc-400 mt-1 leading-relaxed">Analiza tu historial completo (sueldo, gastos fijos, compras de todos tus meses, ahorros e inversiones) para crear 3 planes claros y fáciles de seguir.</p>
+                                <p class="text-[11px] text-zinc-400 mt-1 leading-relaxed">Analiza tu historial completo (sueldo, gastos fijos, comida, hábitos, ahorros e inversiones) para crear 3 planes claros y fáciles de seguir.</p>
                             </div>
                             <div class="w-10 h-10 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-500 flex items-center justify-center shrink-0"><i data-lucide="brain-circuit" class="w-5 h-5"></i></div>
                         </div>
@@ -712,6 +716,18 @@
         </div>
     </div>
 
+    <!-- MODAL: EDIT FOOD BUDGET -->
+    <div id="food-budget-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 hidden">
+        <div class="hud-panel border border-cardborder w-full max-w-md rounded-t-3xl sm:rounded-2xl p-6 space-y-4 shadow-2xl">
+            <div class="flex justify-between items-center border-b border-cardborder pb-3"><h3 class="text-sm font-bold text-white">🍔 Presupuesto Mensual de Comida</h3><button onclick="closeFoodBudgetModal()" class="text-zinc-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button></div>
+            <p class="text-[11px] text-zinc-400 leading-relaxed">Define cuánto planeas gastar en comida al mes (supermercado, restaurantes, mercado). Tu Asesor IA vigilará tu ritmo diario para que no te pases.</p>
+            <form onsubmit="saveFoodBudgetLimit(event)" class="space-y-3">
+                <input type="number" step="0.01" min="0" id="food-budget-limit-input" required placeholder="Ej. 300.00" class="w-full bg-obsidian border border-cardborder rounded-xl px-4 py-2.5 text-white mono-num text-sm focus:outline-none focus:border-emerald-500">
+                <button type="submit" class="w-full py-3 bg-emerald-500 hover:bg-emerald-400 text-black font-bold rounded-xl text-sm transition">Guardar Límite de Comida</button>
+            </form>
+        </div>
+    </div>
+
     <!-- MODAL: NEW FIXED EXPENSE -->
     <div id="sub-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 hidden">
         <div class="hud-panel border border-cardborder w-full max-w-md rounded-t-3xl sm:rounded-2xl p-6 space-y-4 shadow-2xl">
@@ -720,9 +736,14 @@
         </div>
     </div>
 
+    <!-- ==================== FIN DE LA PARTE 1 ==================== -->
+
+    ### 📋 PARTE 2 (Copia todo este bloque y pégalo debajo de la Parte 1):
+
+```html
     <section class="sr-only" aria-label="Información de Trakealo">
         <h2>Trakealo: Asesor Financiero IA por Voz, OCR, Inversiones y Gastos Fijos</h2>
-        <p>Trakealo es una aplicación financiera inteligente para registrar gastos e ingresos por voz o escáner OCR, gestionar sueldo, gastos fijos, ahorros e inversiones y recibir planes adaptativos con un Asesor IA.</p>
+        <p>Trakealo es una aplicación financiera inteligente para registrar gastos e ingresos por voz o escáner OCR, gestionar sueldo, presupuesto de comida, gastos fijos, ahorros e inversiones y recibir planes adaptativos con un Asesor IA.</p>
     </section>
 
     <script>
@@ -746,7 +767,7 @@ REGLA DE LENGUAJE OBLIGATORIA (CERO JERGA COMPLICADA):
   * En vez de "diversificar / interés compuesto" -> di "hacer que tus ahorros generen ganancias y no gastarlas para que crezcan solos".
 - NUNCA menciones nombres de autores, libros, celebridades ni tecnologías internas (no menciones Gemini, Google, APIs, ni nombres de empresarios externos). Habla como el Asesor IA propio de Trakealo.
 
-DOCTRINA MAESTRA DE TRAKEALO (3 PILARES QUE DEBES APLICAR SIEMPRE):
+DOCTRINA MAESTRA DE TRAKEALO:
 1. EXPANSIÓN Y PROTECCIÓN DEL DINERO:
    - No basta con recortar el café; enfócate en ayudar al usuario a producir más dinero haciendo 10 veces más acciones útiles (contactar clientes, mejorar lo que vende, ofrecer un servicio extra conectado con lo que ya hace).
    - Regla del "Dinero Sagrado" (apartar antes de gastar): Apenas llegue dinero, separa una parte a una cuenta aparte intocable (empezando con lo que pueda y subiendo progresivamente hasta un 20%-40% cuando sus ingresos crezcan) para que no sienta dinero "sobrando" en su cuenta diaria y se mantenga enfocado en producir.
@@ -763,6 +784,10 @@ DOCTRINA MAESTRA DE TRAKEALO (3 PILARES QUE DEBES APLICAR SIEMPRE):
    - Prioridad #1 del día ("Comerse el sapo"): Recomienda hacer en la primera hora del día la tarea más importante que trae dinero o resuelve el problema principal, antes de distraerse con el teléfono o tareas menores.
    - Romper la trampa de subir gastos: Si el usuario recibe un aumento o un ingreso extra, recuérdale guardar al menos la mitad (50%) de ese dinero nuevo y no subir sus gastos al mismo ritmo.
    - Regla de cuidado al invertir: Nunca pongas dinero en algo que no entiendes al 100% ni por presión rápida de nadie.
+
+4. CONTROL INCANSABLE DE HÁBITOS Y PRESUPUESTO DE COMIDA:
+   - La comida es uno de los gastos que más varía. Si el usuario configuró un presupuesto mensual de comida, vigila su ritmo diario con lupa: si va gastando más rápido de lo que avanza el mes, adviértele con cariño pero con firmeza y dile exactamente cuánto le queda por día para no pasarse.
+   - Usa siempre los hábitos aprendidos de su historial (días de la semana donde gasta más, compras repetidas y tendencia frente a meses anteriores) para mantenerlo en línea todos los días con su plan.
 `;
 
         const FIREBASE_CONFIG = {
@@ -785,7 +810,7 @@ DOCTRINA MAESTRA DE TRAKEALO (3 PILARES QUE DEBES APLICAR SIEMPRE):
         let appState = {
             schemaVersion: CURRENT_SCHEMA_VERSION, user: null, theme: localStorage.getItem('trakealo_theme') || 'dark',
             currency: 'USD', currencySymbol: '$', filter: 'all', selectedMonth: getCurrentMonthKey(),
-            budgetLimit: 1000, monthlySalary: 0, incomeType: 'Empleado', currentSavings: 0,
+            budgetLimit: 1000, foodBudgetLimit: 0, monthlySalary: 0, incomeType: 'Empleado', currentSavings: 0,
             onboardingCompleted: false, activePlan: null, dailyAlertHour: 18,
             entries: [], goals: [], subscriptions: [], investments: [], pendingSync: false
         };
@@ -821,6 +846,7 @@ DOCTRINA MAESTRA DE TRAKEALO (3 PILARES QUE DEBES APLICAR SIEMPRE):
                 subscriptions: Array.isArray(data.subscriptions) ? data.subscriptions : [],
                 investments, currency: data.currency || 'USD',
                 budgetLimit: typeof data.budgetLimit === 'number' && data.budgetLimit > 0 ? data.budgetLimit : 1000,
+                foodBudgetLimit: typeof data.foodBudgetLimit === 'number' && data.foodBudgetLimit >= 0 ? data.foodBudgetLimit : 0,
                 monthlySalary, incomeType: data.incomeType || 'Empleado', currentSavings,
                 onboardingCompleted: data.onboardingCompleted === true || hasExistingData,
                 activePlan: data.activePlan || null,
@@ -1096,6 +1122,7 @@ DOCTRINA MAESTRA DE TRAKEALO (3 PILARES QUE DEBES APLICAR SIEMPRE):
                     if (!appState.investments.length && cloud.investments.length) appState.investments = cloud.investments;
                     if (!appState.monthlySalary && cloud.monthlySalary) appState.monthlySalary = cloud.monthlySalary;
                     if (!appState.currentSavings && cloud.currentSavings) appState.currentSavings = cloud.currentSavings;
+                    if (!appState.foodBudgetLimit && cloud.foodBudgetLimit) appState.foodBudgetLimit = cloud.foodBudgetLimit;
                     if (!appState.activePlan && cloud.activePlan) appState.activePlan = cloud.activePlan;
                     if (cloud.onboardingCompleted) appState.onboardingCompleted = true;
                 }
@@ -1108,7 +1135,8 @@ DOCTRINA MAESTRA DE TRAKEALO (3 PILARES QUE DEBES APLICAR SIEMPRE):
         function applyNormalizedToAppState(norm) {
             appState.schemaVersion = norm.schemaVersion; appState.entries = norm.entries; appState.goals = norm.goals;
             appState.subscriptions = norm.subscriptions; appState.investments = norm.investments; appState.currency = norm.currency;
-            appState.budgetLimit = norm.budgetLimit; appState.monthlySalary = norm.monthlySalary; appState.incomeType = norm.incomeType;
+            appState.budgetLimit = norm.budgetLimit; appState.foodBudgetLimit = norm.foodBudgetLimit;
+            appState.monthlySalary = norm.monthlySalary; appState.incomeType = norm.incomeType;
             appState.currentSavings = norm.currentSavings; appState.onboardingCompleted = norm.onboardingCompleted;
             appState.activePlan = norm.activePlan; appState.dailyAlertHour = norm.dailyAlertHour; appState.pendingSync = norm.pendingSync;
             if (norm.theme) applyTheme(norm.theme);
@@ -1148,7 +1176,7 @@ DOCTRINA MAESTRA DE TRAKEALO (3 PILARES QUE DEBES APLICAR SIEMPRE):
             appState.currencySymbol = symbols[appState.currency] || '$';
             document.getElementById('form-currency-symbol').textContent = appState.currencySymbol;
             document.getElementById('settings-user-email').textContent = appState.user?.email || 'usuario@gmail.com';
-            document.getElementById('header-user-name').textContent = appState.user?.name ? `CMD // ${appState.user.name.split(' ')[0].toUpperCase()}` : 'CMD // ACTIVO';
+            document.getElementById('header-user-name').textContent = appState.user?.name ? appState.user.name.split(' ')[0].toUpperCase() : 'CUENTA ACTIVA';
             renderHeaderActivePlan();
             const hourSel = document.getElementById('reminder-daily-hour'); if (hourSel) hourSel.value = String(appState.dailyAlertHour || 18);
             const avatarBtn = document.getElementById('user-avatar-btn');
@@ -1163,7 +1191,8 @@ DOCTRINA MAESTRA DE TRAKEALO (3 PILARES QUE DEBES APLICAR SIEMPRE):
             const payload = {
                 schemaVersion: CURRENT_SCHEMA_VERSION, entries: appState.entries, goals: appState.goals,
                 subscriptions: appState.subscriptions, investments: appState.investments, currency: appState.currency,
-                budgetLimit: appState.budgetLimit, monthlySalary: appState.monthlySalary, incomeType: appState.incomeType,
+                budgetLimit: appState.budgetLimit, foodBudgetLimit: appState.foodBudgetLimit,
+                monthlySalary: appState.monthlySalary, incomeType: appState.incomeType,
                 currentSavings: appState.currentSavings, onboardingCompleted: appState.onboardingCompleted,
                 activePlan: appState.activePlan, dailyAlertHour: appState.dailyAlertHour, theme: appState.theme,
                 updatedAt: new Date().toISOString()
@@ -1212,8 +1241,9 @@ DOCTRINA MAESTRA DE TRAKEALO (3 PILARES QUE DEBES APLICAR SIEMPRE):
         function getEntriesForPeriod(mk = appState.selectedMonth) { return mk === 'all' ? appState.entries : appState.entries.filter(e => e.monthKey === mk); }
 
         function renderAll() {
-            populateMonthSelectors(); renderHeaderActivePlan(); renderSummary(); renderFinanceProfile(); renderActivePlanPanels();
-            renderSettingsPlanPanel(); renderChart(); renderGoals(); renderTransactions(); renderAnalytics(); renderInvestments();
+            populateMonthSelectors(); renderHeaderActivePlan(); renderSummary(); renderFinanceProfile();
+            renderActivePlanPanels(); renderFoodBudgetCards(); renderSettingsPlanPanel(); renderChart();
+            renderGoals(); renderTransactions(); renderAnalytics(); renderInvestments();
             renderSubscriptions(); renderMentorReadiness(); updateCloudStatusUI(); checkDailyDisciplineAlert();
             lucide.createIcons();
         }
@@ -1395,6 +1425,138 @@ DOCTRINA MAESTRA DE TRAKEALO (3 PILARES QUE DEBES APLICAR SIEMPRE):
             });
         }
 
+        // PRESUPUESTO DE COMIDA + MEMORIA DE HÁBITOS IA
+        function openFoodBudgetModal() {
+            document.getElementById('food-budget-limit-input').value = appState.foodBudgetLimit > 0 ? appState.foodBudgetLimit : '';
+            document.getElementById('food-budget-modal').classList.remove('hidden');
+        }
+        function closeFoodBudgetModal() { document.getElementById('food-budget-modal').classList.add('hidden'); }
+        function saveFoodBudgetLimit(e) {
+            e.preventDefault();
+            const val = parseFloat(document.getElementById('food-budget-limit-input').value);
+            if (isNaN(val) || val < 0) return;
+            appState.foodBudgetLimit = val;
+            saveUserData(); renderAll(); closeFoodBudgetModal();
+            showToast(val > 0 ? `🍔 Presupuesto de comida fijado en ${formatMoney(val)}/mes. Tu Asesor IA vigilará tu ritmo diario.` : 'Presupuesto de comida desactivado.', 'success');
+        }
+
+        function getFoodBudgetStatus(monthKey = getCurrentMonthKey()) {
+            const targetMonth = monthKey === 'all' ? getCurrentMonthKey() : monthKey;
+            const foodSpent = appState.entries
+                .filter(e => e.type === 'expense' && e.category === 'Comida' && e.monthKey === targetMonth)
+                .reduce((a, b) => a + b.amount, 0);
+            const limit = appState.foodBudgetLimit || 0;
+            const now = new Date();
+            const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+            const dayOfMonth = now.getDate();
+            const remDays = Math.max(1, daysInMonth - dayOfMonth + 1);
+            const remaining = Math.max(0, limit - foodSpent);
+            const dailySafe = limit > 0 ? remaining / remDays : 0;
+            const pctUsed = limit > 0 ? Math.round((foodSpent / limit) * 100) : 0;
+            const pctMonthElapsed = Math.round((dayOfMonth / daysInMonth) * 100);
+            const overPace = limit > 0 && foodSpent <= limit && pctUsed > (pctMonthElapsed + 12);
+            const exceeded = limit > 0 && foodSpent > limit;
+            return { targetMonth, foodSpent, limit, remaining, dailySafe, pctUsed, pctMonthElapsed, remDays, overPace, exceeded };
+        }
+
+        function renderFoodBudgetCards() {
+            const homeSlot = document.getElementById('home-food-budget-card');
+            const analyticsSlot = document.getElementById('analytics-food-budget-card');
+            if (!homeSlot && !analyticsSlot) return;
+            const st = getFoodBudgetStatus(appState.selectedMonth);
+            let html = '';
+            if (!st.limit || st.limit <= 0) {
+                html = `
+                <div class="hud-panel border border-cardborder rounded-2xl p-4 flex items-center justify-between gap-3">
+                    <div class="flex items-center gap-3 min-w-0">
+                        <div class="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/25 text-amber-400 flex items-center justify-center shrink-0">🍔</div>
+                        <div class="min-w-0">
+                            <h4 class="text-xs font-bold text-white">Presupuesto de Comida</h4>
+                            <p class="text-[11px] text-zinc-400 truncate">Fija tu tope mensual (ej. $300) para que la IA te cuide.</p>
+                        </div>
+                    </div>
+                    <button onclick="openFoodBudgetModal()" class="px-3 py-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-500 border border-emerald-500/30 rounded-xl text-[11px] font-mono font-semibold shrink-0 transition">Fijar tope</button>
+                </div>`;
+            } else {
+                const barPct = Math.min(st.pctUsed, 100);
+                const barColor = st.exceeded ? 'bg-rose-500' : (st.overPace || st.pctUsed >= 85 ? 'bg-amber-400' : 'bg-emerald-500');
+                const aiMsg = st.exceeded
+                    ? `<span class="text-rose-400">⚠️ Te pasaste por ${formatMoney(st.foodSpent - st.limit)} en comida este mes. Evita gastos extras aquí.</span>`
+                    : (st.overPace
+                        ? `<span class="text-amber-400">⚡ Vas rápido en comida (${st.pctUsed}% usado). Limítate a ${formatMoney(st.dailySafe)}/día los próximos ${st.remDays} días.</span>`
+                        : `<span class="text-emerald-400">✓ Buen ritmo en comida. Puedes gastar ${formatMoney(st.dailySafe)}/día sin pasarte.</span>`);
+                html = `
+                <div class="hud-panel border ${st.exceeded ? 'border-rose-500/40' : (st.overPace ? 'border-amber-500/40' : 'border-cardborder')} rounded-2xl p-4 space-y-2.5">
+                    <div class="flex items-center justify-between gap-2">
+                        <div class="flex items-center gap-2 min-w-0">
+                            <span class="text-sm">🍔</span>
+                            <h3 class="text-[10px] font-mono font-semibold text-zinc-300 uppercase tracking-[0.14em] truncate">Comida // ${formatMonthLabel(st.targetMonth)}</h3>
+                        </div>
+                        <button onclick="openFoodBudgetModal()" class="text-[11px] font-mono text-emerald-500 hover:underline flex items-center gap-1 shrink-0"><i data-lucide="pencil" class="w-3 h-3"></i> Editar (${formatMoney(st.limit)})</button>
+                    </div>
+                    <div class="grid grid-cols-3 gap-2 text-center">
+                        <div class="bg-obsidian/70 border border-cardborder rounded-xl p-2"><span class="text-[9px] font-mono text-zinc-400 block">Gastado</span><span class="text-xs font-bold ${st.exceeded?'text-rose-500':'text-white'} mono-num">${formatMoney(st.foodSpent)}</span></div>
+                        <div class="bg-obsidian/70 border border-cardborder rounded-xl p-2"><span class="text-[9px] font-mono text-zinc-400 block">Te queda</span><span class="text-xs font-bold text-emerald-500 mono-num">${formatMoney(st.remaining)}</span></div>
+                        <div class="bg-obsidian/70 border border-cardborder rounded-xl p-2"><span class="text-[9px] font-mono text-zinc-400 block">Hoy / día</span><span class="text-xs font-bold text-sky-400 mono-num">${formatMoney(st.dailySafe)}</span></div>
+                    </div>
+                    <div class="space-y-1">
+                        <div class="w-full bg-obsidian rounded-full h-1.5 overflow-hidden border border-cardborder"><div class="${barColor} h-1.5 rounded-full transition-all" style="width:${barPct}%"></div></div>
+                        <p class="text-[11px] leading-snug">${aiMsg}</p>
+                    </div>
+                </div>`;
+            }
+            if (homeSlot) homeSlot.innerHTML = html;
+            if (analyticsSlot) analyticsSlot.innerHTML = html;
+        }
+
+        function buildUserHabitProfile() {
+            const entries = appState.entries || [];
+            const dayNamesFull = ['Domingos','Lunes','Martes','Miércoles','Jueves','Viernes','Sábados'];
+            const byMonthExp = {}, byDaySpend = [0,0,0,0,0,0,0], merchantMap = {}, catMap = {};
+            entries.forEach(e => {
+                if (e.type !== 'expense') return;
+                if (e.monthKey) byMonthExp[e.monthKey] = (byMonthExp[e.monthKey] || 0) + e.amount;
+                catMap[e.category] = (catMap[e.category] || 0) + e.amount;
+                if (e.isoDate) {
+                    const [y,m,d] = e.isoDate.split('-').map(Number);
+                    const dow = new Date(y, m - 1, d).getDay();
+                    byDaySpend[dow] += e.amount;
+                }
+                const key = (e.desc || '').trim().toLowerCase();
+                if (key) {
+                    if (!merchantMap[key]) merchantMap[key] = { label: e.desc.trim(), count: 0, total: 0 };
+                    merchantMap[key].count += 1;
+                    merchantMap[key].total += e.amount;
+                }
+            });
+            const monthsCount = Object.keys(byMonthExp).length;
+            const avgMonthlyVar = monthsCount > 0 ? Object.values(byMonthExp).reduce((a,b) => a + b, 0) / monthsCount : 0;
+            const peakDowIdx = byDaySpend.reduce((best, val, idx, arr) => val > arr[best] ? idx : best, 0);
+            const peakDay = byDaySpend[peakDowIdx] > 0 ? dayNamesFull[peakDowIdx] : 'Sin patrón aún';
+            const topCats = Object.entries(catMap).sort((a,b) => b[1] - a[1]).slice(0, 3).map(([c,v]) => `${c} (${formatMoney(v)})`).join(', ') || 'Sin historial aún';
+            const repeated = Object.values(merchantMap).filter(m => m.count >= 2).sort((a,b) => b.total - a.total).slice(0, 4).map(m => `"${m.label}" (${m.count} veces, ${formatMoney(m.total)})`).join(', ') || 'Aún recopilando compras repetidas';
+            const recent10 = entries.slice().sort((a,b) => (b.isoDate||'').localeCompare(a.isoDate||'')).slice(0, 10).map(e => `${e.isoDate} | ${e.type==='income'?'+':'-'}${formatMoney(e.amount)} | ${e.category} | ${e.desc}`).join('\n  ') || 'Sin movimientos';
+            const food = getFoodBudgetStatus(getCurrentMonthKey());
+            const foodLine = food.limit > 0
+                ? `Presupuesto mensual de COMIDA: ${formatMoney(food.limit)} | Gastado este mes: ${formatMoney(food.foodSpent)} (${food.pctUsed}% usado en el día ${new Date().getDate()} de mes) | Restante: ${formatMoney(food.remaining)} (${formatMoney(food.dailySafe)}/día)`
+                : `Presupuesto de COMIDA: aún no configurado (gasto en comida este mes: ${formatMoney(food.foodSpent)})`;
+
+            const summaryLinesForAI = `MEMORIA DE HÁBITOS DEL USUARIO (${entries.length} movimientos en ${monthsCount} mes(es)):
+- Promedio histórico de compras variables por mes: ${formatMoney(avgMonthlyVar)}
+- Día de la semana donde más dinero gasta: ${peakDay}
+- Categorías históricas principales: ${topCats}
+- Gastos o comercios repetidos: ${repeated}
+- ${foodLine}
+- Últimos 10 movimientos recientes:
+  ${recent10}`;
+
+            const uiInsightText = entries.length >= 3
+                ? `Tu IA detecta que gastas más los <strong>${peakDay}</strong>. Categorías principales: <strong>${topCats}</strong>.`
+                : `Tu IA sigue aprendiendo tus hábitos diarios (${entries.length} movimiento(s) analizados hasta hoy).`;
+
+            return { summaryLinesForAI, uiInsightText, peakDay, food };
+        }
+
         function getFinancialSnapshot() {
             const scoped = getEntriesForPeriod(getCurrentMonthKey());
             const recordedIncome = scoped.filter(e => e.type === 'income').reduce((a,b) => a + b.amount, 0);
@@ -1428,11 +1590,11 @@ DOCTRINA MAESTRA DE TRAKEALO (3 PILARES QUE DEBES APLICAR SIEMPRE):
             if (appState.monthlySalary > 0) score++;
             if (appState.subscriptions.length > 0 || appState.currentSavings > 0) score++;
             if (getEntriesForPeriod().length >= 3) score++;
-            if (appState.investments.length > 0 || appState.goals.length > 0) score++;
+            if (appState.investments.length > 0 || appState.goals.length > 0 || appState.foodBudgetLimit > 0) score++;
             const pct = Math.max(15, Math.round((score/4)*100)), st = document.getElementById('mentor-data-status'), br = document.getElementById('mentor-data-bar'), ht = document.getElementById('mentor-data-hint');
             if (st) st.textContent = `${score}/4 módulos completos (${appState.entries.length} movimientos)`;
             if (br) br.style.width = pct + '%';
-            if (ht) ht.textContent = score >= 3 ? 'Listo: el Asesor IA leerá todos tus meses para generar planes claros y sin palabras complicadas.' : 'Tip: Registra tu sueldo, gastos fijos y compras del mes para mayor precisión.';
+            if (ht) ht.textContent = score >= 3 ? 'Listo: el Asesor IA leerá todos tus meses y hábitos para generar planes claros.' : 'Tip: Configura tu sueldo, tope de comida y compras del mes para mayor precisión.';
         }
 
         function buildAdaptiveLocalPlans(snap) {
@@ -1465,7 +1627,7 @@ DOCTRINA MAESTRA DE TRAKEALO (3 PILARES QUE DEBES APLICAR SIEMPRE):
                 return;
             }
             const btn = document.getElementById('generate-plans-btn'), orig = btn.innerHTML;
-            btn.disabled = true; btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i><span>Analizando tu historial con IA...</span>`; lucide.createIcons();
+            btn.disabled = true; btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i><span>Analizando tus hábitos con IA...</span>`; lucide.createIcons();
             const snap = getFinancialSnapshot();
             let plans = null;
 
@@ -1487,20 +1649,22 @@ TAREA: Analiza este perfil real del usuario (Moneda: ${appState.currency}) y cre
 - Ahorro total necesario estimado para que las ganancias paguen sus gastos actuales: ${freedomCapitalNeeded}
 - Historial total: ${totalEntriesCount} movimientos en ${monthsFound.length} mes(es).
 - Cosas/inversiones que tiene hoy: ${appState.investments.map(i => i.name + ' ($' + i.currentValue + ')').join(', ') || 'Ninguna todavía'}.
+- ${buildUserHabitProfile().summaryLinesForAI}
 
 INSTRUCCIONES PARA LOS 3 PLANES:
 1. Usa lenguaje 100% sencillo, sin palabras financieras complicadas.
-2. Si su ingreso es modesto (ej. $500-$700/mes), sé empático y propón metas que de verdad pueda cumplir después de pagar sus gastos fijos.
-3. Plan 1 ("Págate Primero"): Disciplina diaria, apartar un % apenas cobre, controlar compras diarias y enfocarse en la tarea más importante del día.
-4. Plan 2 ("Sube de Nivel"): Proteger la semilla, no gastar de más si gana un dinero extra (guardar la mitad) y mejorar lo que vende o su habilidad para cobrar mejor por resultados.
-5. Plan 3 ("Expansión Total"): Multiplicar acciones diarias para vender o producir más dinero extra, apartar un % más fuerte en cuenta aparte para que no le queme en las manos y evitar comprar lujos con trabajo diario.
-6. Responde ÚNICAMENTE con un JSON array válido (sin markdown, sin \`\`\`) con exactamente 3 objetos:
+2. Si tiene presupuesto de comida configurado, inclúyelo dentro del control diario para que no se pase.
+3. Si su ingreso es modesto (ej. $500-$700/mes), sé empático y propón metas que de verdad pueda cumplir después de pagar sus gastos fijos.
+4. Plan 1 ("Págate Primero"): Disciplina diaria, apartar un % apenas cobre, controlar compras diarias y enfocarse en la tarea más importante del día.
+5. Plan 2 ("Sube de Nivel"): Proteger la semilla, no gastar de más si gana un dinero extra (guardar la mitad) y mejorar lo que vende o su habilidad para cobrar mejor por resultados.
+6. Plan 3 ("Expansión Total"): Multiplicar acciones diarias para vender o producir más dinero extra, apartar un % más fuerte en cuenta aparte para que no le queme en las manos y evitar comprar lujos con trabajo diario.
+7. Responde ÚNICAMENTE con un JSON array válido (sin markdown, sin \`\`\`) con exactamente 3 objetos:
 [
   {
     "id": "p1",
     "badge": "Etiqueta corta",
     "title": "Nombre claro del plan",
-    "summary": "Explicación simple en 2 frases de por qué le sirve según sus números",
+    "summary": "Explicación simple en 2 frases de por qué le sirve según sus números y hábitos",
     "savePct": 10,
     "monthlySaveTarget": 60,
     "variableCap": 300,
@@ -1642,6 +1806,7 @@ INSTRUCCIONES PARA LOS 3 PLANES:
             const todayEntriesCount = appState.entries.filter(e => e.isoDate === today).length;
             const checkedInToday = localStorage.getItem('trakealo_evening_ack_' + today) === '1';
             const notifGranted = 'Notification' in window && Notification.permission === 'granted';
+            const habitInsight = buildUserHabitProfile().uiInsightText;
 
             const homeHtml = `
                 <div class="hud-panel border border-emerald-500/45 rounded-2xl p-4 space-y-3 relative overflow-hidden">
@@ -1682,6 +1847,7 @@ INSTRUCCIONES PARA LOS 3 PLANES:
                         </div>
                     </div>
                     ${plan.dailyFocus ? `<div class="bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-3 text-xs text-zinc-100 leading-relaxed"><strong class="text-emerald-400 block text-[10px] font-mono uppercase mb-0.5">🎯 Tu Misión de Hoy</strong>${plan.dailyFocus}</div>` : ''}
+                    <div class="bg-obsidian/70 border border-cardborder rounded-xl p-2.5 text-[11px] text-zinc-300 leading-relaxed"><strong class="text-sky-400 text-[10px] font-mono uppercase block mb-0.5">🧠 Lo que tu IA ha aprendido de ti</strong>${habitInsight}</div>
                     <div class="grid grid-cols-2 gap-2.5">
                         <div class="bg-obsidian/70 border border-cardborder rounded-xl p-3"><span class="text-[9px] font-mono text-zinc-400 block">Puedes gastar hoy</span><span class="text-sm font-bold ${snap.variableExpenses<=plan.variableCap?'text-emerald-500':'text-rose-500'} mono-num">${formatMoney(dailySafe)}</span></div>
                         <div class="bg-obsidian/70 border border-cardborder rounded-xl p-3"><span class="text-[9px] font-mono text-zinc-400 block">Meta Ahorro Mes</span><span class="text-sm font-bold text-sky-400 mono-num">${formatMoney(plan.monthlySaveTarget)}</span></div>
@@ -1723,10 +1889,11 @@ INSTRUCCIONES PARA LOS 3 PLANES:
             btn.disabled = true;
             btn.textContent = '...';
             replyBox.classList.remove('hidden');
-            replyBox.innerHTML = '<span class="text-emerald-400 font-mono animate-pulse">Analizando tu consulta...</span>';
+            replyBox.innerHTML = '<span class="text-emerald-400 font-mono animate-pulse">Analizando tu consulta y hábitos...</span>';
 
             const snap = getFinancialSnapshot();
             const dailySafe = computeDailySafeSpend();
+            const habits = buildUserHabitProfile();
             let answer = '';
             let sourceUsed = 'local';
 
@@ -1749,13 +1916,14 @@ DATOS REALES DEL USUARIO EN TRAKEALO:
 - Ahorros guardados hoy: ${formatMoney(appState.currentSavings)}
 - Dinero que gana cada mes sin trabajar (inversiones): ${formatMoney(snap.passiveMonthly)}
 - ${activePlanContext}
+- ${habits.summaryLinesForAI}
 
 PREGUNTA DEL USUARIO: "${q}"
 
 REGLAS ESTRICTAS DE RESPUESTA:
-1. SOLO responde preguntas sobre finanzas personales, dinero, presupuestos, gastos, ingresos, cómo vender o ganar más dinero, ahorros, inversiones simples, matemáticas de dinero o uso de la app Trakealo.
+1. SOLO responde preguntas sobre finanzas personales, dinero, presupuestos, comida, gastos, ingresos, cómo vender o ganar más dinero, ahorros, inversiones simples, matemáticas de dinero o uso de la app Trakealo.
 2. Si pregunta temas ajenos (celebridades, música, deportes, recetas, chismes, historia, política, clima, etc.), NO respondas eso y responde exactamente con este estilo: "Lo siento, soy tu Asesor Financiero exclusivo de Trakealo. Solo puedo ayudarte con tu dinero, tu plan, cómo ganar más, tus gastos o dudas de la app. ¿En qué meta económica trabajamos hoy?"
-3. Responde en español muy sencillo, sin palabras financieras complicadas, máximo 3 o 4 oraciones claras y prácticas.`;
+3. Responde en español muy sencillo, sin palabras financieras complicadas, máximo 3 o 4 oraciones claras y prácticas, demostrando que conoces sus hábitos y su presupuesto de comida si aplica.`;
 
                     const resp = await fetch(GEMINI_PROXY_URL, {
                         method: 'POST',
@@ -1781,18 +1949,23 @@ REGLAS ESTRICTAS DE RESPUESTA:
 
             if (!answer) {
                 const normQ = normalizeText(q);
-                const financeTerms = ['gast','ingres','dinero','ahorr','inversion','invert','sueldo','salario','presupuest','plan','meta','fijo','alquiler','pag','compr','cobr','cuanto','saldo','balance','app','trakealo','voz','factura','sheet','excel','mes','porcentaje','deuda','negocio','stock','crypto','banco','ganar','vend','client','trabaj'];
+                const financeTerms = ['gast','ingres','dinero','ahorr','inversion','invert','sueldo','salario','presupuest','plan','meta','fijo','alquiler','pag','compr','cobr','cuanto','saldo','balance','app','trakealo','voz','factura','sheet','excel','mes','porcentaje','deuda','negocio','stock','crypto','banco','ganar','vend','client','trabaj','comid','almuerz','cen','super'];
                 const isFinanceTopic = financeTerms.some(t => normQ.includes(t));
 
                 if (!isFinanceTopic) {
                     answer = "Lo siento, soy tu Asesor Financiero exclusivo de Trakealo. Solo puedo ayudarte con tu dinero, tu plan, cómo ganar más, tus gastos o dudas de la app. ¿En qué meta económica trabajamos hoy?";
+                } else if (normQ.includes('comid') || normQ.includes('almuerz') || normQ.includes('super')) {
+                    const f = habits.food;
+                    answer = f.limit > 0
+                        ? `En comida llevas gastado <strong>${formatMoney(f.foodSpent)}</strong> de tu tope de ${formatMoney(f.limit)} (${f.pctUsed}%). Te quedan <strong>${formatMoney(f.remaining)}</strong>, es decir <strong>${formatMoney(f.dailySafe)}/día</strong> para cerrar bien el mes.`
+                        : `Llevas ${formatMoney(f.foodSpent)} en comida este mes. Te recomiendo fijar tu tope mensual en la tarjeta de 🍔 Presupuesto de Comida para ayudarte a cuidarlo cada día.`;
                 } else if (normQ.includes('gastar') || normQ.includes('puedo') || normQ.includes('hoy')) {
                     answer = `Hoy tienes un margen seguro de <strong>${formatMoney(dailySafe)}</strong> para cuidar tu plan. Pregúntate antes de gastar: ¿esto me acerca a mi meta o puedo producir dinero extra para pagarlo sin tocar mi ahorro?`;
                 } else if (normQ.includes('ganar') || normQ.includes('vend') || normQ.includes('mas') || normQ.includes('extra')) {
                     answer = `Para ganar más este mes sin complicarte, ofrece algo útil a personas que ya confían en ti y dedica tu primera hora del día a buscar clientes o mejorar lo que vendes. Y recuerda: cuando entre ese dinero extra, guarda al menos la mitad aparte antes de gastar.`;
                 } else if (normQ.includes('plan') || normQ.includes('voy') || normQ.includes('meta')) {
                     answer = appState.activePlan
-                        ? `Seguimos firmes con tu plan <strong>${appState.activePlan.title}</strong>. Llevas ${formatMoney(snap.variableExpenses)} en compras frente a un límite mensual de ${formatMoney(appState.activePlan.variableCap)}.`
+                        ? `Seguimos firmes con tu plan <strong>${appState.activePlan.title}</strong>. Llevas ${formatMoney(snap.variableExpenses)} en compras frente a un límite mensual de ${formatMoney(appState.activePlan.variableCap)}. Recuerda cuidar los ${habits.peakDay}, que es cuando más gastas.`
                         : `Aún no has elegido un plan. Toca el botón de abajo para analizar tu mes y comprometernos con uno.`;
                 } else {
                     answer = `Con un ingreso de ${formatMoney(snap.effectiveIncome)}, cubre primero tus ${formatMoney(snap.fixedMonthly)} de pagos fijos, aparta tu semilla de ahorro antes de gastar y mantén tus compras diarias dentro de ${formatMoney(dailySafe)}/día.`;
@@ -1837,11 +2010,12 @@ REGLAS ESTRICTAS DE RESPUESTA:
             if (q.includes('factura') || q.includes('ticket') || q.includes('foto') || q.includes('ocr') || q.includes('escan')) return 'Toca <strong>+</strong> → <strong>Escanear Factura</strong> y toma una foto nítida con buena luz. El OCR extrae total, comercio y categoría.';
             if (q.includes('internet') || q.includes('offline') || q.includes('datos') || q.includes('wifi') || q.includes('calle')) return 'Una vez logueado, puedes usar la app en la calle <strong>sin internet</strong>. Todo se guarda en tu teléfono y se sube automáticamente cuando vuelva la señal.';
             if (q.includes('cambiar') || q.includes('salir') || q.includes('abandonar')) return 'Cuando eliges un plan, el Asesor IA se compromete contigo hasta cumplirlo 🔒. Si de verdad necesitas salir o cambiar antes de tiempo, ve a la pestaña <strong>Ajustes → Plan del Asesor IA → Salir o Cambiar de Plan Actual</strong>.';
+            if (q.includes('comid')) return 'En <strong>Inicio</strong> verás el cuadro de <strong>Presupuesto de Comida</strong>. Toca <strong>Fijar tope</strong> (ej. $300) y tu Asesor IA vigilará cuánto llevas y cuánto puedes gastar por día.';
             if (q.includes('sheet') || q.includes('excel') || q.includes('exportar') || q.includes('csv')) return 'Elige el mes en <strong>Inicio</strong> y toca <strong>SHEETS</strong> para descargar un <code>.csv</code> listo para Google Sheets.';
             if (q.includes('asesor') || q.includes('plan') || q.includes('ia') || q.includes('6')) return 'Entra a <strong>IA & Datos → Asesor IA</strong> y toca <strong>Analizar Mi Mes y Crear 3 Planes</strong>. Al elegir uno, aparece arriba junto a tu nombre y te hacemos seguimiento diario hasta que lo cumplas.';
             if (q.includes('fijo') || q.includes('alquiler') || q.includes('luz') || q.includes('sueldo') || q.includes('inversion') || q.includes('activo')) return 'En <strong>Inicio → Base Financiera</strong> configuras sueldo y ahorros. En <strong>Activos → Gastos Fijos</strong> agregas alquiler, luz, agua o internet (se suman solos a tus Gastos de Inicio), y en <strong>Inversiones</strong> tus activos.';
             if (q.includes('claro') || q.includes('oscuro') || q.includes('tema') || q.includes('light') || q.includes('dark')) return 'Toca el ícono del <strong>Sol / Luna</strong> arriba a la derecha (junto a la moneda) o en <strong>Ajustes</strong> para alternar entre Modo Oscuro y Modo Claro.';
-            return 'Puedo explicarte: <strong>Voz</strong>, <strong>OCR Facturas</strong>, <strong>Asesor IA y Compromiso de Plan</strong>, <strong>Cómo salir de un plan (en Ajustes)</strong>, <strong>Gastos Fijos</strong>, <strong>Inversiones</strong> o <strong>Google Sheets</strong>.';
+            return 'Puedo explicarte: <strong>Voz</strong>, <strong>OCR Facturas</strong>, <strong>Presupuesto de Comida</strong>, <strong>Asesor IA y Compromiso de Plan</strong>, <strong>Cómo salir de un plan (en Ajustes)</strong>, <strong>Gastos Fijos</strong> o <strong>Google Sheets</strong>.';
         }
         function submitHelpQuestion(e) {
             e.preventDefault();
@@ -1890,13 +2064,19 @@ REGLAS ESTRICTAS DE RESPUESTA:
                 appState.entries.push({ id: `tx_${Date.now()}_${Math.random().toString(36).slice(2,6)}`, type: currentTxType, amount, desc, category, date, isoDate, monthKey });
                 showToast(`${currentTxType==='income'?'Ingreso':'Gasto'} guardado: ${formatMoney(amount)}`, 'success');
             }
+            if (currentTxType === 'expense' && category === 'Comida' && appState.foodBudgetLimit > 0) {
+                const fst = getFoodBudgetStatus(monthKey);
+                if (fst.exceeded) showToast(`🚨 IA Comida: Llevas ${formatMoney(fst.foodSpent)} y superaste tu tope de ${formatMoney(fst.limit)}.`, 'error');
+                else if (fst.overPace || fst.pctUsed >= 80) showToast(`⚠️ IA Comida: Llevas ${fst.pctUsed}% (${formatMoney(fst.foodSpent)}/${formatMoney(fst.limit)}). Cuida ${formatMoney(fst.dailySafe)}/día.`, 'warning');
+                else showToast(`🍔 IA Comida: Quedan ${formatMoney(fst.remaining)} (${formatMoney(fst.dailySafe)}/día).`, 'info');
+            }
             appState.selectedMonth = monthKey; saveUserData(); renderAll(); closeAddModal(); document.getElementById('transaction-form').reset(); setTxType('expense');
         }
         function deleteTransaction(idx) { if (idx < 0 || idx >= appState.entries.length) return; appState.entries.splice(idx, 1); saveUserData(); renderAll(); showToast('Movimiento eliminado.', 'info'); }
         function saveGoal(e) { e.preventDefault(); const name = document.getElementById('goal-name').value.trim(), target = parseFloat(document.getElementById('goal-target').value), current = parseFloat(document.getElementById('goal-current').value) || 0; appState.goals.push({ name, target, current }); saveUserData(); renderAll(); closeGoalModal(); e.target.reset(); showToast(`Meta "${name}" creada`, 'success'); }
         function saveSubscription(e) { e.preventDefault(); const name = document.getElementById('sub-name').value.trim(), amount = parseFloat(document.getElementById('sub-amount').value); appState.subscriptions.push({ name, amount }); saveUserData(); renderAll(); closeSubModal(); e.target.reset(); showToast(`Gasto fijo "${name}" guardado`, 'success'); }
         function deleteSubscription(idx) { appState.subscriptions.splice(idx, 1); saveUserData(); renderAll(); }
-        function resetDataClean() { if (confirm("¿Estás seguro de borrar todo y dejar los contadores en $0?")) { appState.entries = []; appState.goals = []; appState.subscriptions = []; appState.investments = []; appState.monthlySalary = 0; appState.currentSavings = 0; appState.activePlan = null; saveUserData(); renderAll(); showToast("Datos reiniciados.", "info"); } }
+        function resetDataClean() { if (confirm("¿Estás seguro de borrar todo y dejar los contadores en $0?")) { appState.entries = []; appState.goals = []; appState.subscriptions = []; appState.investments = []; appState.monthlySalary = 0; appState.currentSavings = 0; appState.foodBudgetLimit = 0; appState.activePlan = null; saveUserData(); renderAll(); showToast("Datos reiniciados.", "info"); } }
 
         function escapeCSV(v) { const s = String(v ?? ''); return /[",\n\r]/.test(s) ? `"${s.replace(/"/g,'""')}"` : s; }
         function exportGoogleSheetsCSV(monthKey = appState.selectedMonth) {
