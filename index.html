@@ -205,7 +205,7 @@
 
             <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-zinc-900/90 border border-cardborder text-[10px] font-mono tracking-[0.16em] text-emerald-400 uppercase mb-4">
                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                SYS // FINANZAS v3.5
+                SYS // FINANZAS v3.6
             </div>
 
             <div id="login-logo-slot" class="w-full flex flex-col items-center mb-6">
@@ -303,6 +303,7 @@
                         <span id="header-sync-badge" class="w-fit text-[9px] px-1.5 py-0.5 rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/25 font-mono tracking-widest uppercase">Cloud</span>
                     </div>
                     <p class="text-[10px] text-zinc-400 truncate font-mono mt-0.5" id="header-user-name">CMD // ACTIVO</p>
+                    <p class="hidden text-[9px] text-emerald-400 truncate font-mono" id="header-active-plan"></p>
                 </div>
             </div>
             <div class="flex items-center gap-1.5 shrink-0">
@@ -318,17 +319,17 @@
                 <div id="evening-discipline-banner" class="hidden hud-panel border border-amber-500/40 rounded-2xl p-4 space-y-2.5">
                     <div class="flex items-start justify-between gap-2">
                         <div class="flex items-start gap-2.5">
-                            <div class="w-8 h-8 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-400 flex items-center justify-center shrink-0 mt-0.5"><i data-lucide="clock" class="w-4 h-4"></i></div>
+                            <div class="w-8 h-8 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-400 flex items-center justify-center shrink-0 mt-0.5"><i data-lucide="bell-ring" class="w-4 h-4"></i></div>
                             <div>
-                                <h4 class="text-xs font-bold text-white">Chequeo de Hábito — Asesor IA</h4>
+                                <h4 class="text-xs font-bold text-white" id="evening-discipline-title">Seguimiento Diario — Asesor IA</h4>
                                 <p class="text-[11px] text-zinc-300 leading-relaxed mt-0.5" id="evening-discipline-msg">Aún no registras movimientos hoy. ¿Hiciste alguna compra pequeña o entrada que debamos anotar?</p>
                             </div>
                         </div>
                         <button onclick="dismissEveningBanner()" class="text-zinc-500 hover:text-white p-1"><i data-lucide="x" class="w-4 h-4"></i></button>
                     </div>
                     <div class="flex gap-2">
-                        <button onclick="openAddModal()" class="flex-1 py-2 bg-emerald-500 hover:bg-emerald-400 text-black font-bold rounded-xl text-[11px] transition">+ Registrar movimiento</button>
-                        <button onclick="markZeroSpendToday()" class="px-3 py-2 bg-obsidian border border-cardborder text-zinc-300 hover:text-white rounded-xl text-[11px] font-medium transition">Hoy no gasté</button>
+                        <button onclick="openAddModal()" class="flex-1 py-2 bg-emerald-500 hover:bg-emerald-400 text-black font-bold rounded-xl text-[11px] transition">+ Anotar gasto o entrada</button>
+                        <button onclick="markZeroSpendToday()" id="evening-confirm-btn" class="px-3 py-2 bg-obsidian border border-cardborder text-zinc-300 hover:text-white rounded-xl text-[11px] font-medium transition">Todo anotado hoy ✓</button>
                     </div>
                 </div>
 
@@ -467,22 +468,22 @@
                     <div class="hud-panel border border-cardborder rounded-2xl p-4 space-y-3">
                         <div class="flex items-center justify-between">
                             <span class="text-[10px] font-mono font-semibold text-emerald-500 uppercase tracking-[0.14em]">💬 Consulta a tu Asesor IA</span>
-                            <span id="advisor-engine-badge" class="text-[9px] font-mono text-zinc-400 uppercase">MOTOR ADAPTATIVO</span>
+                            <span id="advisor-engine-badge" class="text-[9px] font-mono text-zinc-400 uppercase">ASESOR IA // EN LÍNEA</span>
                         </div>
                         <div id="advisor-qa-reply" class="hidden bg-obsidian/80 border border-cardborder rounded-xl p-3 text-xs text-zinc-200 leading-relaxed"></div>
                         <form onsubmit="askAdvisorLive(event)" class="flex gap-2">
-                            <input type="text" id="advisor-qa-input" required placeholder='Ej: "¿Puedo gastar $30 hoy?" o "¿Cómo voy con mi meta?"' class="flex-1 bg-obsidian border border-cardborder rounded-xl px-3 py-2 text-xs text-white placeholder:text-zinc-500 focus:outline-none focus:border-emerald-500" />
+                            <input type="text" id="advisor-qa-input" required placeholder='Ej: "¿Puedo gastar $30 hoy?" o "¿Cómo gano más este mes?"' class="flex-1 bg-obsidian border border-cardborder rounded-xl px-3 py-2 text-xs text-white placeholder:text-zinc-500 focus:outline-none focus:border-emerald-500" />
                             <button type="submit" id="advisor-qa-btn" class="px-3.5 py-2 bg-emerald-500 hover:bg-emerald-400 text-black font-bold rounded-xl text-xs transition shrink-0">Consultar</button>
                         </form>
                     </div>
 
-                    <div class="hud-panel border border-emerald-500/35 rounded-2xl p-5 space-y-4 relative overflow-hidden">
+                    <div id="mentor-generator-card" class="hud-panel border border-emerald-500/35 rounded-2xl p-5 space-y-4 relative overflow-hidden">
                         <div class="absolute top-0 left-0 right-0 h-px hud-glow-line"></div>
                         <div class="flex items-start justify-between gap-2">
                             <div>
                                 <span class="text-[10px] font-mono tracking-[0.16em] text-emerald-500 uppercase block">PLANIFICADOR INTELIGENTE</span>
                                 <h2 class="text-base font-bold text-white mt-0.5">Asesor Financiero IA</h2>
-                                <p class="text-[11px] text-zinc-400 mt-1 leading-relaxed">Analiza tu historial completo (sueldo, gastos fijos, compras de todos tus meses, ahorros e inversiones) para generar 3 planes realistas.</p>
+                                <p class="text-[11px] text-zinc-400 mt-1 leading-relaxed">Analiza tu historial completo (sueldo, gastos fijos, compras de todos tus meses, ahorros e inversiones) para crear 3 planes claros y fáciles de seguir.</p>
                             </div>
                             <div class="w-10 h-10 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-500 flex items-center justify-center shrink-0"><i data-lucide="brain-circuit" class="w-5 h-5"></i></div>
                         </div>
@@ -497,15 +498,15 @@
                     <div id="mentor-plan-output" class="hidden space-y-4"></div>
 
                     <div class="hud-panel border border-cardborder rounded-2xl p-5 space-y-3.5">
-                        <div class="flex items-center justify-between"><h3 class="text-[10px] font-mono font-semibold text-zinc-300 uppercase tracking-[0.14em]">Control de Hábitos y Alertas 6:00 PM</h3><i data-lucide="bell-ring" class="w-4 h-4 text-emerald-500"></i></div>
-                        <p class="text-[11px] text-zinc-400 leading-relaxed">Si llegan las 6:00 PM y no has anotado movimientos hoy, la app te recordará al abrirla. Descarga la alarma diaria para que tu iPhone/Android vibre aunque la app esté cerrada.</p>
+                        <div class="flex items-center justify-between"><h3 class="text-[10px] font-mono font-semibold text-zinc-300 uppercase tracking-[0.14em]">Seguimiento Diario y Alertas</h3><i data-lucide="bell-ring" class="w-4 h-4 text-emerald-500"></i></div>
+                        <p class="text-[11px] text-zinc-400 leading-relaxed">Cada día a esta hora revisaremos contigo si olvidaste anotar algún gasto o entrada de dinero. Descarga también la alarma diaria para tu calendario móvil.</p>
                         <div class="grid grid-cols-2 gap-2.5">
-                            <div><label class="text-[10px] font-mono text-zinc-400 block mb-1">Hora chequeo diario</label><select id="reminder-daily-hour" onchange="saveAlertHour(this.value)" class="w-full bg-obsidian border border-cardborder rounded-xl px-3 py-2 text-xs text-white mono-num focus:outline-none focus:border-emerald-500"><option value="18">6:00 PM (18:00)</option><option value="19">7:00 PM (19:00)</option><option value="20">8:00 PM (20:00)</option><option value="21">9:00 PM (21:00)</option></select></div>
+                            <div><label class="text-[10px] font-mono text-zinc-400 block mb-1">Hora seguimiento diario</label><select id="reminder-daily-hour" onchange="saveAlertHour(this.value)" class="w-full bg-obsidian border border-cardborder rounded-xl px-3 py-2 text-xs text-white mono-num focus:outline-none focus:border-emerald-500"><option value="18">6:00 PM (18:00)</option><option value="19">7:00 PM (19:00)</option><option value="20">8:00 PM (20:00)</option><option value="21">9:00 PM (21:00)</option></select></div>
                             <div><label class="text-[10px] font-mono text-zinc-400 block mb-1">Día de cobro mensual</label><input type="number" min="1" max="31" id="reminder-payday" value="15" class="w-full bg-obsidian border border-cardborder rounded-xl px-3 py-2 text-xs text-white mono-num focus:outline-none focus:border-emerald-500"></div>
                         </div>
                         <div class="grid grid-cols-2 gap-2">
-                            <button onclick="enableBrowserAlerts()" type="button" class="py-2.5 px-3 bg-obsidian hover:bg-zinc-900 border border-cardborder rounded-xl text-[11px] font-medium text-emerald-500 flex items-center justify-center gap-1.5 transition"><i data-lucide="bell" class="w-3.5 h-3.5"></i> Alertas en App</button>
-                            <button onclick="downloadDailyHabitICS()" type="button" class="py-2.5 px-3 bg-obsidian hover:bg-zinc-900 border border-cardborder rounded-xl text-[11px] font-medium text-sky-400 flex items-center justify-center gap-1.5 transition"><i data-lucide="calendar-plus" class="w-3.5 h-3.5"></i> Alarma Diaria 6PM</button>
+                            <button onclick="enableBrowserAlerts()" type="button" class="py-2.5 px-3 bg-obsidian hover:bg-zinc-900 border border-cardborder rounded-xl text-[11px] font-medium text-emerald-500 flex items-center justify-center gap-1.5 transition"><i data-lucide="bell" class="w-3.5 h-3.5"></i> Activar Notificaciones</button>
+                            <button onclick="downloadDailyHabitICS()" type="button" class="py-2.5 px-3 bg-obsidian hover:bg-zinc-900 border border-cardborder rounded-xl text-[11px] font-medium text-sky-400 flex items-center justify-center gap-1.5 transition"><i data-lucide="calendar-plus" class="w-3.5 h-3.5"></i> Alarma Diaria</button>
                         </div>
                     </div>
                 </div>
@@ -540,8 +541,11 @@
                 </div>
             </section>
 
-            <!-- TAB 4: AJUSTES (CLEAN — NO GEMINI API BOX) -->
+            <!-- TAB 4: AJUSTES -->
             <section id="view-ajustes" class="space-y-4 hidden">
+                <!-- CONTROL EXCLUSIVO DEL PLAN ACTIVO DESDE AJUSTES -->
+                <div id="settings-active-plan-panel" class="hud-panel border border-cardborder rounded-2xl p-5 space-y-3"></div>
+
                 <div class="hud-panel border border-cardborder rounded-2xl p-5 space-y-4">
                     <h3 class="text-[10px] font-mono font-semibold text-zinc-300 uppercase tracking-[0.14em]">Cuenta y Respaldo en la Nube</h3>
                     <div class="flex items-center justify-between py-2 border-b border-cardborder gap-3">
@@ -591,8 +595,8 @@
                     <button onclick="askHelpQuick('¿Cómo escaneo una factura?')" class="px-2.5 py-1.5 bg-zinc-900 border border-cardborder rounded-lg text-[10px] text-sky-400">📷 Escanear factura</button>
                     <button onclick="askHelpQuick('¿Qué pasa si no tengo internet?')" class="px-2.5 py-1.5 bg-zinc-900 border border-cardborder rounded-lg text-[10px] text-amber-400">📡 Modo sin internet</button>
                     <button onclick="askHelpQuick('¿Cómo funciona el Asesor IA?')" class="px-2.5 py-1.5 bg-zinc-900 border border-cardborder rounded-lg text-[10px] text-emerald-500">🧠 Asesor IA</button>
+                    <button onclick="askHelpQuick('¿Cómo cambio o salgo de mi plan?')" class="px-2.5 py-1.5 bg-zinc-900 border border-cardborder rounded-lg text-[10px] text-rose-400">🔒 Cambiar de plan</button>
                     <button onclick="askHelpQuick('¿Cómo exporto a Google Sheets?')" class="px-2.5 py-1.5 bg-zinc-900 border border-cardborder rounded-lg text-[10px] text-zinc-300">📊 Google Sheets</button>
-                    <button onclick="askHelpQuick('¿Qué son los Gastos Fijos e Inversiones?')" class="px-2.5 py-1.5 bg-zinc-900 border border-cardborder rounded-lg text-[10px] text-zinc-300">🏠 Fijos & Activos</button>
                 </div>
             </div>
             <form onsubmit="submitHelpQuestion(event)" class="p-3 border-t border-cardborder flex gap-2">
@@ -716,9 +720,6 @@
         </div>
     </div>
 
-    <!-- ==================== FIN DE LA PARTE 1 ==================== -->
-    <!-- Continúa inmediatamente pegando la PARTE 2 justo aquí abajo -->
-   ```html
     <section class="sr-only" aria-label="Información de Trakealo">
         <h2>Trakealo: Asesor Financiero IA por Voz, OCR, Inversiones y Gastos Fijos</h2>
         <p>Trakealo es una aplicación financiera inteligente para registrar gastos e ingresos por voz o escáner OCR, gestionar sueldo, gastos fijos, ahorros e inversiones y recibir planes adaptativos con un Asesor IA.</p>
@@ -728,6 +729,41 @@
         if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js').catch(() => {}); }); }
 
         const GEMINI_PROXY_URL = "https://trakealo-ai.ishootrawdotcom.workers.dev";
+
+        // CEREBRO PROPIETARIO DEL ASESOR IA DE TRAKEALO (CONECTADO A GEMINI)
+        const TRAKEALO_GEMINI_BRAIN = `
+Eres el Asesor Financiero IA exclusivo de Trakealo. Tu trabajo es guiar al usuario paso a paso hacia su tranquilidad y crecimiento económico usando SIEMPRE un español cálido, directo, motivador y MUY FÁCIL DE ENTENDER.
+
+REGLA DE LENGUAJE OBLIGATORIA (CERO JERGA COMPLICADA):
+- La mayoría de los usuarios NO saben de finanzas ni de inversiones.
+- PROHIBIDO usar palabras técnicas que confundan (NO digas: ROI, liquidez, equidad, flujo de caja libre, high-ticket, apalancamiento, plusvalía, activos de papel, tasa interna, Pareto, Ley de Parkinson).
+- Traduce TODO a palabras cotidianas y claras:
+  * En vez de "flujo de caja" -> di "dinero que te queda libre cada mes" o "dinero que entra sin tener que trabajarlo".
+  * En vez de "activos" -> di "cosas o negocios que te ponen dinero en el bolsillo cada mes".
+  * En vez de "pasivos" -> di "cosas que solo te sacan dinero del bolsillo".
+  * En vez de "high-ticket" -> di "vender una solución más completa y mejor pagada a menos personas".
+  * En vez de "Ley de Parkinson" -> di "la trampa de gastar más solo porque ganaste más".
+  * En vez de "diversificar / interés compuesto" -> di "hacer que tus ahorros generen ganancias y no gastarlas para que crezcan solos".
+- NUNCA menciones nombres de autores, libros, celebridades ni tecnologías internas (no menciones Gemini, Google, APIs, ni nombres de empresarios externos). Habla como el Asesor IA propio de Trakealo.
+
+DOCTRINA MAESTRA DE TRAKEALO (3 PILARES QUE DEBES APLICAR SIEMPRE):
+1. EXPANSIÓN Y PROTECCIÓN DEL DINERO:
+   - No basta con recortar el café; enfócate en ayudar al usuario a producir más dinero haciendo 10 veces más acciones útiles (contactar clientes, mejorar lo que vende, ofrecer un servicio extra conectado con lo que ya hace).
+   - Regla del "Dinero Sagrado" (apartar antes de gastar): Apenas llegue dinero, separa una parte a una cuenta aparte intocable (empezando con lo que pueda y subiendo progresivamente hasta un 20%-40% cuando sus ingresos crezcan) para que no sienta dinero "sobrando" en su cuenta diaria y se mantenga enfocado en producir.
+   - Regla de compra inteligente: No compres lujos o cosas que solo sacan dinero usando el sueldo del trabajo diario; primero construye ahorros o cosas que te paguen ganancias cada mes.
+   - Meta de Libertad Mensual: Calcula cuánto dinero necesitaría ahorrado o trabajando para él (aprox. sus gastos del año divididos entre 0.07) para que algún día sus ganancias paguen su vida, pero explícalo de forma sencilla.
+
+2. VALOR, HABILIDADES Y "NO COMERSE LA SEMILLA":
+   - Diagnostica cómo gana dinero hoy el usuario: si solo vende su tiempo y esfuerzo físico (límite bajo), guíalo a subir de nivel aprendiendo a vender mejor, comunicar valor, atender mejor a sus clientes actuales, ofrecerles algo adicional y lograr que le paguen de forma constante.
+   - Regla de los 4 Destinos (en lenguaje simple): 1) Págate primero apartando tu "semilla" para invertir en tu futuro ("si te comes la semilla, nunca tendrás cosecha"), 2) Dedica una pequeña parte (ej. 5%-10%) a aprender habilidades que te hagan ganar más, 3) Ayuda o comparte con intención de abundancia si puedes, 4) Vive con el resto cubriendo tus gastos fijos y diarios sin tocar la semilla.
+   - Cambia la pregunta de "¿Cuánto cuesta?" por "¿Cómo puedo producir o vender algo hoy para pagarlo sin tocar mis ahorros?".
+
+3. ESTRUCTURA, METAS CLARAS Y DISCIPLINA DIARIA:
+   - Metas con cifra exacta y fecha límite: Todo plan debe tener un monto claro y pasos en orden.
+   - Prioridad #1 del día ("Comerse el sapo"): Recomienda hacer en la primera hora del día la tarea más importante que trae dinero o resuelve el problema principal, antes de distraerse con el teléfono o tareas menores.
+   - Romper la trampa de subir gastos: Si el usuario recibe un aumento o un ingreso extra, recuérdale guardar al menos la mitad (50%) de ese dinero nuevo y no subir sus gastos al mismo ritmo.
+   - Regla de cuidado al invertir: Nunca pongas dinero en algo que no entiendes al 100% ni por presión rápida de nadie.
+`;
 
         const FIREBASE_CONFIG = {
             apiKey: "AIzaSyB2LyjYImhJSPmt82BKKEmHnpI4KvT2ON0",
@@ -856,25 +892,87 @@
         }
         function skipOnboarding() { appState.onboardingCompleted = true; document.getElementById('onboarding-modal').classList.add('hidden'); saveUserData(); }
 
-        function saveAlertHour(val) { appState.dailyAlertHour = parseInt(val, 10) || 18; saveUserData(true); checkDailyDisciplineAlert(); showToast(`Chequeo diario fijado a las ${appState.dailyAlertHour}:00`, 'info'); }
+        function saveAlertHour(val) { appState.dailyAlertHour = parseInt(val, 10) || 18; saveUserData(true); checkDailyDisciplineAlert(); showToast(`Seguimiento diario fijado a las ${appState.dailyAlertHour}:00`, 'info'); }
+
+        function fireDailyWebNotification(title, body) {
+            const today = getTodayISO();
+            const notifKey = 'trakealo_notif_sent_' + today;
+            if (localStorage.getItem(notifKey) === '1') return;
+            if ('Notification' in window && Notification.permission === 'granted') {
+                try {
+                    if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+                        navigator.serviceWorker.ready.then(reg => {
+                            if (reg && reg.showNotification) {
+                                reg.showNotification(title, { body, icon: './app-icon.png?v=5', badge: './app-icon.png?v=5' });
+                            } else {
+                                new Notification(title, { body });
+                            }
+                        }).catch(() => { new Notification(title, { body }); });
+                    } else {
+                        new Notification(title, { body });
+                    }
+                    localStorage.setItem(notifKey, '1');
+                } catch (_) {}
+            }
+        }
+
         function checkDailyDisciplineAlert() {
             const banner = document.getElementById('evening-discipline-banner');
             if (!banner || !appState.user || !appState.onboardingCompleted) return;
-            const today = getTodayISO(), nowHour = new Date().getHours(), dismissedToday = localStorage.getItem('trakealo_evening_ack_' + today) === '1', hasEntryToday = appState.entries.some(e => e.isoDate === today);
-            if (!hasEntryToday && !dismissedToday && nowHour >= (appState.dailyAlertHour || 18)) {
-                const msgEl = document.getElementById('evening-discipline-msg');
-                msgEl.innerHTML = appState.activePlan
-                    ? `Son más de las ${appState.dailyAlertHour}:00 y no hay movimientos hoy. Tu plan <strong>${appState.activePlan.title}</strong> te da un margen de <strong class="text-emerald-500 mono-num">${formatMoney(computeDailySafeSpend())}</strong> hoy. ¿Olvidaste anotar alguna compra?`
-                    : `Aún no registras movimientos hoy. ¿Hiciste alguna compra pequeña o entrada que debamos anotar?`;
-                banner.classList.remove('hidden');
-                const notifSent = localStorage.getItem('trakealo_notif_sent_' + today);
-                if (!notifSent && 'Notification' in window && Notification.permission === 'granted') {
-                    try { new Notification('Trakealo — Chequeo 6:00 PM', { body: 'Aún no registras gastos ni entradas hoy. ¿Olvidaste anotar algo?' }); localStorage.setItem('trakealo_notif_sent_' + today, '1'); } catch (_) {}
+            const today = getTodayISO();
+            const nowHour = new Date().getHours();
+            const alertHour = appState.dailyAlertHour || 18;
+            const ackToday = localStorage.getItem('trakealo_evening_ack_' + today) === '1';
+            const todayEntries = appState.entries.filter(e => e.isoDate === today);
+            const hasEntryToday = todayEntries.length > 0;
+            const titleEl = document.getElementById('evening-discipline-title');
+            const msgEl = document.getElementById('evening-discipline-msg');
+            const confirmBtn = document.getElementById('evening-confirm-btn');
+
+            if (appState.activePlan && !appState.activePlan.completed) {
+                if (!ackToday && (!hasEntryToday || nowHour >= alertHour)) {
+                    titleEl.textContent = `Seguimiento Diario • ${appState.activePlan.title}`;
+                    if (!hasEntryToday) {
+                        msgEl.innerHTML = `Aún no registras movimientos hoy. ¿Olvidaste anotar algún <strong>gasto reciente</strong> o <strong>entrada de dinero</strong>? Tu margen seguro hoy es <strong class="text-emerald-500 mono-num">${formatMoney(computeDailySafeSpend())}</strong>.`;
+                        if (confirmBtn) confirmBtn.textContent = 'Hoy no gasté ✓';
+                    } else {
+                        msgEl.innerHTML = `Cierre del día: llevas <strong>${todayEntries.length}</strong> movimiento(s) hoy. ¿Te falta anotar algún gasto pequeño o entrada antes de cerrar tu seguimiento?`;
+                        if (confirmBtn) confirmBtn.textContent = 'Todo anotado hoy ✓';
+                    }
+                    banner.classList.remove('hidden');
+                    if (nowHour >= alertHour) {
+                        fireDailyWebNotification(
+                            `Trakealo — Seguimiento (${appState.activePlan.title})`,
+                            hasEntryToday
+                                ? '¿Te faltó anotar algún gasto reciente o entrada antes de cerrar el día?'
+                                : 'Aún no registras gastos ni entradas hoy. ¡Anota tus movimientos para cuidar tu meta!'
+                        );
+                    }
+                    return;
                 }
-            } else banner.classList.add('hidden');
+                banner.classList.add('hidden');
+                return;
+            }
+
+            if (!hasEntryToday && !ackToday && nowHour >= alertHour) {
+                titleEl.textContent = 'Chequeo de Hábito — Asesor IA';
+                msgEl.innerHTML = `Aún no registras movimientos hoy. ¿Hiciste alguna compra pequeña o entrada que debamos anotar?`;
+                if (confirmBtn) confirmBtn.textContent = 'Hoy no gasté ✓';
+                banner.classList.remove('hidden');
+                fireDailyWebNotification('Trakealo — Chequeo Diario', 'Aún no registras gastos ni entradas hoy. ¿Olvidaste anotar algo?');
+            } else {
+                banner.classList.add('hidden');
+            }
         }
+
         function dismissEveningBanner() { localStorage.setItem('trakealo_evening_ack_' + getTodayISO(), '1'); document.getElementById('evening-discipline-banner')?.classList.add('hidden'); }
-        function markZeroSpendToday() { localStorage.setItem('trakealo_evening_ack_' + getTodayISO(), '1'); document.getElementById('evening-discipline-banner')?.classList.add('hidden'); showToast('¡Excelente disciplina! Día cerrado con $0 en gastos extras.', 'success'); }
+        function markZeroSpendToday() {
+            localStorage.setItem('trakealo_evening_ack_' + getTodayISO(), '1');
+            document.getElementById('evening-discipline-banner')?.classList.add('hidden');
+            renderActivePlanPanels();
+            lucide.createIcons();
+            showToast(appState.activePlan ? '¡Seguimiento diario completado! Sigue firme con tu plan.' : '¡Excelente disciplina! Día cerrado con $0 en gastos extras.', 'success');
+        }
         setInterval(checkDailyDisciplineAlert, 60000);
 
         function showToast(message, type = 'info') {
@@ -1033,12 +1131,25 @@
             maybeShowOnboarding(); checkDailyDisciplineAlert();
         }
 
+        function renderHeaderActivePlan() {
+            const el = document.getElementById('header-active-plan');
+            if (!el) return;
+            if (appState.activePlan && !appState.activePlan.completed) {
+                el.textContent = `🔒 PLAN: ${appState.activePlan.title}`;
+                el.classList.remove('hidden');
+            } else {
+                el.textContent = '';
+                el.classList.add('hidden');
+            }
+        }
+
         function applyUserHeaderUI() {
             document.getElementById('currency-select').value = appState.currency;
             appState.currencySymbol = symbols[appState.currency] || '$';
             document.getElementById('form-currency-symbol').textContent = appState.currencySymbol;
             document.getElementById('settings-user-email').textContent = appState.user?.email || 'usuario@gmail.com';
             document.getElementById('header-user-name').textContent = appState.user?.name ? `CMD // ${appState.user.name.split(' ')[0].toUpperCase()}` : 'CMD // ACTIVO';
+            renderHeaderActivePlan();
             const hourSel = document.getElementById('reminder-daily-hour'); if (hourSel) hourSel.value = String(appState.dailyAlertHour || 18);
             const avatarBtn = document.getElementById('user-avatar-btn');
             if (appState.user?.photoURL) avatarBtn.innerHTML = `<img src="${appState.user.photoURL}" alt="Avatar" class="w-full h-full object-cover" />`;
@@ -1101,8 +1212,8 @@
         function getEntriesForPeriod(mk = appState.selectedMonth) { return mk === 'all' ? appState.entries : appState.entries.filter(e => e.monthKey === mk); }
 
         function renderAll() {
-            populateMonthSelectors(); renderSummary(); renderFinanceProfile(); renderActivePlanPanels();
-            renderChart(); renderGoals(); renderTransactions(); renderAnalytics(); renderInvestments();
+            populateMonthSelectors(); renderHeaderActivePlan(); renderSummary(); renderFinanceProfile(); renderActivePlanPanels();
+            renderSettingsPlanPanel(); renderChart(); renderGoals(); renderTransactions(); renderAnalytics(); renderInvestments();
             renderSubscriptions(); renderMentorReadiness(); updateCloudStatusUI(); checkDailyDisciplineAlert();
             lucide.createIcons();
         }
@@ -1303,6 +1414,15 @@
             return Math.max(0, appState.activePlan.variableCap - snap.variableExpenses) / remDays;
         }
 
+        function isPlanGoalFulfilled(plan, snap) {
+            if (!plan) return false;
+            const currentMonth = getCurrentMonthKey();
+            const netSavedThisMonth = Math.max(0, snap.effectiveIncome - snap.totalCommitted);
+            const monthEnded = plan.monthKey && plan.monthKey !== currentMonth;
+            const targetReached = plan.monthlySaveTarget > 0 && netSavedThisMonth >= plan.monthlySaveTarget && (new Date().getDate() >= 25 || monthEnded);
+            return Boolean(monthEnded || targetReached);
+        }
+
         function renderMentorReadiness() {
             let score = 0;
             if (appState.monthlySalary > 0) score++;
@@ -1312,36 +1432,40 @@
             const pct = Math.max(15, Math.round((score/4)*100)), st = document.getElementById('mentor-data-status'), br = document.getElementById('mentor-data-bar'), ht = document.getElementById('mentor-data-hint');
             if (st) st.textContent = `${score}/4 módulos completos (${appState.entries.length} movimientos)`;
             if (br) br.style.width = pct + '%';
-            if (ht) ht.textContent = score >= 3 ? 'Listo: el Asesor IA leerá todos tus meses para generar planes ultra realistas.' : 'Tip: Registra tu sueldo, gastos fijos y compras del mes para mayor precisión.';
+            if (ht) ht.textContent = score >= 3 ? 'Listo: el Asesor IA leerá todos tus meses para generar planes claros y sin palabras complicadas.' : 'Tip: Registra tu sueldo, gastos fijos y compras del mes para mayor precisión.';
         }
 
         function buildAdaptiveLocalPlans(snap) {
             const income = snap.effectiveIncome, fixed = snap.fixedMonthly, free = snap.freeAfterFixed;
             if (income <= 0) {
                 return [
-                    { id:'p1', badge:'Nivel Inicial', title:'Plan Base: Registro y Estabilidad', summary:'Configura tu sueldo mensual en Inicio para calcular exactamente cuánto puedes ahorrar sin apretar tus gastos diarios.', savePct:10, monthlySaveTarget:50, variableCap:250, extraIncomeTarget:0, steps:['Configura tu sueldo mensual en Inicio → Base Financiera.','Anota tus gastos fijos obligatorios (casa, luz, agua, internet).','Registra cada compra diaria para detectar fugas.'] },
-                    { id:'p2', badge:'Recomendado', title:'Plan Equilibrado 15%', summary:'Ideal para crear disciplina diaria guardando un porcentaje fijo desde el primer día.', savePct:15, monthlySaveTarget:100, variableCap:350, extraIncomeTarget:50, steps:['Aparta primero tu meta de ahorro al recibir ingresos.','Usa el chequeo de las 6:00 PM para no olvidar gastos pequeños.','Construye un fondo inicial de 2 meses de gastos fijos.'] },
-                    { id:'p3', badge:'Crecimiento', title:'Plan Impulso de Ingresos', summary:'Combina control de gastos variables con una meta mensual de ingreso adicional.', savePct:20, monthlySaveTarget:150, variableCap:300, extraIncomeTarget:150, steps:['Define una actividad extra o venta semanal para sumar flujo.','Destina el 100% de ingresos extras a ahorros o activos.','Revisa tu avance cada domingo en Analíticas.'] }
+                    { id:'p1', badge:'Base Diaria', title:'Plan 1: Orden y Semilla Intocable', summary:'Configura tu sueldo mensual en Inicio para apartar primero tu semilla antes de gastar.', savePct:10, monthlySaveTarget:50, variableCap:250, extraIncomeTarget:0, dailyFocus:'Anota cada gasto o entrada hoy y separa una parte apenas recibas dinero.', steps:['Configura tu sueldo mensual en Inicio → Base Financiera.','Anota tus pagos fijos obligatorios (casa, luz, agua, internet).','Aparta tu ahorro en un lugar separado apenas cobres y no te comas esa semilla.'] },
+                    { id:'p2', badge:'Subir de Nivel', title:'Plan 2: Más Valor y Equilibrio 15%', summary:'Combina apartar un porcentaje fijo con mejorar tu servicio o ventas para no depender solo de recortar.', savePct:15, monthlySaveTarget:100, variableCap:350, extraIncomeTarget:75, dailyFocus:'Dedica 1 hora en la mañana a contactar clientes o mejorar cómo ofreces tu trabajo.', steps:['Aparta el 15% apenas te llegue dinero antes de pagar cosas diarias.','Si te llega un dinero extra, guarda al menos la mitad para que tus gastos no suban igual.','Usa el seguimiento de las 6:00 PM para no olvidar ningún movimiento.'] },
+                    { id:'p3', badge:'Expansión 10X', title:'Plan 3: Aceleración de Ingresos', summary:'Multiplica tus acciones diarias para vender más, vivir con lo justo y dirigir lo guardado a cosas que paguen dinero mensual.', savePct:20, monthlySaveTarget:150, variableCap:300, extraIncomeTarget:150, dailyFocus:'Haz hoy el triple de mensajes, ofertas o gestiones para generar una venta adicional.', steps:['Define qué servicio o producto extra puedes ofrecer esta semana a quienes ya te conocen.','Pasa el dinero extra a una cuenta de ahorro para futuras cosas que te den ingresos cada mes.','No compres lujos con tu trabajo diario hasta que tus ahorros produzcan ganancias.'] }
                 ];
             }
             const freeRatio = income > 0 ? free / income : 0;
             let p1, p2, p3, tier;
-            if (income <= 750 || freeRatio < 0.35) { tier = 'Capacidad Base'; p1 = 5; p2 = 10; p3 = 15; }
-            else if (income <= 2200 || freeRatio < 0.55) { tier = 'Consolidación'; p1 = 10; p2 = 15; p3 = 22; }
+            if (income <= 750 || freeRatio < 0.35) { tier = 'Paso Seguro'; p1 = 5; p2 = 10; p3 = 15; }
+            else if (income <= 2200 || freeRatio < 0.55) { tier = 'Crecimiento'; p1 = 10; p2 = 15; p3 = 22; }
             else { tier = 'Expansión'; p1 = 15; p2 = 25; p3 = 35; }
             const capSave = (pct) => Math.max(0, Math.min(Math.round((income*pct)/100), Math.round(free*0.65)));
             const s1 = capSave(p1), s2 = capSave(p2), s3 = capSave(p3), v1 = Math.max(0, free-s1), v2 = Math.max(0, free-s2), v3 = Math.max(0, free-s3);
             const topCatName = snap.topCategory[0] || 'Comida', cut10 = Math.round((snap.topCategory[1]||0)*0.10), extra3 = income <= 750 ? Math.max(60, Math.round(income*0.20)) : Math.round(income*0.15);
             return [
-                { id:'plan_1', badge:`${tier} • Suave`, title:`Plan 1: Estabilidad (${p1}% Ahorro)`, summary:`Adaptado a tu ingreso de ${formatMoney(income)} tras cubrir ${formatMoney(fixed)} en gastos fijos obligatorios.`, savePct:p1, monthlySaveTarget:s1, variableCap:v1, extraIncomeTarget:0, steps:[`Cubre primero tus gastos fijos (${formatMoney(fixed)}/mes).`,`Aparta ${formatMoney(s1)}/mes apenas cobres para tu fondo (actual: ${formatMoney(appState.currentSavings)}).`,`Mantén compras diarias bajo ${formatMoney(v1)}/mes (${formatMoney(v1/30)}/día).`] },
-                { id:'plan_2', badge:`${tier} • Recomendado`, title:`Plan 2: Equilibrio Activo (${p2}%)`, summary:`Balance realista entre vida diaria tranquila y crecimiento constante de ahorros y activos.`, savePct:p2, monthlySaveTarget:s2, variableCap:v2, extraIncomeTarget:Math.round(extra3*0.5), steps:[`Guarda ${formatMoney(Math.round(s2*0.7))}/mes en ahorro seguro y ${formatMoney(Math.round(s2*0.3))}/mes para activos.`, cut10 > 0 ? `Recorta 10% en "${topCatName}" para liberar ${formatMoney(cut10)} extra.` : `Mantén un tope diario de ${formatMoney(v2/30)} en variables.`, `Suma +${formatMoney(Math.round(extra3*0.5))}/mes en ingresos extra para mayor holgura.`] },
-                { id:'plan_3', badge:`${tier} • Reto`, title:`Plan 3: Aceleración (${p3}% + Extra)`, summary:`Para avanzar más rápido combinando tope diario estricto y expansión de ingresos.`, savePct:p3, monthlySaveTarget:s3, variableCap:v3, extraIncomeTarget:extra3, steps:[`Tope estricto diario: ${formatMoney(v3/30)}/día (${formatMoney(v3)}/mes).`,`Meta de ahorro/inversión: ${formatMoney(s3)}/mes directos a metas o activos.`,`Objetivo paralelo: generar +${formatMoney(extra3)}/mes con ventas o servicios.`] }
+                { id:'plan_1', badge:`${tier} • Disciplina`, title:`Plan 1: Págate Primero (${p1}%)`, summary:`Ideal para empezar firme: cubres tus ${formatMoney(fixed)} de pagos fijos y apartas ${formatMoney(s1)} antes de gastar.`, savePct:p1, monthlySaveTarget:s1, variableCap:v1, extraIncomeTarget:0, dailyFocus:'Anota todos tus movimientos del día y cumple la tarea más importante de tu trabajo antes de ver redes.', steps:[`Cubre primero tus pagos fijos (${formatMoney(fixed)}/mes).`,`Aparta ${formatMoney(s1)}/mes apenas cobres como tu semilla intocable (llevas: ${formatMoney(appState.currentSavings)}).`,`Mantén tus gastos diarios bajo ${formatMoney(v1/30)}/día.`] },
+                { id:'plan_2', badge:`${tier} • Valor`, title:`Plan 2: Crecer sin Desorden (${p2}%)`, summary:`Separas ${formatMoney(s2)}/mes, mejoras lo que ofreces para cobrar mejor y guardas la mitad de cada dinero extra.`, savePct:p2, monthlySaveTarget:s2, variableCap:v2, extraIncomeTarget:Math.round(extra3*0.5), dailyFocus:'Dedica 60 minutos hoy a hablar con clientes o aprender algo que te ayude a ganar más.', steps:[`Separa ${formatMoney(Math.round(s2*0.8))}/mes para ahorro intocable y ${formatMoney(Math.round(s2*0.2))}/mes para mejorar tus habilidades.`, cut10 > 0 ? `Baja un poco en "${topCatName}" para liberar ${formatMoney(cut10)} extra.` : `Cuida tu tope diario de ${formatMoney(v2/30)} en compras.`, `Busca sumar +${formatMoney(Math.round(extra3*0.5))}/mes ofreciendo algo adicional sin subir tus gastos.`] },
+                { id:'plan_3', badge:`${tier} • 10X`, title:`Plan 3: Expansión Total (${p3}% + Extra)`, summary:`Modo ofensivo: vives con lo necesario, apartas ${formatMoney(s3)}/mes en cuenta aparte y multiplicas tus acciones para generar más ingresos.`, savePct:p3, monthlySaveTarget:s3, variableCap:v3, extraIncomeTarget:extra3, dailyFocus:'Multiplica hoy por 10 tus contactos o acciones de venta para traer dinero nuevo sin tocar tu semilla.', steps:[`Tope estricto diario: ${formatMoney(v3/30)}/día para mantenerte enfocado en producir más.`,`Guarda ${formatMoney(s3)}/mes aparte para invertir solo en cosas que entiendas y te paguen dinero cada mes.`,`Meta paralela: generar +${formatMoney(extra3)}/mes extra con ventas, clientes o un servicio adicional.`] }
             ];
         }
 
         async function generateAdvisorPlans() {
+            if (appState.activePlan && !appState.activePlan.completed) {
+                showToast('Ya tienes un plan comprometido. Cúmplelo o ve a Ajustes para salir.', 'warning');
+                return;
+            }
             const btn = document.getElementById('generate-plans-btn'), orig = btn.innerHTML;
-            btn.disabled = true; btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i><span>Analizando tu historial...</span>`; lucide.createIcons();
+            btn.disabled = true; btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i><span>Analizando tu historial con IA...</span>`; lucide.createIcons();
             const snap = getFinancialSnapshot();
             let plans = null;
 
@@ -1349,32 +1473,40 @@
                 try {
                     const totalEntriesCount = appState.entries.length;
                     const monthsFound = Array.from(new Set(appState.entries.map(e => e.monthKey).filter(Boolean)));
-                    const prompt = `Actúa como el Asesor Financiero IA privado de Trakealo. Analiza este perfil financiero real (Moneda: ${appState.currency}):
-- Perfil: ${appState.incomeType}
-- Sueldo/Ingreso base mensual: ${snap.effectiveIncome.toFixed(2)}
-- Gastos fijos obligatorios mensuales (alquiler, servicios, etc.): ${snap.fixedMonthly.toFixed(2)}
-- Gastos variables acumulados del mes activo: ${snap.variableExpenses.toFixed(2)}
-- Categoría de mayor gasto variable: ${snap.topCategory[0]} (${snap.topCategory[1].toFixed(2)})
-- Ahorros actuales acumulados: ${appState.currentSavings.toFixed(2)}
-- Ingreso pasivo mensual por inversiones: ${snap.passiveMonthly.toFixed(2)}
-- Total de movimientos registrados en el historial: ${totalEntriesCount} movimientos en ${monthsFound.length} mes(es).
-- Activos actuales: ${appState.investments.map(i => i.name + ' ($' + i.currentValue + ')').join(', ') || 'Sin activos aún'}.
+                    const freedomCapitalNeeded = Math.round(((snap.fixedMonthly + snap.variableExpenses) * 12) / 0.07);
+                    const prompt = `${TRAKEALO_GEMINI_BRAIN}
 
-Instrucciones estrictas:
-1. NUNCA menciones nombres de autores, celebridades ni tecnologías externas.
-2. Si el ingreso es modesto (ej. $600/mes), sé empático y propón metas de ahorro 100% alcanzables tras pagar gastos fijos obligatorios.
-3. Responde ÚNICAMENTE con un JSON array válido (sin markdown, sin bloques de código) con exactamente 3 planes:
+TAREA: Analiza este perfil real del usuario (Moneda: ${appState.currency}) y crea 3 planes mensuales realistas, claros y fáciles de entender:
+- Cómo genera dinero hoy: ${appState.incomeType}
+- Sueldo o ingreso base al mes: ${snap.effectiveIncome.toFixed(2)}
+- Pagos fijos obligatorios al mes (alquiler, luz, internet, etc.): ${snap.fixedMonthly.toFixed(2)}
+- Compras variables acumuladas este mes: ${snap.variableExpenses.toFixed(2)}
+- En qué gasta más este mes: ${snap.topCategory[0]} (${snap.topCategory[1].toFixed(2)})
+- Ahorros que tiene hoy: ${appState.currentSavings.toFixed(2)}
+- Dinero que le entra cada mes sin trabajar (inversiones): ${snap.passiveMonthly.toFixed(2)}
+- Ahorro total necesario estimado para que las ganancias paguen sus gastos actuales: ${freedomCapitalNeeded}
+- Historial total: ${totalEntriesCount} movimientos en ${monthsFound.length} mes(es).
+- Cosas/inversiones que tiene hoy: ${appState.investments.map(i => i.name + ' ($' + i.currentValue + ')').join(', ') || 'Ninguna todavía'}.
+
+INSTRUCCIONES PARA LOS 3 PLANES:
+1. Usa lenguaje 100% sencillo, sin palabras financieras complicadas.
+2. Si su ingreso es modesto (ej. $500-$700/mes), sé empático y propón metas que de verdad pueda cumplir después de pagar sus gastos fijos.
+3. Plan 1 ("Págate Primero"): Disciplina diaria, apartar un % apenas cobre, controlar compras diarias y enfocarse en la tarea más importante del día.
+4. Plan 2 ("Sube de Nivel"): Proteger la semilla, no gastar de más si gana un dinero extra (guardar la mitad) y mejorar lo que vende o su habilidad para cobrar mejor por resultados.
+5. Plan 3 ("Expansión Total"): Multiplicar acciones diarias para vender o producir más dinero extra, apartar un % más fuerte en cuenta aparte para que no le queme en las manos y evitar comprar lujos con trabajo diario.
+6. Responde ÚNICAMENTE con un JSON array válido (sin markdown, sin \`\`\`) con exactamente 3 objetos:
 [
   {
     "id": "p1",
-    "badge": "Suave",
-    "title": "Nombre del plan 1",
-    "summary": "Resumen conciso y personalizado para el usuario",
-    "savePct": 8,
-    "monthlySaveTarget": 50,
+    "badge": "Etiqueta corta",
+    "title": "Nombre claro del plan",
+    "summary": "Explicación simple en 2 frases de por qué le sirve según sus números",
+    "savePct": 10,
+    "monthlySaveTarget": 60,
     "variableCap": 300,
     "extraIncomeTarget": 0,
-    "steps": ["paso 1 personalizado", "paso 2", "paso 3"]
+    "dailyFocus": "Una sola frase corta con la acción diaria #1 que debe hacer hoy",
+    "steps": ["paso 1 en lenguaje simple", "paso 2 concreto", "paso 3 práctico"]
   }
 ]`;
                     const resp = await fetch(GEMINI_PROXY_URL, {
@@ -1402,38 +1534,182 @@ Instrucciones estrictas:
             lastGeneratedPlans = plans;
             renderGeneratedPlans(plans, snap);
             btn.disabled = false; btn.innerHTML = orig; lucide.createIcons();
-            showToast('3 planes listos. Selecciona el que quieres seguir.', 'success');
+            showToast('3 planes listos. Recuerda: al elegir uno, nos casamos con él hasta cumplirlo.', 'success');
         }
 
         function renderGeneratedPlans(plans, snap) {
             const out = document.getElementById('mentor-plan-output');
-            const sumHtml = `<div class="hud-panel border border-cardborder rounded-2xl p-4 space-y-2"><span class="text-[10px] font-mono text-emerald-500 uppercase tracking-wider block">Radiografía Real de Tu Mes</span><div class="grid grid-cols-3 gap-2 text-center pt-1"><div class="bg-obsidian/70 border border-cardborder rounded-lg p-2"><span class="text-[9px] font-mono text-zinc-400 block">Ingreso</span><span class="text-xs font-bold text-emerald-500 mono-num">${formatMoney(snap.effectiveIncome)}</span></div><div class="bg-obsidian/70 border border-cardborder rounded-lg p-2"><span class="text-[9px] font-mono text-zinc-400 block">Gastos Fijos</span><span class="text-xs font-bold text-amber-400 mono-num">${formatMoney(snap.fixedMonthly)}</span></div><div class="bg-obsidian/70 border border-cardborder rounded-lg p-2"><span class="text-[9px] font-mono text-zinc-400 block">Variables</span><span class="text-xs font-bold text-rose-500 mono-num">${formatMoney(snap.variableExpenses)}</span></div></div></div>`;
+            const sumHtml = `<div class="hud-panel border border-cardborder rounded-2xl p-4 space-y-2"><span class="text-[10px] font-mono text-emerald-500 uppercase tracking-wider block">Radiografía Real de Tu Mes</span><div class="grid grid-cols-3 gap-2 text-center pt-1"><div class="bg-obsidian/70 border border-cardborder rounded-lg p-2"><span class="text-[9px] font-mono text-zinc-400 block">Ingreso</span><span class="text-xs font-bold text-emerald-500 mono-num">${formatMoney(snap.effectiveIncome)}</span></div><div class="bg-obsidian/70 border border-cardborder rounded-lg p-2"><span class="text-[9px] font-mono text-zinc-400 block">Gastos Fijos</span><span class="text-xs font-bold text-amber-400 mono-num">${formatMoney(snap.fixedMonthly)}</span></div><div class="bg-obsidian/70 border border-cardborder rounded-lg p-2"><span class="text-[9px] font-mono text-zinc-400 block">Compras</span><span class="text-xs font-bold text-rose-500 mono-num">${formatMoney(snap.variableExpenses)}</span></div></div></div>`;
             const cardsHtml = plans.map((p, idx) => {
                 const sel = appState.activePlan && appState.activePlan.title === p.title;
-                return `<div class="hud-panel border ${sel?'border-emerald-500':'border-cardborder'} rounded-2xl p-4 space-y-3"><div class="flex items-start justify-between gap-2"><div><span class="text-[9px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-500 border border-emerald-500/25 uppercase">${p.badge}</span><h4 class="text-sm font-bold text-white mt-1.5">${p.title}</h4></div><span class="text-xs font-bold font-mono text-emerald-500 shrink-0">${formatMoney(p.monthlySaveTarget)}/mes</span></div><p class="text-[11px] text-zinc-400 leading-relaxed">${p.summary}</p><div class="grid grid-cols-2 gap-2 text-[10px] font-mono"><div class="bg-obsidian/70 border border-cardborder rounded-lg p-2"><span class="text-zinc-500 block">Tope Gastos Diarios</span><strong class="text-white">${formatMoney((p.variableCap||0)/30)}/día</strong></div><div class="bg-obsidian/70 border border-cardborder rounded-lg p-2"><span class="text-zinc-500 block">Ingreso Extra Sugerido</span><strong class="text-sky-400">+${formatMoney(p.extraIncomeTarget||0)}/mes</strong></div></div><ul class="text-[11px] text-zinc-300 space-y-1 list-disc pl-4">${(p.steps||[]).map(s=>`<li>${s}</li>`).join('')}</ul><button onclick="selectAdvisorPlan(${idx})" class="w-full py-2.5 ${sel?'bg-zinc-800 text-emerald-400 border border-emerald-500/40':'bg-emerald-500 hover:bg-emerald-400 text-black'} font-bold rounded-xl text-xs transition">${sel?'✓ Plan Activo Actualmente':'Elegir y Seguir Este Plan'}</button></div>`;
+                return `<div class="hud-panel border ${sel?'border-emerald-500':'border-cardborder'} rounded-2xl p-4 space-y-3"><div class="flex items-start justify-between gap-2"><div><span class="text-[9px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-500 border border-emerald-500/25 uppercase">${p.badge}</span><h4 class="text-sm font-bold text-white mt-1.5">${p.title}</h4></div><span class="text-xs font-bold font-mono text-emerald-500 shrink-0">${formatMoney(p.monthlySaveTarget)}/mes</span></div><p class="text-[11px] text-zinc-400 leading-relaxed">${p.summary}</p>${p.dailyFocus ? `<div class="bg-emerald-500/5 border border-emerald-500/20 rounded-xl p-2.5 text-[11px] text-zinc-200"><strong class="text-emerald-400">Enfoque diario:</strong> ${p.dailyFocus}</div>` : ''}<div class="grid grid-cols-2 gap-2 text-[10px] font-mono"><div class="bg-obsidian/70 border border-cardborder rounded-lg p-2"><span class="text-zinc-500 block">Tope Gastos Diarios</span><strong class="text-white">${formatMoney((p.variableCap||0)/30)}/día</strong></div><div class="bg-obsidian/70 border border-cardborder rounded-lg p-2"><span class="text-zinc-500 block">Meta Ingreso Extra</span><strong class="text-sky-400">+${formatMoney(p.extraIncomeTarget||0)}/mes</strong></div></div><ul class="text-[11px] text-zinc-300 space-y-1 list-disc pl-4">${(p.steps||[]).map(s=>`<li>${s}</li>`).join('')}</ul><button onclick="selectAdvisorPlan(${idx})" class="w-full py-2.5 bg-emerald-500 hover:bg-emerald-400 text-black font-bold rounded-xl text-xs transition">🔒 Comprometerme con Este Plan</button></div>`;
             }).join('');
             out.innerHTML = sumHtml + cardsHtml; out.classList.remove('hidden'); lucide.createIcons();
         }
 
         function selectAdvisorPlan(idx) {
             const chosen = lastGeneratedPlans[idx]; if (!chosen) return;
-            appState.activePlan = { ...chosen, selectedAt: getTodayISO(), monthKey: getCurrentMonthKey() };
-            saveUserData(); renderAll(); renderGeneratedPlans(lastGeneratedPlans, getFinancialSnapshot());
-            showToast(`Plan activado: "${chosen.title}".`, 'success');
+            appState.activePlan = {
+                ...chosen,
+                selectedAt: getTodayISO(),
+                monthKey: getCurrentMonthKey(),
+                locked: true,
+                completed: false
+            };
+            document.getElementById('mentor-plan-output').classList.add('hidden');
+            saveUserData(); renderAll();
+            if ('Notification' in window && Notification.permission === 'default') {
+                Notification.requestPermission().then(p => {
+                    if (p === 'granted') {
+                        try { new Notification('Trakealo — Plan Comprometido', { body: `Nos casamos con "${chosen.title}". Te haré seguimiento diario.` }); } catch (_) {}
+                    }
+                }).catch(() => {});
+            }
+            showToast(`🔒 Compromiso sellado con "${chosen.title}". Tu Asesor IA te dará seguimiento diario hasta cumplirlo.`, 'success');
         }
-        function clearActivePlan() { appState.activePlan = null; saveUserData(); renderAll(); showToast('Plan desactivado.', 'info'); }
 
-        function renderActivePlanPanels() {
-            const homeSlot = document.getElementById('home-active-plan-card'), advSlot = document.getElementById('advisor-active-plan-panel');
-            if (!appState.activePlan) {
-                if (homeSlot) homeSlot.innerHTML = `<button onclick="openMentorAI()" class="w-full text-left hud-panel border border-emerald-500/35 hover:border-emerald-500/60 rounded-2xl p-4 flex items-center justify-between gap-3 transition group relative overflow-hidden"><div class="flex items-center gap-3 min-w-0"><div class="w-10 h-10 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-500 flex items-center justify-center shrink-0"><i data-lucide="brain-circuit" class="w-5 h-5"></i></div><div class="min-w-0"><div class="flex items-center gap-1.5"><span class="text-xs font-bold text-white tracking-wide">Asesor Financiero IA</span><span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-500 border border-emerald-500/30">3 PLANES</span></div><p class="text-[11px] text-zinc-400 truncate">Analiza tu mes real y elige un plan guiado</p></div></div><i data-lucide="chevron-right" class="w-4 h-4 text-emerald-500 group-hover:translate-x-0.5 transition shrink-0"></i></button>`;
-                if (advSlot) advSlot.classList.add('hidden');
+        function completeActivePlan() {
+            if (!appState.activePlan) return;
+            const title = appState.activePlan.title;
+            appState.activePlan = null;
+            lastGeneratedPlans = [];
+            document.getElementById('mentor-plan-output')?.classList.add('hidden');
+            saveUserData(); renderAll();
+            showToast(`🎉 ¡Felicidades por cumplir "${title}"! Ya puedes analizar el nuevo mes y elegir tu siguiente meta.`, 'success');
+        }
+
+        function exitActivePlanFromSettings() {
+            if (!appState.activePlan) return;
+            const title = appState.activePlan.title;
+            if (!confirm(`Tu Asesor IA está comprometido contigo en el plan "${title}" hasta cumplirlo.\n\n¿Seguro que deseas salir de este plan antes de completarlo para elegir otro?`)) return;
+            appState.activePlan = null;
+            lastGeneratedPlans = [];
+            document.getElementById('mentor-plan-output')?.classList.add('hidden');
+            saveUserData(); renderAll();
+            showToast(`Saliste del plan "${title}". Ya puedes generar nuevos planes en IA & Datos.`, 'info');
+        }
+
+        function renderSettingsPlanPanel() {
+            const panel = document.getElementById('settings-active-plan-panel');
+            if (!panel) return;
+            if (!appState.activePlan || appState.activePlan.completed) {
+                panel.innerHTML = `
+                    <div class="flex items-center justify-between gap-2">
+                        <div>
+                            <h3 class="text-[10px] font-mono font-semibold text-zinc-300 uppercase tracking-[0.14em]">Plan del Asesor IA</h3>
+                            <p class="text-xs text-zinc-400 mt-1">No tienes ningún plan comprometido actualmente.</p>
+                        </div>
+                        <button onclick="openMentorAI()" class="px-3 py-2 bg-emerald-500 hover:bg-emerald-400 text-black text-xs font-bold rounded-xl transition shrink-0">Elegir Plan</button>
+                    </div>`;
                 return;
             }
-            const plan = appState.activePlan, snap = getFinancialSnapshot(), dailySafe = computeDailySafeSpend(), remVar = Math.max(0, plan.variableCap - snap.variableExpenses), pct = plan.variableCap > 0 ? Math.min(Math.round((snap.variableExpenses/plan.variableCap)*100), 100) : 100;
-            const html = `<div class="hud-panel border border-emerald-500/45 rounded-2xl p-4 space-y-3 relative overflow-hidden"><div class="absolute top-0 left-0 right-0 h-px hud-glow-line"></div><div class="flex items-start justify-between gap-2"><div><span class="text-[9px] font-mono uppercase tracking-[0.14em] text-emerald-500 block">Asesor IA // Plan en Curso</span><h4 class="text-xs font-bold text-white mt-0.5">${plan.title}</h4></div><button onclick="openMentorAI()" class="text-[10px] font-mono text-emerald-500 hover:underline shrink-0">Ver plan</button></div><div class="grid grid-cols-2 gap-2"><div class="bg-obsidian/70 border border-cardborder rounded-xl p-2.5"><span class="text-[9px] font-mono text-zinc-400 block">Puedes gastar hoy</span><span class="text-sm font-bold ${snap.variableExpenses<=plan.variableCap?'text-emerald-500':'text-rose-500'} mono-num">${formatMoney(dailySafe)}</span></div><div class="bg-obsidian/70 border border-cardborder rounded-xl p-2.5"><span class="text-[9px] font-mono text-zinc-400 block">Meta Ahorro Mes</span><span class="text-sm font-bold text-sky-400 mono-num">${formatMoney(plan.monthlySaveTarget)}</span></div></div><div class="space-y-1"><div class="flex justify-between text-[10px] font-mono text-zinc-400"><span>Margen variable restante</span><span>${formatMoney(remVar)} de ${formatMoney(plan.variableCap)}</span></div><div class="w-full bg-obsidian rounded-full h-1.5 overflow-hidden border border-cardborder"><div class="${pct>=90?'bg-rose-500':'bg-emerald-500'} h-1.5 rounded-full transition-all" style="width:${pct}%"></div></div></div></div>`;
-            if (homeSlot) homeSlot.innerHTML = html;
-            if (advSlot) { advSlot.innerHTML = html + `<div class="text-right mt-1"><button onclick="clearActivePlan()" class="text-[10px] text-zinc-500 hover:text-rose-400 underline">Cambiar / Desactivar plan actual</button></div>`; advSlot.classList.remove('hidden'); }
+            const plan = appState.activePlan;
+            panel.innerHTML = `
+                <div class="flex items-start justify-between gap-2">
+                    <div>
+                        <span class="text-[9px] font-mono px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 uppercase">🔒 Plan Comprometido</span>
+                        <h3 class="text-sm font-bold text-white mt-1.5">${plan.title}</h3>
+                        <p class="text-[11px] text-zinc-400 mt-0.5">Iniciado: ${plan.selectedAt || 'Este mes'} • Meta ahorro: <strong class="text-emerald-400 mono-num">${formatMoney(plan.monthlySaveTarget)}/mes</strong></p>
+                    </div>
+                </div>
+                <p class="text-[11px] text-zinc-400 leading-relaxed">Tu Asesor IA está casado con este plan hasta cumplir la meta. Solo desde aquí en Ajustes puedes abandonarlo si necesitas cambiar de rumbo.</p>
+                <button onclick="exitActivePlanFromSettings()" class="w-full py-2.5 px-4 bg-rose-500/10 hover:bg-rose-500/20 text-rose-500 text-xs font-bold rounded-xl border border-rose-500/25 flex items-center justify-center gap-2 transition">
+                    <i data-lucide="log-out" class="w-4 h-4"></i>
+                    <span>Salir o Cambiar de Plan Actual</span>
+                </button>`;
+        }
+
+        function renderActivePlanPanels() {
+            const homeSlot = document.getElementById('home-active-plan-card');
+            const advSlot = document.getElementById('advisor-active-plan-panel');
+            const genCard = document.getElementById('mentor-generator-card');
+            const planOut = document.getElementById('mentor-plan-output');
+
+            if (!appState.activePlan || appState.activePlan.completed) {
+                if (homeSlot) homeSlot.innerHTML = `<button onclick="openMentorAI()" class="w-full text-left hud-panel border border-emerald-500/35 hover:border-emerald-500/60 rounded-2xl p-4 flex items-center justify-between gap-3 transition group relative overflow-hidden"><div class="flex items-center gap-3 min-w-0"><div class="w-10 h-10 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-500 flex items-center justify-center shrink-0"><i data-lucide="brain-circuit" class="w-5 h-5"></i></div><div class="min-w-0"><div class="flex items-center gap-1.5"><span class="text-xs font-bold text-white tracking-wide">Asesor Financiero IA</span><span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-500 border border-emerald-500/30">3 PLANES</span></div><p class="text-[11px] text-zinc-400 truncate">Analiza tu mes y cásate con un plan guiado</p></div></div><i data-lucide="chevron-right" class="w-4 h-4 text-emerald-500 group-hover:translate-x-0.5 transition shrink-0"></i></button>`;
+                if (advSlot) advSlot.classList.add('hidden');
+                if (genCard) genCard.classList.remove('hidden');
+                return;
+            }
+
+            const plan = appState.activePlan;
+            const snap = getFinancialSnapshot();
+            const dailySafe = computeDailySafeSpend();
+            const remVar = Math.max(0, plan.variableCap - snap.variableExpenses);
+            const pct = plan.variableCap > 0 ? Math.min(Math.round((snap.variableExpenses/plan.variableCap)*100), 100) : 100;
+            const fulfilled = isPlanGoalFulfilled(plan, snap);
+            const today = getTodayISO();
+            const todayEntriesCount = appState.entries.filter(e => e.isoDate === today).length;
+            const checkedInToday = localStorage.getItem('trakealo_evening_ack_' + today) === '1';
+            const notifGranted = 'Notification' in window && Notification.permission === 'granted';
+
+            const homeHtml = `
+                <div class="hud-panel border border-emerald-500/45 rounded-2xl p-4 space-y-3 relative overflow-hidden">
+                    <div class="absolute top-0 left-0 right-0 h-px hud-glow-line"></div>
+                    <div class="flex items-start justify-between gap-2">
+                        <div class="min-w-0">
+                            <span class="text-[9px] font-mono uppercase tracking-[0.14em] text-emerald-500 block">🔒 Plan Comprometido en Curso</span>
+                            <h4 class="text-xs font-bold text-white mt-0.5 truncate">${plan.title}</h4>
+                        </div>
+                        <button onclick="openMentorAI()" class="text-[10px] font-mono text-emerald-500 hover:underline shrink-0">Seguimiento</button>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div class="bg-obsidian/70 border border-cardborder rounded-xl p-2.5"><span class="text-[9px] font-mono text-zinc-400 block">Puedes gastar hoy</span><span class="text-sm font-bold ${snap.variableExpenses<=plan.variableCap?'text-emerald-500':'text-rose-500'} mono-num">${formatMoney(dailySafe)}</span></div>
+                        <div class="bg-obsidian/70 border border-cardborder rounded-xl p-2.5"><span class="text-[9px] font-mono text-zinc-400 block">Meta Ahorro Mes</span><span class="text-sm font-bold text-sky-400 mono-num">${formatMoney(plan.monthlySaveTarget)}</span></div>
+                    </div>
+                    <div class="space-y-1">
+                        <div class="flex justify-between text-[10px] font-mono text-zinc-400"><span>Margen de compras restante</span><span>${formatMoney(remVar)} de ${formatMoney(plan.variableCap)}</span></div>
+                        <div class="w-full bg-obsidian rounded-full h-1.5 overflow-hidden border border-cardborder"><div class="${pct>=90?'bg-rose-500':'bg-emerald-500'} h-1.5 rounded-full transition-all" style="width:${pct}%"></div></div>
+                    </div>
+                    ${!checkedInToday ? `
+                    <div class="bg-obsidian/80 border border-amber-500/30 rounded-xl p-2.5 flex items-center justify-between gap-2">
+                        <span class="text-[10px] text-zinc-300 leading-snug">¿Ya anotaste tus gastos o entradas de hoy? (${todayEntriesCount} hoy)</span>
+                        <div class="flex gap-1.5 shrink-0">
+                            <button onclick="openAddModal()" class="px-2 py-1 bg-emerald-500 text-black font-bold rounded-lg text-[10px]">+ Anotar</button>
+                            <button onclick="markZeroSpendToday()" class="px-2 py-1 bg-zinc-800 text-zinc-200 rounded-lg text-[10px]">Al día ✓</button>
+                        </div>
+                    </div>` : `<div class="text-[10px] font-mono text-emerald-400 flex items-center gap-1.5"><i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i> Seguimiento de hoy confirmado (${todayEntriesCount} movimiento(s))</div>`}
+                </div>`;
+
+            const advHtml = `
+                <div class="hud-panel border border-emerald-500/50 rounded-2xl p-5 space-y-3.5 relative overflow-hidden">
+                    <div class="absolute top-0 left-0 right-0 h-px hud-glow-line"></div>
+                    <div class="flex items-start justify-between gap-2">
+                        <div>
+                            <span class="inline-flex items-center gap-1 text-[9px] font-mono px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 uppercase">🔒 Casado con este Plan hasta cumplirlo</span>
+                            <h3 class="text-base font-bold text-white mt-1.5">${plan.title}</h3>
+                            <p class="text-[11px] text-zinc-400 mt-1 leading-relaxed">${plan.summary || ''}</p>
+                        </div>
+                    </div>
+                    ${plan.dailyFocus ? `<div class="bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-3 text-xs text-zinc-100 leading-relaxed"><strong class="text-emerald-400 block text-[10px] font-mono uppercase mb-0.5">🎯 Tu Misión de Hoy</strong>${plan.dailyFocus}</div>` : ''}
+                    <div class="grid grid-cols-2 gap-2.5">
+                        <div class="bg-obsidian/70 border border-cardborder rounded-xl p-3"><span class="text-[9px] font-mono text-zinc-400 block">Puedes gastar hoy</span><span class="text-sm font-bold ${snap.variableExpenses<=plan.variableCap?'text-emerald-500':'text-rose-500'} mono-num">${formatMoney(dailySafe)}</span></div>
+                        <div class="bg-obsidian/70 border border-cardborder rounded-xl p-3"><span class="text-[9px] font-mono text-zinc-400 block">Meta Ahorro Mes</span><span class="text-sm font-bold text-sky-400 mono-num">${formatMoney(plan.monthlySaveTarget)}</span></div>
+                    </div>
+                    <div class="space-y-1">
+                        <div class="flex justify-between text-[10px] font-mono text-zinc-400"><span>Margen de compras del mes</span><span>${formatMoney(remVar)} de ${formatMoney(plan.variableCap)}</span></div>
+                        <div class="w-full bg-obsidian rounded-full h-2 overflow-hidden border border-cardborder"><div class="${pct>=90?'bg-rose-500':'bg-emerald-500'} h-2 rounded-full transition-all" style="width:${pct}%"></div></div>
+                    </div>
+                    ${Array.isArray(plan.steps) && plan.steps.length ? `<ul class="text-[11px] text-zinc-300 space-y-1.5 list-disc pl-4 pt-1">${plan.steps.map(s=>`<li>${s}</li>`).join('')}</ul>` : ''}
+                    <div class="bg-obsidian/80 border border-cardborder rounded-xl p-3 space-y-2">
+                        <div class="flex items-center justify-between text-[11px]">
+                            <span class="font-semibold text-white">📋 Chequeo Diario de Movimientos</span>
+                            <span class="font-mono text-[10px] ${checkedInToday?'text-emerald-400':'text-amber-400'}">${checkedInToday?'✓ Confirmado hoy':'Pendiente hoy'}</span>
+                        </div>
+                        <p class="text-[11px] text-zinc-400">Para que tu plan funcione, asegúrate de que no se te olvidó anotar ninguna compra reciente ni entrada de dinero.</p>
+                        <div class="flex gap-2">
+                            <button onclick="openAddModal()" class="flex-1 py-2 bg-emerald-500 hover:bg-emerald-400 text-black font-bold rounded-xl text-[11px] transition">+ Anotar gasto/entrada</button>
+                            <button onclick="markZeroSpendToday()" class="px-3 py-2 bg-carddark border border-cardborder text-zinc-200 rounded-xl text-[11px] font-medium transition">${checkedInToday?'Confirmado ✓':'Todo al día ✓'}</button>
+                        </div>
+                        ${!notifGranted ? `<button onclick="enableBrowserAlerts()" class="w-full py-2 bg-sky-500/10 hover:bg-sky-500/20 border border-sky-500/30 text-sky-400 rounded-xl text-[11px] font-semibold flex items-center justify-center gap-1.5 transition"><i data-lucide="bell-ring" class="w-3.5 h-3.5"></i> Activar Notificaciones Diarias en este Teléfono</button>` : ''}
+                    </div>
+                    ${fulfilled ? `<button onclick="completeActivePlan()" class="w-full py-3 bg-emerald-500 hover:bg-emerald-400 text-black font-bold rounded-xl text-xs uppercase tracking-wide transition shadow-lg shadow-emerald-500/20">🏆 ¡Meta Cumplida! Cerrar Ciclo y Elegir Siguiente Plan</button>` : `<p class="text-[10px] text-zinc-500 text-center font-mono">Compromiso bloqueado hasta cumplir el mes/meta. Si necesitas salir antes, ve a <strong>Ajustes</strong>.</p>`}
+                </div>`;
+
+            if (homeSlot) homeSlot.innerHTML = homeHtml;
+            if (advSlot) { advSlot.innerHTML = advHtml; advSlot.classList.remove('hidden'); }
+            if (genCard) genCard.classList.add('hidden');
+            if (planOut) planOut.classList.add('hidden');
         }
 
         async function askAdvisorLive(e) {
@@ -1447,7 +1723,7 @@ Instrucciones estrictas:
             btn.disabled = true;
             btn.textContent = '...';
             replyBox.classList.remove('hidden');
-            replyBox.innerHTML = '<span class="text-emerald-400 font-mono animate-pulse">Analizando consulta...</span>';
+            replyBox.innerHTML = '<span class="text-emerald-400 font-mono animate-pulse">Analizando tu consulta...</span>';
 
             const snap = getFinancialSnapshot();
             const dailySafe = computeDailySafeSpend();
@@ -1456,24 +1732,30 @@ Instrucciones estrictas:
 
             if (GEMINI_PROXY_URL && navigator.onLine) {
                 try {
-                    const prompt = `Eres el Asesor Financiero IA privado exclusivo de la app Trakealo.
-Contexto del usuario en la app:
-- Usuario: ${appState.user?.name || 'Usuario'}
+                    const activePlanContext = appState.activePlan
+                        ? `Plan comprometido activo: "${appState.activePlan.title}" | Meta ahorro mensual: ${formatMoney(appState.activePlan.monthlySaveTarget)} | Tope compras del mes: ${formatMoney(appState.activePlan.variableCap)} | Enfoque diario: "${appState.activePlan.dailyFocus || ''}". DEFIENDE y guía al usuario dentro de este plan que eligió.`
+                        : 'Aún no tiene un plan comprometido seleccionado.';
+
+                    const prompt = `${TRAKEALO_GEMINI_BRAIN}
+
+DATOS REALES DEL USUARIO EN TRAKEALO:
+- Nombre: ${appState.user?.name || 'Usuario'}
+- Perfil: ${appState.incomeType}
 - Moneda: ${appState.currency}
-- Ingreso/Sueldo mensual: ${formatMoney(snap.effectiveIncome)}
-- Gastos fijos obligatorios: ${formatMoney(snap.fixedMonthly)}
-- Gastos variables acumulados del mes: ${formatMoney(snap.variableExpenses)}
-- Margen de gasto seguro hoy: ${formatMoney(dailySafe)}/día
-- Ahorros actuales: ${formatMoney(appState.currentSavings)}
-- Plan activo: ${appState.activePlan ? appState.activePlan.title : 'Ninguno seleccionado aún'}
+- Dinero que entra al mes (sueldo/base): ${formatMoney(snap.effectiveIncome)}
+- Pagos fijos obligatorios al mes: ${formatMoney(snap.fixedMonthly)}
+- Compras variables acumuladas este mes: ${formatMoney(snap.variableExpenses)}
+- Margen seguro que puede gastar hoy: ${formatMoney(dailySafe)}/día
+- Ahorros guardados hoy: ${formatMoney(appState.currentSavings)}
+- Dinero que gana cada mes sin trabajar (inversiones): ${formatMoney(snap.passiveMonthly)}
+- ${activePlanContext}
 
-Pregunta del usuario: "${q}"
+PREGUNTA DEL USUARIO: "${q}"
 
-Reglas estrictas de comportamiento:
-1. SOLO debes responder preguntas relacionadas con: finanzas personales, dinero, presupuestos, gastos, ingresos, ahorros, inversiones, matemáticas financieras (ej. cálculos de gastos/porcentajes), metas económicas o funcionamiento de la app Trakealo.
-2. Si el usuario pregunta sobre temas irrelevantes fuera de finanzas o de la app (por ejemplo: celebridades como Michael Jackson, música, deportes, recetas de cocina, chismes, historia, política, clima, etc.), NO respondas esa información. Responde amablemente exactamente con este estilo: "Lo siento, soy el Asesor Financiero exclusivo de Trakealo. Mi enfoque es ayudarte únicamente con tu presupuesto, plan de ahorro, gastos, inversiones o dudas sobre la app. ¿En qué aspecto de tus finanzas nos enfocamos hoy?"
-3. NUNCA menciones tecnologías internas (ni Google, ni Gemini, ni API, ni Cloudflare, ni autores externos). Sé tú mismo el Asesor IA de Trakealo.
-4. Responde de forma concisa (máximo 3 o 4 oraciones), profesional y práctica.`;
+REGLAS ESTRICTAS DE RESPUESTA:
+1. SOLO responde preguntas sobre finanzas personales, dinero, presupuestos, gastos, ingresos, cómo vender o ganar más dinero, ahorros, inversiones simples, matemáticas de dinero o uso de la app Trakealo.
+2. Si pregunta temas ajenos (celebridades, música, deportes, recetas, chismes, historia, política, clima, etc.), NO respondas eso y responde exactamente con este estilo: "Lo siento, soy tu Asesor Financiero exclusivo de Trakealo. Solo puedo ayudarte con tu dinero, tu plan, cómo ganar más, tus gastos o dudas de la app. ¿En qué meta económica trabajamos hoy?"
+3. Responde en español muy sencillo, sin palabras financieras complicadas, máximo 3 o 4 oraciones claras y prácticas.`;
 
                     const resp = await fetch(GEMINI_PROXY_URL, {
                         method: 'POST',
@@ -1499,19 +1781,21 @@ Reglas estrictas de comportamiento:
 
             if (!answer) {
                 const normQ = normalizeText(q);
-                const financeTerms = ['gast','ingres','dinero','ahorr','inversion','invert','sueldo','salario','presupuest','plan','meta','fijo','alquiler','pag','compr','cobr','cuanto','saldo','balance','app','trakealo','voz','factura','sheet','excel','mes','porcentaje','deuda','negocio','stock','crypto','banco'];
+                const financeTerms = ['gast','ingres','dinero','ahorr','inversion','invert','sueldo','salario','presupuest','plan','meta','fijo','alquiler','pag','compr','cobr','cuanto','saldo','balance','app','trakealo','voz','factura','sheet','excel','mes','porcentaje','deuda','negocio','stock','crypto','banco','ganar','vend','client','trabaj'];
                 const isFinanceTopic = financeTerms.some(t => normQ.includes(t));
 
                 if (!isFinanceTopic) {
-                    answer = "Lo siento, soy el Asesor Financiero exclusivo de Trakealo. Solo puedo ayudarte con tu presupuesto, plan de ahorro, gastos, inversiones o dudas sobre cómo usar la app. ¿En qué meta financiera nos enfocamos hoy?";
+                    answer = "Lo siento, soy tu Asesor Financiero exclusivo de Trakealo. Solo puedo ayudarte con tu dinero, tu plan, cómo ganar más, tus gastos o dudas de la app. ¿En qué meta económica trabajamos hoy?";
                 } else if (normQ.includes('gastar') || normQ.includes('puedo') || normQ.includes('hoy')) {
-                    answer = `Hoy tienes un margen seguro de <strong>${formatMoney(dailySafe)}</strong> sin poner en riesgo tu presupuesto mensual.`;
+                    answer = `Hoy tienes un margen seguro de <strong>${formatMoney(dailySafe)}</strong> para cuidar tu plan. Pregúntate antes de gastar: ¿esto me acerca a mi meta o puedo producir dinero extra para pagarlo sin tocar mi ahorro?`;
+                } else if (normQ.includes('ganar') || normQ.includes('vend') || normQ.includes('mas') || normQ.includes('extra')) {
+                    answer = `Para ganar más este mes sin complicarte, ofrece algo útil a personas que ya confían en ti y dedica tu primera hora del día a buscar clientes o mejorar lo que vendes. Y recuerda: cuando entre ese dinero extra, guarda al menos la mitad aparte antes de gastar.`;
                 } else if (normQ.includes('plan') || normQ.includes('voy') || normQ.includes('meta')) {
                     answer = appState.activePlan
-                        ? `Sigues en el <strong>${appState.activePlan.title}</strong>. Llevas ${formatMoney(snap.variableExpenses)} en compras variables frente a un tope mensual de ${formatMoney(appState.activePlan.variableCap)}.`
-                        : `Aún no has seleccionado un plan. Toca el botón de abajo para analizar tu mes y elegir el que mejor se adapte a ti.`;
+                        ? `Seguimos firmes con tu plan <strong>${appState.activePlan.title}</strong>. Llevas ${formatMoney(snap.variableExpenses)} en compras frente a un límite mensual de ${formatMoney(appState.activePlan.variableCap)}.`
+                        : `Aún no has elegido un plan. Toca el botón de abajo para analizar tu mes y comprometernos con uno.`;
                 } else {
-                    answer = `Para cuidar tu economía con un ingreso de ${formatMoney(snap.effectiveIncome)}, cubre primero tus ${formatMoney(snap.fixedMonthly)} de gastos fijos y mantén tus salidas diarias dentro de ${formatMoney(dailySafe)}/día.`;
+                    answer = `Con un ingreso de ${formatMoney(snap.effectiveIncome)}, cubre primero tus ${formatMoney(snap.fixedMonthly)} de pagos fijos, aparta tu semilla de ahorro antes de gastar y mantén tus compras diarias dentro de ${formatMoney(dailySafe)}/día.`;
                 }
             }
 
@@ -1523,20 +1807,25 @@ Reglas estrictas de comportamiento:
         }
 
         async function enableBrowserAlerts() {
-            if (!('Notification' in window)) { showToast('Tu navegador no soporta alertas locales. Usa "Alarma Diaria 6PM".', 'warning'); return; }
+            if (!('Notification' in window)) { showToast('Tu navegador no soporta alertas locales. Usa "Alarma Diaria".', 'warning'); return; }
             try {
                 const perm = await Notification.requestPermission();
-                if (perm === 'granted') { new Notification('Trakealo — Asesor IA Activo', { body: `Chequeo diario activo a las ${appState.dailyAlertHour||18}:00.` }); showToast('Alertas activadas.', 'success'); }
-                else showToast('Permiso denegado. Usa "Alarma Diaria 6PM".', 'warning');
-            } catch (_) { showToast('En iPhone usa "Alarma Diaria 6PM".', 'info'); }
+                if (perm === 'granted') {
+                    new Notification('Trakealo — Seguimiento Activo', { body: `Te recordaré cada día a las ${appState.dailyAlertHour||18}:00 revisar tus gastos y entradas.` });
+                    renderActivePlanPanels();
+                    lucide.createIcons();
+                    showToast('¡Notificaciones diarias activadas!', 'success');
+                }
+                else showToast('Permiso denegado. Usa "Alarma Diaria" para tu calendario.', 'warning');
+            } catch (_) { showToast('En iPhone instala la app en tu Pantalla de Inicio o usa "Alarma Diaria".', 'info'); }
         }
 
         function downloadDailyHabitICS() {
             const hour = String(appState.dailyAlertHour||18).padStart(2,'0'), now = new Date(), y = now.getFullYear(), m = String(now.getMonth()+1).padStart(2,'0'), d = String(now.getDate()).padStart(2,'0');
-            const note = appState.activePlan ? `Plan activo: ${appState.activePlan.title}. Registra tus movimientos del día.` : '¿Olvidaste anotar algún gasto o entrada hoy? Entra a Trakealo.';
-            const ics = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Trakealo//Daily Habit//ES','BEGIN:VEVENT',`UID:trakealo-daily-${Date.now()}@trakealo.app`,`DTSTAMP:${y}${m}${d}T${hour}0000Z`,`DTSTART:${y}${m}${d}T${hour}0000`,`DTEND:${y}${m}${d}T${hour}1000`,'RRULE:FREQ=DAILY','SUMMARY:Trakealo: Registra tus gastos del día',`DESCRIPTION:${note}`,'BEGIN:VALARM','TRIGGER:PT0M','ACTION:DISPLAY','DESCRIPTION:Chequeo diario Trakealo','END:VALARM','END:VEVENT','END:VCALENDAR'].join('\r\n');
+            const note = appState.activePlan ? `Plan activo: ${appState.activePlan.title}. ¿Anotaste todos tus gastos recientes y entradas de hoy?` : '¿Olvidaste anotar algún gasto o entrada hoy? Entra a Trakealo.';
+            const ics = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Trakealo//Daily Habit//ES','BEGIN:VEVENT',`UID:trakealo-daily-${Date.now()}@trakealo.app`,`DTSTAMP:${y}${m}${d}T${hour}0000Z`,`DTSTART:${y}${m}${d}T${hour}0000`,`DTEND:${y}${m}${d}T${hour}1000`,'RRULE:FREQ=DAILY','SUMMARY:Trakealo: Registra tus gastos y entradas de hoy',`DESCRIPTION:${note}`,'BEGIN:VALARM','TRIGGER:PT0M','ACTION:DISPLAY','DESCRIPTION:Chequeo diario Trakealo','END:VALARM','END:VEVENT','END:VCALENDAR'].join('\r\n');
             const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' }), url = URL.createObjectURL(blob), a = document.createElement('a');
-            a.href = url; a.download = 'Trakealo_Alarma_Diaria_6PM.ics'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+            a.href = url; a.download = 'Trakealo_Alarma_Diaria.ics'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
             showToast('Alarma diaria descargada. Ábrela para añadirla a tu calendario.', 'success');
         }
 
@@ -1547,11 +1836,12 @@ Reglas estrictas de comportamiento:
             if (q.includes('voz') || q.includes('microfono') || q.includes('hablar') || q.includes('dictar')) return 'Toca <strong>+</strong> → <strong>Dictar por Voz</strong> y di <em>"Gasté 25 dólares en supermercado"</em>.<br><br>💡 <strong>Tip iPhone:</strong> Si iOS bloquea el mic web, toca el cuadro <em>Dictado Inteligente</em> y usa el 🎤 del teclado.';
             if (q.includes('factura') || q.includes('ticket') || q.includes('foto') || q.includes('ocr') || q.includes('escan')) return 'Toca <strong>+</strong> → <strong>Escanear Factura</strong> y toma una foto nítida con buena luz. El OCR extrae total, comercio y categoría.';
             if (q.includes('internet') || q.includes('offline') || q.includes('datos') || q.includes('wifi') || q.includes('calle')) return 'Una vez logueado, puedes usar la app en la calle <strong>sin internet</strong>. Todo se guarda en tu teléfono y se sube automáticamente cuando vuelva la señal.';
+            if (q.includes('cambiar') || q.includes('salir') || q.includes('abandonar')) return 'Cuando eliges un plan, el Asesor IA se compromete contigo hasta cumplirlo 🔒. Si de verdad necesitas salir o cambiar antes de tiempo, ve a la pestaña <strong>Ajustes → Plan del Asesor IA → Salir o Cambiar de Plan Actual</strong>.';
             if (q.includes('sheet') || q.includes('excel') || q.includes('exportar') || q.includes('csv')) return 'Elige el mes en <strong>Inicio</strong> y toca <strong>SHEETS</strong> para descargar un <code>.csv</code> listo para Google Sheets.';
-            if (q.includes('asesor') || q.includes('plan') || q.includes('ia') || q.includes('6')) return 'Entra a <strong>IA & Datos → Asesor IA</strong> y toca <strong>Analizar Mi Mes y Crear 3 Planes</strong>. Se adapta a tu sueldo y gastos fijos reales, te deja elegir un plan y calcula cuánto puedes gastar cada día.';
-            if (q.includes('fijo') || q.includes('alquiler') || q.includes('luz') || q.includes('sueldo') || q.includes('inversion') || q.includes('activo')) return 'En <strong>Inicio → Base Financiera</strong> configuras sueldo y ahorros. En <strong>Activos → Gastos Fijos</strong> agregas alquiler, luz, agua o internet (se suman solos a tus Gastos de Inicio), y en <strong>Inversiones</strong> tus acciones o propiedades.';
+            if (q.includes('asesor') || q.includes('plan') || q.includes('ia') || q.includes('6')) return 'Entra a <strong>IA & Datos → Asesor IA</strong> y toca <strong>Analizar Mi Mes y Crear 3 Planes</strong>. Al elegir uno, aparece arriba junto a tu nombre y te hacemos seguimiento diario hasta que lo cumplas.';
+            if (q.includes('fijo') || q.includes('alquiler') || q.includes('luz') || q.includes('sueldo') || q.includes('inversion') || q.includes('activo')) return 'En <strong>Inicio → Base Financiera</strong> configuras sueldo y ahorros. En <strong>Activos → Gastos Fijos</strong> agregas alquiler, luz, agua o internet (se suman solos a tus Gastos de Inicio), y en <strong>Inversiones</strong> tus activos.';
             if (q.includes('claro') || q.includes('oscuro') || q.includes('tema') || q.includes('light') || q.includes('dark')) return 'Toca el ícono del <strong>Sol / Luna</strong> arriba a la derecha (junto a la moneda) o en <strong>Ajustes</strong> para alternar entre Modo Oscuro y Modo Claro.';
-            return 'Puedo explicarte: <strong>Voz</strong>, <strong>OCR Facturas</strong>, <strong>Asesor IA y 3 Planes</strong>, <strong>Gastos Fijos</strong>, <strong>Inversiones</strong>, <strong>Alarma 6:00 PM</strong>, <strong>Google Sheets</strong> o <strong>Modo Offline</strong>.';
+            return 'Puedo explicarte: <strong>Voz</strong>, <strong>OCR Facturas</strong>, <strong>Asesor IA y Compromiso de Plan</strong>, <strong>Cómo salir de un plan (en Ajustes)</strong>, <strong>Gastos Fijos</strong>, <strong>Inversiones</strong> o <strong>Google Sheets</strong>.';
         }
         function submitHelpQuestion(e) {
             e.preventDefault();
